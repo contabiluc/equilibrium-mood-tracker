@@ -1,0 +1,5 @@
+# Robots.txt for Equilibrium Mood Tracker
+User-agent: *
+Allow: /
+
+Sitemap: https://equilibrium-mood.netlify.app/sitemap.xml
