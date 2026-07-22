@@ -21,6 +21,128 @@
         <div class="glow-sphere sphere-3"></div>
     </div>
 
+    <!-- SOS Persistent Button -->
+    <button class="sos-fab" onclick="openSOSModal()" aria-label="Ajutor de urgență">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.64 12 19.79 19.79 0 0 1 1.58 3.41 2 2 0 0 1 3.55 1.2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.72a16 16 0 0 0 6.29 6.29l.89-.89a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
+        </svg>
+        <span>Ajutor acum</span>
+    </button>
+
+    <!-- SOS Modal -->
+    <div id="sos-modal" class="modal-backdrop" style="display:none;" role="dialog" aria-modal="true" aria-labelledby="sos-modal-title">
+        <div class="modal-box sos-modal-box">
+            <div class="sos-modal-header">
+                <div class="sos-header-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                    </svg>
+                </div>
+                <div>
+                    <h2 id="sos-modal-title">Ai nevoie de ajutor acum?</h2>
+                    <p>Ești în siguranță. Iată resursele disponibile imediat.</p>
+                </div>
+                <button class="modal-close-btn" onclick="closeSOSModal()" aria-label="Închide">&times;</button>
+            </div>
+            <div class="sos-contacts">
+                <a href="tel:112" class="sos-contact-card sos-emergency">
+                    <div class="sos-contact-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.64 12 19.79 19.79 0 0 1 1.58 3.41 2 2 0 0 1 3.55 1.2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.72a16 16 0 0 0 6.29 6.29l.89-.89a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
+                        </svg>
+                    </div>
+                    <div class="sos-contact-info">
+                        <strong>112 &mdash; Urgențe</strong>
+                        <span>Amenințare imediată la viață</span>
+                    </div>
+                    <span class="sos-call-label">Sună acum</span>
+                </a>
+                <a href="tel:0374456420" class="sos-contact-card">
+                    <div class="sos-contact-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                        </svg>
+                    </div>
+                    <div class="sos-contact-info">
+                        <strong>0374 456 420 &mdash; Depre Hub</strong>
+                        <span>Suport emoțional gratuit, 24/7</span>
+                    </div>
+                    <span class="sos-call-label">Sună</span>
+                </a>
+                <a href="tel:0800801200" class="sos-contact-card">
+                    <div class="sos-contact-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"/>
+                            <path d="M12 8v4M12 16h.01"/>
+                        </svg>
+                    </div>
+                    <div class="sos-contact-info">
+                        <strong>0800 801 200 &mdash; Antisuicid</strong>
+                        <span>Aluianța Română de Prevenire a Suicidului</span>
+                    </div>
+                    <span class="sos-call-label">Sună</span>
+                </a>
+            </div>
+            <div class="sos-modal-footer">
+                <button class="action-btn-secondary" onclick="closeSOSModal()">Mă simt mai bine acum</button>
+                <button class="action-btn-primary" onclick="closeSOSModal(); switchTab('safety');">Deschide Planul meu de Siguranță</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Onboarding Modal -->
+    <div id="onboarding-modal" class="modal-backdrop" style="display:none;" role="dialog" aria-modal="true">
+        <div class="modal-box onboarding-modal-box">
+            <div id="onboarding-step-1" class="onboarding-step">
+                <div class="onboarding-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8z"/>
+                        <path d="M12 6v6l4 2"/>
+                    </svg>
+                </div>
+                <h2>Bine ai venit la Equilibrium!</h2>
+                <p>Această aplicație te ajută să înțelegi mai bine cum te simți zi de zi. În 3 pași scurți îți arătăm ce e important de știut.</p>
+                <div class="onboarding-demo-note">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+                    Datele afișate acum sunt <strong>date demo</strong> pentru a-ți arăta cum arată aplicația. Le poți șterge oricând.
+                </div>
+            </div>
+            <div id="onboarding-step-2" class="onboarding-step" style="display:none;">
+                <div class="onboarding-icon mood-icon-ob">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+                    </svg>
+                </div>
+                <h2>Axa dispoziției: de la -5 la +5</h2>
+                <p><strong>0</strong> = echilibru, stare normală — e cel mai bun loc de a fi.</p>
+                <p><strong>+1 la +5</strong> = energie crescută, optimism, dar și riscul de a deveni prea agitat sau impulsiv.</p>
+                <p><strong>-1 la -5</strong> = tristețe, retragere, oboseală — e bine să le notezi și să cauți suport.</p>
+                <p style="margin-top:1rem;font-size:0.85rem;color:var(--text-muted)">Nu trebuie să fii perfect. Notează ce simți real, nu ce crezi că ar trebui să simți.</p>
+            </div>
+            <div id="onboarding-step-3" class="onboarding-step" style="display:none;">
+                <div class="onboarding-icon backup-icon-ob">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                        <polyline points="7 10 12 15 17 10"/>
+                        <line x1="12" y1="15" x2="12" y2="3"/>
+                    </svg>
+                </div>
+                <h2>Datele tale sunt private &amp; locale</h2>
+                <p>Nimic nu ajunge pe vreun server. Totul rămâne <strong>numai în browserul tău</strong>.</p>
+                <p style="margin-top:0.75rem">De aceea, faceți periodic un <strong>backup (Export JSON)</strong> din secțiunea Setări. Dacă ștergi istoricul browserului, datele se pierd fără backup.</p>
+                <p style="margin-top:0.75rem;font-size:0.85rem;color:var(--text-muted)">Tot ce ai nevoie de știut. Hai să începem!</p>
+            </div>
+            <div class="onboarding-footer">
+                <div class="onboarding-dots">
+                    <span class="onboarding-dot active"></span>
+                    <span class="onboarding-dot"></span>
+                    <span class="onboarding-dot"></span>
+                </div>
+                <button id="onboarding-next-btn" class="action-btn-primary" onclick="onboardingNext()">Înainte &rarr;</button>
+            </div>
+        </div>
+    </div>
+
     <div class="app-container">
         <!-- Sidebar Navigation -->
         <aside class="sidebar">
@@ -100,10 +222,28 @@
 
             <!-- Dashboard View -->
             <section id="view-dashboard" class="tab-view active">
+                <!-- Demo Data Banner -->
+                <div id="demo-data-banner" class="demo-banner" style="display:none;">
+                    <div class="demo-banner-content">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                            <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/>
+                            <polyline points="13 2 13 9 20 9"/>
+                        </svg>
+                        <span>Vizualizezi <strong>date demo</strong> &mdash; acestea nu sunt datele tale reale.</span>
+                    </div>
+                    <button class="demo-banner-btn" onclick="clearDemoData()">Șterge demo și începe</button>
+                </div>
+
                 <!-- Backup Warning Banner -->
                 <div id="backup-warning-banner" class="backup-banner glass" style="display: none;">
                     <div class="backup-banner-content">
-                        <span class="backup-banner-icon">⚠️</span>
+                        <span class="backup-banner-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                                <line x1="12" y1="9" x2="12" y2="13"/>
+                                <line x1="12" y1="17" x2="12.01" y2="17"/>
+                            </svg>
+                        </span>
                         <span class="backup-banner-text">Datele tale sunt stocate doar local în browser. Fă un <a href="#" onclick="switchTab('settings'); return false;" class="backup-link">backup regulat (Export JSON)</a> pentru a nu le pierde în cazul curățării istoricului.</span>
                     </div>
                     <button class="backup-banner-close" onclick="closeBackupBanner()">&times;</button>
@@ -114,7 +254,11 @@
                     <div class="stat-card glass">
                         <div class="stat-header">
                             <span class="stat-title">Stare Medie</span>
-                            <span class="stat-icon mood-icon">⚡</span>
+                            <span class="stat-icon mood-icon" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+                                </svg>
+                            </span>
                         </div>
                         <div class="stat-value" id="stat-avg-mood">-</div>
                         <div class="stat-trend" id="stat-avg-mood-desc">Introduceți date</div>
@@ -122,7 +266,11 @@
                     <div class="stat-card glass">
                         <div class="stat-header">
                             <span class="stat-title">Media Somnului</span>
-                            <span class="stat-icon sleep-icon">🌙</span>
+                            <span class="stat-icon sleep-icon" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                                </svg>
+                            </span>
                         </div>
                         <div class="stat-value" id="stat-avg-sleep">-</div>
                         <div class="stat-trend" id="stat-avg-sleep-desc">ore pe noapte</div>
@@ -130,7 +278,12 @@
                     <div class="stat-card glass">
                         <div class="stat-header">
                             <span class="stat-title">Nivel Mediu Anxietate</span>
-                            <span class="stat-icon anxiety-icon">🔥</span>
+                            <span class="stat-icon anxiety-icon" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="10"/>
+                                    <path d="M12 8v4M12 16h.01"/>
+                                </svg>
+                            </span>
                         </div>
                         <div class="stat-value" id="stat-avg-anxiety">-</div>
                         <div class="stat-trend" id="stat-avg-anxiety-desc">pe o scară 0-10</div>
@@ -138,7 +291,13 @@
                     <div class="stat-card glass">
                         <div class="stat-header">
                             <span class="stat-title">Aderență Medicație</span>
-                            <span class="stat-icon med-icon">💊</span>
+                            <span class="stat-icon med-icon" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M10.5 20H4a2 2 0 0 1-2-2V6c0-1.1.9-2 2-2h3.93a2 2 0 0 1 1.66.9l.82 1.2a2 2 0 0 0 1.66.9H20a2 2 0 0 1 2 2v2"/>
+                                    <circle cx="18" cy="18" r="4"/>
+                                    <path d="M18 16v2l1 1"/>
+                                </svg>
+                            </span>
                         </div>
                         <div class="stat-value" id="stat-med-compliance">-</div>
                         <div class="stat-trend" id="stat-med-compliance-desc">zile cu tratament luat</div>

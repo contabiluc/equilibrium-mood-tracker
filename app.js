@@ -75,15 +75,21 @@ function generateMockData() {
 // Load Data from LocalStorage
 function loadData() {
     const storedEntries = localStorage.getItem('equilibrium_mood_entries');
+    const isDemo = localStorage.getItem('equilibrium_is_demo') === 'true';
+    
     if (storedEntries) {
         moodEntries = JSON.parse(storedEntries);
+        // Show demo banner if still in demo mode
+        if (isDemo) {
+            setTimeout(() => showDemoBanner(), 600);
+        }
     } else {
         // First time user: generate mock data to demonstrate app potential
         moodEntries = generateMockData();
         localStorage.setItem('equilibrium_mood_entries', JSON.stringify(moodEntries));
-        setTimeout(() => {
-            showToast("Bine ai venit! Am adăugat câteva date demo pentru a-ți arăta cum funcționează graficele.");
-        }, 1000);
+        localStorage.setItem('equilibrium_is_demo', 'true');
+        // Show onboarding modal
+        setTimeout(() => showOnboarding(), 800);
     }
 
     const storedSafety = localStorage.getItem('equilibrium_safety_plan');
@@ -99,6 +105,69 @@ function loadData() {
     
     // Sort entries chronologically
     sortEntries();
+}
+
+// Show / hide demo banner
+function showDemoBanner() {
+    const banner = document.getElementById('demo-data-banner');
+    if (banner) banner.style.display = 'flex';
+}
+
+// Clear demo data and start fresh
+function clearDemoData() {
+    if (confirm('Ești sigur că vrei să ștergi datele demo și să începi cu un jurnal gol? Această acțiune nu poate fi anulată.')) {
+        localStorage.removeItem('equilibrium_mood_entries');
+        localStorage.removeItem('equilibrium_is_demo');
+        moodEntries = [];
+        saveEntriesToStorage();
+        const banner = document.getElementById('demo-data-banner');
+        if (banner) banner.style.display = 'none';
+        showToast('Date demo șterse. Poți începe primul tău jurnal!');
+        switchTab('log');
+    }
+}
+
+// Onboarding modal state
+let onboardingStep = 1;
+const ONBOARDING_STEPS = 3;
+
+function showOnboarding() {
+    const modal = document.getElementById('onboarding-modal');
+    if (modal) {
+        onboardingStep = 1;
+        updateOnboardingStep();
+        modal.style.display = 'flex';
+    }
+}
+
+function updateOnboardingStep() {
+    for (let i = 1; i <= ONBOARDING_STEPS; i++) {
+        const step = document.getElementById(`onboarding-step-${i}`);
+        if (step) step.style.display = i === onboardingStep ? 'block' : 'none';
+    }
+    const dots = document.querySelectorAll('.onboarding-dot');
+    dots.forEach((d, idx) => {
+        d.classList.toggle('active', idx + 1 === onboardingStep);
+    });
+    const nextBtn = document.getElementById('onboarding-next-btn');
+    if (nextBtn) {
+        nextBtn.textContent = onboardingStep === ONBOARDING_STEPS ? 'Să începem!' : 'Înainte →';
+    }
+}
+
+function onboardingNext() {
+    if (onboardingStep < ONBOARDING_STEPS) {
+        onboardingStep++;
+        updateOnboardingStep();
+    } else {
+        closeOnboarding();
+    }
+}
+
+function closeOnboarding() {
+    const modal = document.getElementById('onboarding-modal');
+    if (modal) modal.style.display = 'none';
+    localStorage.setItem('equilibrium_onboarding_done', 'true');
 }
 
 // Sort entries by date ascending
@@ -353,37 +422,37 @@ function calculateStats(entries) {
     const avgAnxiety = totalAnxiety / count;
     const medAdherence = (medCount / count) * 100;
 
-    // Mood description & mapping
+    // Mood description — ton cald, non-clinic
     let moodSign = avgMood > 0 ? "+" : "";
     document.getElementById('stat-avg-mood').textContent = `${moodSign}${avgMood.toFixed(1)}`;
     
-    let moodDesc = "Stabil (Eutimic)";
-    if (avgMood > 3) moodDesc = "Manie Severă";
-    else if (avgMood > 1.5) moodDesc = "Manie / Hipomanie Moderată";
-    else if (avgMood > 0.5) moodDesc = "Hipomanie Ușoară";
-    else if (avgMood < -3) moodDesc = "Depresie Severă";
-    else if (avgMood < -1.5) moodDesc = "Depresie Moderată";
-    else if (avgMood < -0.5) moodDesc = "Depresie Ușoară";
+    let moodDesc = "Te simți echilibrat";
+    if (avgMood > 3) moodDesc = "Stare foarte ridicată";
+    else if (avgMood > 1.5) moodDesc = "Stare ridicată constant";
+    else if (avgMood > 0.5) moodDesc = "Stare puțin mai ridicată";
+    else if (avgMood < -3) moodDesc = "Perioadă grea — caută suport";
+    else if (avgMood < -1.5) moodDesc = "Perioadă dificilă";
+    else if (avgMood < -0.5) moodDesc = "Ușor sub echilibru";
     
     document.getElementById('stat-avg-mood-desc').textContent = moodDesc;
     
     // Sleep avg
     document.getElementById('stat-avg-sleep').textContent = `${avgSleep.toFixed(1)}h`;
-    let sleepDesc = "Durată optimă";
-    if (avgSleep < 6) sleepDesc = "Deprivare de somn ⚠️";
-    else if (avgSleep > 9) sleepDesc = "Hipersomnie";
+    let sleepDesc = "Durată bună de odihnă";
+    if (avgSleep < 6) sleepDesc = "Somn insuficient — ai grijă de tine";
+    else if (avgSleep > 9) sleepDesc = "Somn mai lung decât obișnuit";
     document.getElementById('stat-avg-sleep-desc').textContent = sleepDesc;
 
     // Anxiety avg
     document.getElementById('stat-avg-anxiety').textContent = `${avgAnxiety.toFixed(1)}`;
-    let anxietyDesc = "Nivel scăzut";
-    if (avgAnxiety >= 7) anxietyDesc = "Severă (Risc de panică)";
-    else if (avgAnxiety >= 4) anxietyDesc = "Moderată";
+    let anxietyDesc = "Nivel confortabil";
+    if (avgAnxiety >= 7) anxietyDesc = "Nivel ridicat — respiră, ești în siguranță";
+    else if (avgAnxiety >= 4) anxietyDesc = "Ușor tensionat";
     document.getElementById('stat-avg-anxiety-desc').textContent = anxietyDesc;
 
     // Medication compliance
     document.getElementById('stat-med-compliance').textContent = `${medAdherence.toFixed(0)}%`;
-    document.getElementById('stat-med-compliance-desc').textContent = `${medCount} din ${count} zile cu tratament`;
+    document.getElementById('stat-med-compliance-desc').textContent = `${medCount} din ${count} zile cu tratament luat`;
 }
 
 // Generate dynamic statistical insights from data
@@ -392,7 +461,13 @@ function renderInsights(entries) {
     list.innerHTML = '';
     
     if (entries.length < 3) {
-        list.innerHTML = `<div class="empty-state"><p>Introdu date pe parcursul a cel puțin 3 zile pentru a genera corelații inteligente.</p></div>`;
+        list.innerHTML = `
+            <div class="empty-state-insights">
+                <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.5" style="color:var(--text-muted);margin-bottom:0.75rem">
+                    <path d="M9 19v-6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2zm0 0V9a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v10m-6 0a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2m0 0V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-2a2 2 0 0 1-2-2z"/>
+                </svg>
+                <p style="font-size:0.9rem;color:var(--text-muted);text-align:center;line-height:1.5">Ai nevoie de <strong style="color:var(--text-secondary)">cel puțin 7 zile</strong> de date pentru ca Analiza Inteligentă să-ți ofere recomandări relevante și personalizate.</p>
+            </div>`;
         return;
     }
 
@@ -409,8 +484,9 @@ function renderInsights(entries) {
         if (avgAnxietyLowSleep > avgAnxietyNormalSleep + 1) {
             insights.push({
                 type: 'alert',
-                title: 'Impactul deprivării de somn',
-                desc: `În zilele în care ai dormit sub 6.5 ore, nivelul de anxietate a fost mai ridicat (medie: ${avgAnxietyLowSleep.toFixed(1)} față de ${avgAnxietyNormalSleep.toFixed(1)}). Asigură-te că prioritizezi odihna!`
+                icon: '😴',
+                title: 'Somnul contează mult pentru tine',
+                desc: `Am observat că în zilele cu somn sub 6.5 ore, te simți mai tensionat (anxietate medie: ${avgAnxietyLowSleep.toFixed(1)} față de ${avgAnxietyNormalSleep.toFixed(1)} în zilele cu somn suficient). Odihna bună este un instrument puternic.`
             });
         }
     }
@@ -420,26 +496,30 @@ function renderInsights(entries) {
     if (missedMedDays.length > 0) {
         insights.push({
             type: 'alert',
-            title: 'Aderență la tratament',
-            desc: `Ai ratat tratamentul în ${missedMedDays.length} zile din această perioadă. Complianța la medicație este esențială pentru stabilizarea episoadelor bipolare și prevenirea recidivelor.`
+            icon: '💊',
+            title: `Tratament omis în ${missedMedDays.length} ${missedMedDays.length === 1 ? 'zi' : 'zile'}`,
+            desc: `Continuitatea tratamentului face diferența în menținerea echilibrului. Dacă ai omis din motive practice, discută cu medicul tău despre alternative care să se potrivească stilului tău de viață.`
         });
     } else {
         insights.push({
             type: 'stable',
-            title: 'Tratament urmat riguros',
-            desc: 'Felicitări! Ai menținut o complianță de 100% cu tratamentul prescris în această perioadă. Acest obicei reduce riscul de variații abrupte ale dispoziției.'
+            icon: '🌟',
+            title: 'Tratament luat consecvent — bravo!',
+            desc: 'Ai luat tratamentul în fiecare zi din această perioadă. Consecvența este unul dintre cei mai importanți factori pentru stabilitate pe termen lung.'
         });
     }
 
-    // Analyze High Energy/Mania Warning
+    // Analyze High Energy/Mania Warning — ton cald, fără termeni alarmişti
     const manicDays = entries.filter(e => e.mood >= 2);
     if (manicDays.length >= 2) {
         const avgSleepManic = manicDays.reduce((sum, e) => sum + e.sleep, 0) / manicDays.length;
         if (avgSleepManic < 6) {
             insights.push({
                 type: 'alert',
-                title: 'Semnal timpurie de hipomanie/manie',
-                desc: `Ai înregistrat dispoziții ridicate împreună cu un somn scăzut (${avgSleepManic.toFixed(1)}h medie). Această corelație indică adesea un debut de fază maniacală. Contactează medicul curant.`
+                icon: '🔆',
+                title: 'Starea ta medie a fost mai ridicată săptămâna asta',
+                clinicalNote: 'Semnal timpuriu de hipomanie',
+                desc: `Am observat că te-ai simțit mai energic, dar și că ai dormit mai puțin (${avgSleepManic.toFixed(1)}h în medie). Această combinație merită atenție. Ar fi util să contactezi medicul curant.`
             });
         }
     }
@@ -449,20 +529,24 @@ function renderInsights(entries) {
     if (stableDays.length >= 5) {
         insights.push({
             type: 'stable',
-            title: 'Stabilitate susținută',
-            desc: `Ai înregistrat ${stableDays.length} zile de stabilitate (eutimie). Continuă rutina zilnică stabilă și plimbările în natură.`
+            icon: '⚖️',
+            title: `${stableDays.length} zile de echilibru — continuă tot așa!`,
+            desc: `Felicitări! Rutina ta funcționează. Continuă ce faci — somnul regulat, mișcarea și prezența socială contribuie mult la această stabilitate.`
         });
     }
 
     // Render insights list
     if (insights.length === 0) {
-        list.innerHTML = `<div class="insight-card"><div class="insight-title">Dispoziție sub control</div><div class="insight-desc">Datele curente nu prezintă devieri majore sau corelații de alarmă. Continuă monitorizarea zilnică!</div></div>`;
+        list.innerHTML = `<div class="insight-card"><div class="insight-title">Totul pare în ordine</div><div class="insight-desc">Nu am găsit devieri sau corelații notabile în datele tale recente. Continuă să monitorizezi zilnic!</div></div>`;
     } else {
         insights.forEach(ins => {
             const card = document.createElement('div');
             card.className = `insight-card ${ins.type}`;
+            const clinicalTag = ins.clinicalNote
+                ? `<span class="clinical-tooltip" title="Termen clinic: ${ins.clinicalNote}">ℹ️ ce înseamnă asta?</span>`
+                : '';
             card.innerHTML = `
-                <div class="insight-title">${ins.type === 'alert' ? '⚠️ ' : '✅ '}${ins.title}</div>
+                <div class="insight-title">${ins.icon ? ins.icon + ' ' : ''}${ins.title} ${clinicalTag}</div>
                 <div class="insight-desc">${ins.desc}</div>
             `;
             list.appendChild(card);
@@ -904,11 +988,31 @@ function clearAllData() {
     }
 }
 
+// SOS Modal
+function openSOSModal() {
+    const modal = document.getElementById('sos-modal');
+    if (modal) modal.style.display = 'flex';
+}
+
+function closeSOSModal() {
+    const modal = document.getElementById('sos-modal');
+    if (modal) modal.style.display = 'none';
+}
+
 // On Application Init Load
 window.addEventListener('DOMContentLoaded', () => {
     loadData();
     resetLogForm();
     updateDashboard();
+
+    // Close modals on backdrop click
+    document.querySelectorAll('.modal-backdrop').forEach(backdrop => {
+        backdrop.addEventListener('click', (e) => {
+            if (e.target === backdrop) {
+                backdrop.style.display = 'none';
+            }
+        });
+    });
 
     // Listen to resize to make the canvas chart responsive
     window.addEventListener('resize', () => {
