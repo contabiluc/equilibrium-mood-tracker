@@ -1829,10 +1829,12 @@ textarea:focus {
         width: 100%;
     }
 
-    /* SOS FAB positioning on mobile */
+    /* SOS FAB positioning on mobile — above bottom nav */
     .sos-fab {
-        bottom: 80px; /* above bottom nav */
+        bottom: 88px; /* 64px nav height + 24px clearance */
         right: 1rem;
+        padding: 0.6rem 1rem;
+        font-size: 0.8rem;
     }
 }
 
