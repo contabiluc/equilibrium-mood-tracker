@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Equilibrium - Mood Tracker pentru Sănătate Mentală</title>
+    <meta name="description" content="O aplicație modernă și securizată pentru monitorizarea stării de spirit, a somnului și a simptomelor, dedicată gestionării tulburării bipolare, anxietății și depresiei.">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="glass-bg-decorations">
+        <div class="glow-sphere sphere-1"></div>
+        <div class="glow-sphere sphere-2"></div>
+        <div class="glow-sphere sphere-3"></div>
+    </div>
+
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="brand">
+                <div class="brand-logo">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8z"/>
+                        <path d="M12 6v6l4 2"/>
+                    </svg>
+                </div>
+                <h2>Equilibrium</h2>
+            </div>
+            
+            <nav class="nav-menu">
+                <button class="nav-btn active" id="btn-dashboard" onclick="switchTab('dashboard')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="7" height="9" rx="1"/>
+                        <rect x="14" y="3" width="7" height="5" rx="1"/>
+                        <rect x="14" y="12" width="7" height="9" rx="1"/>
+                        <rect x="3" y="16" width="7" height="5" rx="1"/>
+                    </svg>
+                    <span>Dashboard</span>
+                </button>
+                <button class="nav-btn" id="btn-log" onclick="switchTab('log')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 5v14M5 12h14"/>
+                    </svg>
+                    <span>Adaugă Stare</span>
+                </button>
+                <button class="nav-btn" id="btn-safety" onclick="switchTab('safety')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                    </svg>
+                    <span>Plan de Siguranță</span>
+                </button>
+                <button class="nav-btn" id="btn-history" onclick="switchTab('history')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    <span>Istoric Jurnal</span>
+                </button>
+                <button class="nav-btn" id="btn-settings" onclick="switchTab('settings')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="3"/>
+                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+                    </svg>
+                    <span>Setări & Export</span>
+                </button>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="privacy-badge">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                    </svg>
+                    <span>Date stocate local 100%</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="app-header">
+                <div>
+                    <h1 id="header-title">Bine ai revenit pe Equilibrium</h1>
+                    <p id="header-subtitle" class="subtitle">Cum te simți astăzi? Monitorizarea zilnică ajută la menținerea echilibrului.</p>
+                </div>
+                <div class="quick-stats-header">
+                    <button class="action-btn-primary" onclick="switchTab('log')">
+                        <svg viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+                        Adaugă Stare
+                    </button>
+                </div>
+            </header>
+
+            <!-- Dashboard View -->
+            <section id="view-dashboard" class="tab-view active">
+                <!-- Overview Stats Grid -->
+                <div class="stats-grid">
+                    <div class="stat-card glass">
+                        <div class="stat-header">
+                            <span class="stat-title">Stare Medie</span>
+                            <span class="stat-icon mood-icon">⚡</span>
+                        </div>
+                        <div class="stat-value" id="stat-avg-mood">-</div>
+                        <div class="stat-trend" id="stat-avg-mood-desc">Introduceți date</div>
+                    </div>
+                    <div class="stat-card glass">
+                        <div class="stat-header">
+                            <span class="stat-title">Media Somnului</span>
+                            <span class="stat-icon sleep-icon">🌙</span>
+                        </div>
+                        <div class="stat-value" id="stat-avg-sleep">-</div>
+                        <div class="stat-trend" id="stat-avg-sleep-desc">ore pe noapte</div>
+                    </div>
+                    <div class="stat-card glass">
+                        <div class="stat-header">
+                            <span class="stat-title">Nivel Mediu Anxietate</span>
+                            <span class="stat-icon anxiety-icon">🔥</span>
+                        </div>
+                        <div class="stat-value" id="stat-avg-anxiety">-</div>
+                        <div class="stat-trend" id="stat-avg-anxiety-desc">pe o scară 0-10</div>
+                    </div>
+                    <div class="stat-card glass">
+                        <div class="stat-header">
+                            <span class="stat-title">Aderență Medicație</span>
+                            <span class="stat-icon med-icon">💊</span>
+                        </div>
+                        <div class="stat-value" id="stat-med-compliance">-</div>
+                        <div class="stat-trend" id="stat-med-compliance-desc">zile cu tratament luat</div>
+                    </div>
+                </div>
+
+                <!-- Main Charts Grid -->
+                <div class="dashboard-grid">
+                    <div class="chart-container glass">
+                        <div class="chart-header">
+                            <h3>Evoluția Stării de Spirit & Factorilor Cheie</h3>
+                            <div class="chart-filters">
+                                <button class="filter-btn active" id="filter-btn-7" onclick="changeChartPeriod(7)">7 Zile</button>
+                                <button class="filter-btn" id="filter-btn-30" onclick="changeChartPeriod(30)">30 Zile</button>
+                                <button class="filter-btn" id="filter-btn-90" onclick="changeChartPeriod(90)">90 Zile</button>
+                            </div>
+                        </div>
+                        <div class="canvas-wrapper">
+                            <canvas id="mood-chart"></canvas>
+                        </div>
+                        <div class="chart-legend">
+                            <span class="legend-item"><span class="legend-dot mood-dot"></span> Dispoziție (-5 la +5)</span>
+                            <span class="legend-item"><span class="legend-dot sleep-dot"></span> Somn (ore)</span>
+                            <span class="legend-item"><span class="legend-dot anxiety-dot"></span> Anxietate (0 la 10)</span>
+                        </div>
+                    </div>
+
+                    <div class="insights-container glass">
+                        <h3>Analiză & Recomandări Inteligente</h3>
+                        <div class="insights-list" id="insights-list">
+                            <!-- Dynamically loaded insights -->
+                            <div class="empty-state">
+                                <p>Introdu date pe parcursul a cel puțin 3 zile pentru a genera corelații inteligente între somn, anxietate și dispoziție.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Log Mood View -->
+            <section id="view-log" class="tab-view">
+                <div class="log-form-container glass">
+                    <h2>Înregistrează Starea de Spirit pentru Astăzi</h2>
+                    <form id="mood-form" onsubmit="saveMoodEntry(event)">
+                        
+                        <!-- Date selector -->
+                        <div class="form-group inline-group">
+                            <label for="entry-date">Data Înregistrării</label>
+                            <input type="date" id="entry-date" required>
+                        </div>
+
+                        <!-- Mood selector (Bipolar Scale -5 to +5) -->
+                        <div class="form-group">
+                            <label class="form-label-with-desc">
+                                <span>Dispoziție Principală</span>
+                                <span class="label-desc">Cum te situezi pe axa Depresie - Stabilitate - Manie?</span>
+                            </label>
+                            
+                            <div class="bipolar-selector">
+                                <button type="button" class="bipolar-btn mania-severe" data-val="5" onclick="setMoodValue(5)">
+                                    <span class="val">+5</span>
+                                    <span class="label">Manie Severă</span>
+                                </button>
+                                <button type="button" class="bipolar-btn mania-moderate" data-val="3" onclick="setMoodValue(3)">
+                                    <span class="val">+3</span>
+                                    <span class="label">Manie Mod.</span>
+                                </button>
+                                <button type="button" class="bipolar-btn mania-mild" data-val="1" onclick="setMoodValue(1)">
+                                    <span class="val">+1</span>
+                                    <span class="label">Hipomanie</span>
+                                </button>
+                                <button type="button" class="bipolar-btn stable active" data-val="0" onclick="setMoodValue(0)">
+                                    <span class="val">0</span>
+                                    <span class="label">Stabil</span>
+                                </button>
+                                <button type="button" class="bipolar-btn depression-mild" data-val="-1" onclick="setMoodValue(-1)">
+                                    <span class="val">-1</span>
+                                    <span class="label">Depr. Ușoară</span>
+                                </button>
+                                <button type="button" class="bipolar-btn depression-moderate" data-val="-3" onclick="setMoodValue(-3)">
+                                    <span class="val">-3</span>
+                                    <span class="label">Depr. Mod.</span>
+                                </button>
+                                <button type="button" class="bipolar-btn depression-severe" data-val="-5" onclick="setMoodValue(-5)">
+                                    <span class="val">-5</span>
+                                    <span class="label">Depr. Severă</span>
+                                </button>
+                            </div>
+                            <input type="hidden" id="mood-value" value="0">
+                        </div>
+
+                        <!-- Grid for Sliders (Sleep, Anxiety, Energy) -->
+                        <div class="form-row-3">
+                            <!-- Sleep duration -->
+                            <div class="form-group">
+                                <label for="sleep-hours">Ore de Somn (noaptea trecută)</label>
+                                <div class="slider-wrapper">
+                                    <input type="range" id="sleep-hours" min="0" max="16" step="0.5" value="8" oninput="updateSliderVal('sleep-hours-val', this.value)">
+                                    <span class="slider-val-badge" id="sleep-hours-val">8 ore</span>
+                                </div>
+                            </div>
+
+                            <!-- Anxiety slider -->
+                            <div class="form-group">
+                                <label for="anxiety-level">Nivel de Anxietate (0 - 10)</label>
+                                <div class="slider-wrapper">
+                                    <input type="range" id="anxiety-level" min="0" max="10" step="1" value="2" oninput="updateSliderVal('anxiety-val', this.value)">
+                                    <span class="slider-val-badge" id="anxiety-val">2 (Scăzută)</span>
+                                </div>
+                            </div>
+
+                            <!-- Energy slider -->
+                            <div class="form-group">
+                                <label for="energy-level">Nivel de Energie (0 - 10)</label>
+                                <div class="slider-wrapper">
+                                    <input type="range" id="energy-level" min="0" max="10" step="1" value="5" oninput="updateSliderVal('energy-val', this.value)">
+                                    <span class="slider-val-badge" id="energy-val">5 (Normală)</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Symptoms Checklist -->
+                        <div class="form-group">
+                            <label>Simptome Observate Astăzi (Selectează tot ce se aplică)</label>
+                            <div class="symptoms-grid">
+                                <label class="checkbox-card">
+                                    <input type="checkbox" name="symptom" value="iritabilitate">
+                                    <span class="checkbox-text">Iritabilitate</span>
+                                </label>
+                                <label class="checkbox-card">
+                                    <input type="checkbox" name="symptom" value="ganduri_accelerate">
+                                    <span class="checkbox-text">Gânduri accelerate</span>
+                                </label>
+                                <label class="checkbox-card">
+                                    <input type="checkbox" name="symptom" value="agitatie_motorie">
+                                    <span class="checkbox-text">Agitație psihomotorie</span>
+                                </label>
+                                <label class="checkbox-card">
+                                    <input type="checkbox" name="symptom" value="tristete">
+                                    <span class="checkbox-text">Tristețe / Plâns</span>
+                                </label>
+                                <label class="checkbox-card">
+                                    <input type="checkbox" name="symptom" value="lipsa_concentrare">
+                                    <span class="checkbox-text">Lipsă de concentrare</span>
+                                </label>
+                                <label class="checkbox-card">
+                                    <input type="checkbox" name="symptom" value="retragere_sociala">
+                                    <span class="checkbox-text">Retragere socială</span>
+                                </label>
+                                <label class="checkbox-card">
+                                    <input type="checkbox" name="symptom" value="atac_panica">
+                                    <span class="checkbox-text">Atac de panică</span>
+                                </label>
+                                <label class="checkbox-card">
+                                    <input type="checkbox" name="symptom" value="impulsivitate">
+                                    <span class="checkbox-text">Impulsivitate</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Medication Tracker -->
+                        <div class="medication-section-wrapper">
+                            <div class="form-group inline-group-checkbox">
+                                <label class="switch">
+                                    <input type="checkbox" id="medication-taken" checked>
+                                    <span class="slider-round"></span>
+                                </label>
+                                <span class="checkbox-label-text">Am luat medicația prescrisă astăzi</span>
+                            </div>
+                        </div>
+
+                        <!-- Notes / Journal Entry -->
+                        <div class="form-group">
+                            <label for="journal-notes">Însemnări zilnice / Declanșatori (Triggers)</label>
+                            <textarea id="journal-notes" rows="4" placeholder="Ce s-a întâmplat astăzi? Ai identificat declanșatori (stres, cafeină, conflicte, schimbări de vreme)? Scrie aici gândurile tale..."></textarea>
+                        </div>
+
+                        <!-- Form Actions -->
+                        <div class="form-actions">
+                            <button type="submit" class="action-btn-primary submit-btn">Salvează Înregistrarea</button>
+                            <button type="button" class="action-btn-secondary" onclick="switchTab('dashboard')">Renunță</button>
+                        </div>
+
+                    </form>
+                </div>
+            </section>
+
+            <!-- Safety Plan View -->
+            <section id="view-safety" class="tab-view">
+                <div class="safety-plan-container">
+                    
+                    <div class="safety-header glass warning-border">
+                        <div class="warning-icon">⚠️</div>
+                        <div class="warning-content">
+                            <h3>Plan de Siguranță & Prevenire a Crizei</h3>
+                            <p>Acest plan este salvat doar în browserul tău. Completează-l pentru a-l avea la îndemână în momentele dificile. În caz de urgență majoră, apelează imediat serviciile de urgență.</p>
+                        </div>
+                    </div>
+
+                    <div class="safety-grid">
+                        <!-- Standard Emergency Lines (Read Only / Dynamic) -->
+                        <div class="safety-card glass col-2">
+                            <h3>Linii Naționale de Criză (România)</h3>
+                            <div class="crisis-contacts-list">
+                                <div class="crisis-contact-item">
+                                    <div class="crisis-info">
+                                        <h4>112 - Serviciul de Urgență</h4>
+                                        <p>Pentru amenințări imediate la adresa vieții sau siguranței fizice.</p>
+                                    </div>
+                                    <a href="tel:112" class="call-btn btn-danger">Sună 112</a>
+                                </div>
+                                <div class="crisis-contact-item">
+                                    <div class="crisis-info">
+                                        <h4>0374 456 420 - Depre Hub Helpline</h4>
+                                        <p>Suport emoțional gratuit, disponibil 24/7 pentru anxietate, atac de panică și depresie.</p>
+                                    </div>
+                                    <a href="tel:0374456420" class="call-btn btn-primary">Sună Helpline</a>
+                                </div>
+                                <div class="crisis-contact-item">
+                                    <div class="crisis-info">
+                                        <h4>0800 801 200 - Linia Verde Antisuicide</h4>
+                                        <p>Alianța Română de Prevenție a Suicidului (ore specifice / suport gratuit).</p>
+                                    </div>
+                                    <a href="tel:0800801200" class="call-btn btn-primary">Sună Alianța</a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Editable Personal Contacts -->
+                        <div class="safety-card glass">
+                            <h3>Persoane de Contact de Încredere</h3>
+                            <form id="safety-contacts-form" onsubmit="saveSafetyPlan(event)">
+                                <div class="form-group">
+                                    <label for="safety-doc-name">Medic Psihiatru (Nume & Telefon)</label>
+                                    <input type="text" id="safety-doc-name" placeholder="Dr. Andrei Popescu - 07xx xxx xxx">
+                                </div>
+                                <div class="form-group">
+                                    <label for="safety-therapist-name">Psiholog / Terapeut</label>
+                                    <input type="text" id="safety-therapist-name" placeholder="Ioana Ionescu - 07xx xxx xxx">
+                                </div>
+                                <div class="form-group">
+                                    <label for="safety-emergency-name">Prieten de încredere / Membru familie</label>
+                                    <input type="text" id="safety-emergency-name" placeholder="Mama / Partener - 07xx xxx xxx">
+                                </div>
+                                <button type="submit" class="action-btn-primary btn-sm">Salvează Contactele</button>
+                            </form>
+                        </div>
+
+                        <!-- Coping Strategies -->
+                        <div class="safety-card glass">
+                            <h3>Strategii de Calmare & Coping</h3>
+                            <form id="safety-strategies-form" onsubmit="saveSafetyStrategies(event)">
+                                <div class="form-group">
+                                    <label for="safety-triggers">Semnale de alarmă (Triggers / Schimbări de comportament):</label>
+                                    <textarea id="safety-triggers" rows="2" placeholder="Ex: Nu mai pot dormi, devin extrem de iritabil, vorbesc foarte repede."></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label for="safety-coping">Măsuri rapide de calmare (Ce funcționează pentru mine):</label>
+                                    <textarea id="safety-coping" rows="3" placeholder="Ex: Exercițiul de respirație 4-7-8, ascult playlist-ul de relaxare, merg la o plimbare scurtă fără telefon."></textarea>
+                                </div>
+                                <button type="submit" class="action-btn-primary btn-sm">Salvează Strategiile</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- History View -->
+            <section id="view-history" class="tab-view">
+                <div class="history-container glass">
+                    <div class="history-header">
+                        <h2>Istoric Jurnal & Intrări Anterioare</h2>
+                        <div class="history-actions">
+                            <input type="text" id="history-search" placeholder="Caută în notițe..." oninput="filterHistory()">
+                        </div>
+                    </div>
+                    <div class="history-list" id="history-list">
+                        <!-- Entries loaded dynamically -->
+                        <div class="empty-state">
+                            <p>Nu există nicio înregistrare salvată până acum.</p>
+                            <button class="action-btn-primary" onclick="switchTab('log')">Adaugă prima ta stare</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Settings / Export View -->
+            <section id="view-settings" class="tab-view">
+                <div class="settings-container">
+                    <div class="settings-card glass">
+                        <h3>Gestionarea Datelor Tale</h3>
+                        <p class="settings-desc">Toate datele introduse în această aplicație sunt stocate în mod exclusiv în browser-ul tău local (prin intermediul API-ului localStorage). Nimic nu este trimis către niciun server extern, asigurându-ți intimitate absolută.</p>
+                        
+                        <div class="settings-actions-grid">
+                            <div class="action-box">
+                                <h4>Exportă Datele (Backup)</h4>
+                                <p>Descarcă toate înregistrările tale și planul de siguranță într-un fișier securizat JSON.</p>
+                                <button class="action-btn-primary" onclick="exportData()">Exportă ca JSON</button>
+                            </div>
+
+                            <div class="action-box">
+                                <h4>Importă Datele</h4>
+                                <p>Încarcă un backup realizat anterior pentru a restaura istoricul stărilor tale.</p>
+                                <div class="import-wrapper">
+                                    <input type="file" id="import-file" accept=".json" onchange="importData(event)" style="display: none;">
+                                    <button class="action-btn-secondary" onclick="document.getElementById('import-file').click()">Alege Fișier JSON</button>
+                                </div>
+                            </div>
+
+                            <div class="action-box danger-zone">
+                                <h4>Zona de Pericol</h4>
+                                <p>Șterge definitiv toate datele din browser-ul curent. Această acțiune este ireversibilă!</p>
+                                <button class="action-btn-danger" onclick="clearAllData()">Șterge Toate Datele</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="settings-card glass">
+                        <h3>Despre Equilibrium</h3>
+                        <p><strong>Versiunea 1.0.0</strong></p>
+                        <p>Aplicație creată cu accent pe confidențialitate și simplitate, pentru a susține persoanele afectate de tulburări de dispoziție în eforturile lor zilnice de monitorizare și auto-observare. Datele stocate pot fi exportate pentru a fi folosite ca referință în timpul consultațiilor medicale sau de psihoterapie.</p>
+                        <p><em>Notă: Această aplicație are scop informativ și de auto-monitorizare. Nu înlocuiește sfatul medical profesionist, diagnosticul sau tratamentul.</em></p>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast-notification" class="toast">
+        <span id="toast-message">Mesaj de notificare</span>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
