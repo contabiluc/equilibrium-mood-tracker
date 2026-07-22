@@ -281,6 +281,9 @@ function saveSafetyStrategies(event) {
 
 // Dynamic dashboard update: Stats & Chart
 function updateDashboard() {
+    // Check if we need to show the backup warning banner
+    checkBackupWarning();
+
     if (moodEntries.length === 0) {
         resetDashboardStats();
         drawPlaceholderChart();
@@ -815,6 +818,12 @@ function exportData() {
     dlAnchorElem.setAttribute("href",     dataStr     );
     dlAnchorElem.setAttribute("download", `Equilibrium_Backup_${new Date().toISOString().split('T')[0]}.json`);
     dlAnchorElem.click();
+    
+    // Save last backup date & hide banner
+    localStorage.setItem('equilibrium_last_backup_date', new Date().toISOString());
+    const banner = document.getElementById('backup-warning-banner');
+    if (banner) banner.style.display = 'none';
+    
     showToast("Datele au fost exportate cu succes!");
 }
 
@@ -904,3 +913,63 @@ window.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
+
+// Toggle Bipolar Scale Assessment Guide
+function toggleMoodGuide() {
+    const panel = document.getElementById('mood-guide-panel');
+    if (!panel) return;
+    if (panel.style.display === 'none') {
+        panel.style.display = 'block';
+    } else {
+        panel.style.display = 'none';
+    }
+}
+
+// Close backup warning banner & hide it for 7 days
+function closeBackupBanner() {
+    localStorage.setItem('equilibrium_backup_banner_closed_at', new Date().toISOString());
+    const banner = document.getElementById('backup-warning-banner');
+    if (banner) banner.style.display = 'none';
+    showToast("Notificarea de backup a fost ascunsă pentru 7 zile.");
+}
+
+// Check if we should display backup warning banner
+function checkBackupWarning() {
+    const banner = document.getElementById('backup-warning-banner');
+    if (!banner) return;
+
+    // If there is no data, no need to alert
+    if (moodEntries.length === 0) {
+        banner.style.display = 'none';
+        return;
+    }
+
+    const lastBackupStr = localStorage.getItem('equilibrium_last_backup_date');
+    const bannerClosedStr = localStorage.getItem('equilibrium_backup_banner_closed_at');
+    const now = new Date();
+
+    // Check if backup happened recently (last 7 days)
+    if (lastBackupStr) {
+        const lastBackup = new Date(lastBackupStr);
+        const diffTime = Math.abs(now - lastBackup);
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        if (diffDays <= 7) {
+            banner.style.display = 'none';
+            return;
+        }
+    }
+
+    // Check if banner was dismissed recently (last 7 days)
+    if (bannerClosedStr) {
+        const bannerClosed = new Date(bannerClosedStr);
+        const diffTime = Math.abs(now - bannerClosed);
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        if (diffDays <= 7) {
+            banner.style.display = 'none';
+            return;
+        }
+    }
+
+    // Show banner if conditions met
+    banner.style.display = 'flex';
+}

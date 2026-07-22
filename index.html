@@ -100,6 +100,15 @@
 
             <!-- Dashboard View -->
             <section id="view-dashboard" class="tab-view active">
+                <!-- Backup Warning Banner -->
+                <div id="backup-warning-banner" class="backup-banner glass" style="display: none;">
+                    <div class="backup-banner-content">
+                        <span class="backup-banner-icon">⚠️</span>
+                        <span class="backup-banner-text">Datele tale sunt stocate doar local în browser. Fă un <a href="#" onclick="switchTab('settings'); return false;" class="backup-link">backup regulat (Export JSON)</a> pentru a nu le pierde în cazul curățării istoricului.</span>
+                    </div>
+                    <button class="backup-banner-close" onclick="closeBackupBanner()">&times;</button>
+                </div>
+
                 <!-- Overview Stats Grid -->
                 <div class="stats-grid">
                     <div class="stat-card glass">
@@ -183,10 +192,30 @@
 
                         <!-- Mood selector (Bipolar Scale -5 to +5) -->
                         <div class="form-group">
-                            <label class="form-label-with-desc">
-                                <span>Dispoziție Principală</span>
-                                <span class="label-desc">Cum te situezi pe axa Depresie - Stabilitate - Manie?</span>
-                            </label>
+                            <div class="form-label-row">
+                                <label class="form-label-with-desc">
+                                    <span>Dispoziție Principală</span>
+                                    <span class="label-desc">Cum te situezi pe axa Depresie - Stabilitate - Manie?</span>
+                                </label>
+                                <button type="button" class="info-toggle-btn" onclick="toggleMoodGuide()">
+                                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-right:4px; vertical-align:middle;"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                                    Ghid Evaluare
+                                </button>
+                            </div>
+                            
+                            <!-- Mood scale visual guide (collapsible) -->
+                            <div id="mood-guide-panel" class="mood-guide-panel" style="display: none;">
+                                <h4>Ghid de Autoevaluare (Axa Dispoziției)</h4>
+                                <div class="mood-guide-grid">
+                                    <div class="mood-guide-item item-mania-5"><strong>+5 (Manie Severă):</strong> Energie extremă, impulsivitate ridicată, somn sub 3h, agitație extremă.</div>
+                                    <div class="mood-guide-item item-mania-3"><strong>+3 (Manie/Hipomanie Mod.):</strong> Hiperactiv, foarte vorbăreț, iritabilitate crescută, idei multe.</div>
+                                    <div class="mood-guide-item item-mania-1"><strong>+1 (Hipomanie Ușoară):</strong> Stare foarte bună de spirit, optimism, productivitate ridicată.</div>
+                                    <div class="mood-guide-item item-stable"><strong>0 (Stabil / Eutimic):</strong> Echilibru emoțional normal, reacții firești, stare calmă.</div>
+                                    <div class="mood-guide-item item-depr-1"><strong>-1 (Depresie Ușoară):</strong> Tristețe trecătoare, lipsă de chef, oboseală moderată.</div>
+                                    <div class="mood-guide-item item-depr-3"><strong>-3 (Depresie Mod.):</strong> Retragere socială, plâns facil, anedonie, energie foarte scăzută.</div>
+                                    <div class="mood-guide-item item-depr-5"><strong>-5 (Depresie Severă):</strong> Imposibilitate de funcționare, sentiment de inutilitate severe. (Cere ajutor!)</div>
+                                </div>
+                            </div>
                             
                             <div class="bipolar-selector">
                                 <button type="button" class="bipolar-btn mania-severe" data-val="5" onclick="setMoodValue(5)">
@@ -297,7 +326,10 @@
                                     <input type="checkbox" id="medication-taken" checked>
                                     <span class="slider-round"></span>
                                 </label>
-                                <span class="checkbox-label-text">Am luat medicația prescrisă astăzi</span>
+                                <div class="medication-label-container">
+                                    <span class="checkbox-label-text">Am luat medicația prescrisă astăzi</span>
+                                    <span class="medication-help-text">Bifează "Da" dacă ți-ai administrat schema de tratament prescrisă de medic (indiferent de numărul de pastile sau doze). Monitorizarea ajută la corelarea complianței cu stabilitatea dispoziției.</span>
+                                </div>
                             </div>
                         </div>
 

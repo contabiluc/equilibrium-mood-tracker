@@ -1356,6 +1356,157 @@ textarea:focus {
     font-weight: 600;
 }
 
+/* Backup Warning Banner */
+.backup-banner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(245, 158, 11, 0.08); /* Transparent Amber */
+    border: 1px solid rgba(245, 158, 11, 0.3);
+    border-radius: 12px;
+    padding: 1rem 1.5rem;
+    margin-bottom: 2rem;
+    animation: fadeIn 0.4s ease forwards;
+}
+
+.backup-banner-content {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-grow: 1;
+}
+
+.backup-banner-icon {
+    font-size: 1.2rem;
+}
+
+.backup-banner-text {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    line-height: 1.4;
+}
+
+.backup-link {
+    color: var(--color-anxiety);
+    font-weight: 600;
+    text-decoration: underline;
+}
+
+.backup-link:hover {
+    color: #fbbf24;
+}
+
+.backup-banner-close {
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--text-muted);
+    font-size: 1.5rem;
+    cursor: pointer;
+    line-height: 1;
+    padding: 0 0.5rem;
+    transition: color 0.2s ease;
+}
+
+.backup-banner-close:hover {
+    color: var(--text-primary);
+}
+
+/* Form Label Row & Guide Toggle */
+.form-label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 0.25rem;
+}
+
+.info-toggle-btn {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--card-border);
+    color: var(--text-secondary);
+    font-family: var(--font-primary);
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.35rem 0.75rem;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    transition: all 0.2s ease;
+}
+
+.info-toggle-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-primary);
+    border-color: var(--card-border-focus);
+}
+
+/* Mood Scale visual guide panel */
+.mood-guide-panel {
+    background: rgba(13, 20, 35, 0.5);
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    padding: 1.25rem;
+    margin-bottom: 1.5rem;
+    animation: slideDown 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.mood-guide-panel h4 {
+    font-family: var(--font-heading);
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 0.75rem;
+}
+
+.mood-guide-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+.mood-guide-item {
+    font-size: 0.8rem;
+    line-height: 1.4;
+    padding: 0.4rem 0.75rem;
+    border-radius: 6px;
+    border-left: 3px solid transparent;
+    background: rgba(255, 255, 255, 0.01);
+}
+
+.item-mania-5 { border-left-color: var(--color-mania-severe); background: rgba(236, 72, 153, 0.02); }
+.item-mania-3 { border-left-color: var(--color-mania-mod); background: rgba(217, 70, 239, 0.02); }
+.item-mania-1 { border-left-color: var(--color-mania-mild); background: rgba(168, 85, 247, 0.02); }
+.item-stable  { border-left-color: var(--color-stable); background: rgba(16, 185, 129, 0.02); }
+.item-depr-1  { border-left-color: var(--color-depr-mild); background: rgba(59, 130, 246, 0.02); }
+.item-depr-3  { border-left-color: var(--color-depr-mod); background: rgba(29, 78, 216, 0.02); }
+.item-depr-5  { border-left-color: #6366f1; background: rgba(99, 102, 241, 0.03); }
+
+/* Medication Label & Help Text styling */
+.medication-label-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.medication-help-text {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-weight: 400;
+    line-height: 1.4;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 /* -------------------------------------------------------------
    Responsive Design & Mobile Optimization
 ------------------------------------------------------------- */
