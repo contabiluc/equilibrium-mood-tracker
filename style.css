@@ -1716,29 +1716,30 @@ textarea:focus {
         margin-left: 80px;
         padding: 2rem;
     }
-}
-
-@media (max-width: 768px) {
+}@media (max-width: 768px) {
     .app-container {
         flex-direction: column;
     }
     
     .sidebar {
-        width: 100%;
-        height: auto;
-        min-height: 64px;
+        width: calc(100% - 2rem);
+        height: 64px;
         position: fixed;
-        bottom: 0;
+        bottom: 1rem;
         top: auto;
-        left: 0;
-        border-right: none;
-        border-top: 1px solid var(--card-border);
-        padding: 0.25rem 0.5rem 0.5rem;
+        left: 1rem;
+        right: 1rem;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        padding: 0 0.5rem;
         flex-direction: row;
         align-items: center;
         justify-content: center;
-        border-radius: 20px 20px 0 0;
-        box-shadow: 0 -5px 25px rgba(0,0,0,0.5);
+        border-radius: 20px;
+        background: rgba(10, 15, 30, 0.85);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+        z-index: 999;
     }
     
     .brand, .sidebar-footer {
@@ -1749,54 +1750,97 @@ textarea:focus {
         flex-direction: row;
         width: 100%;
         justify-content: space-around;
-        gap: 0;
+        gap: 0.25rem;
         flex-grow: 0;
     }
     
-    /* Mobile: show icon + label below */
     .nav-btn {
-        padding: 0.4rem 0.25rem;
-        border-radius: 10px;
+        padding: 0.4rem 0.2rem;
+        border-radius: 12px;
         flex-direction: column;
         gap: 0.2rem;
-        min-width: 56px;
+        min-width: 50px;
+        flex: 1;
         align-items: center;
+        background: transparent;
+        border: none;
     }
 
     .nav-btn svg {
-        width: 22px;
-        height: 22px;
+        width: 20px;
+        height: 20px;
+        opacity: 0.6;
+        transition: all 0.2s ease;
     }
 
     .nav-btn span {
         display: block !important;
-        font-size: 0.6rem;
-        font-weight: 600;
+        font-size: 0.58rem;
+        font-weight: 500;
         color: var(--text-muted);
         white-space: nowrap;
-        letter-spacing: 0.2px;
+        letter-spacing: 0.1px;
+        transition: all 0.2s ease;
+    }
+
+    .nav-btn.active {
+        background: rgba(99, 102, 241, 0.1);
+        border-left: none;
+        border-bottom: none;
+        padding-left: 0.2rem;
+        padding-bottom: 0.4rem;
+    }
+
+    .nav-btn.active svg {
+        color: var(--primary);
+        opacity: 1;
+        transform: translateY(-1px);
     }
 
     .nav-btn.active span {
-        color: var(--primary);
-    }
-    
-    .nav-btn.active {
-        border-left: none;
-        border-bottom: none;
-        border-top: 2px solid var(--primary);
-        padding-left: 0.25rem;
-        padding-bottom: 0.4rem;
-        background: rgba(99, 102, 241, 0.06);
-        padding-top: calc(0.4rem - 2px);
+        color: var(--text-primary);
+        font-weight: 700;
     }
     
     .main-content {
         margin-left: 0;
-        margin-bottom: 72px;
-        padding: 1.5rem 1rem;
+        margin-bottom: 90px;
+        padding: 1.25rem 1rem;
     }
-    
+
+    /* Optimize cards and elements on smaller screens */
+    .dashboard-stats {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 0.75rem !important;
+    }
+
+    .stat-card {
+        padding: 1rem !important;
+        border-radius: 16px !important;
+    }
+
+    .stat-value {
+        font-size: 1.6rem !important;
+        margin: 0.25rem 0 !important;
+    }
+
+    .stat-trend {
+        font-size: 0.75rem !important;
+    }
+
+    .chart-container {
+        padding: 1rem !important;
+        border-radius: 16px !important;
+    }
+
+    .app-header h1 {
+        font-size: 1.6rem !important;
+    }
+
+    .app-header p {
+        font-size: 0.85rem !important;
+    }
+}    
     .app-header {
         flex-direction: column;
         align-items: flex-start;
