@@ -420,10 +420,85 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="safety-coping">Măsuri rapide de calmare (Ce funcționează pentru mine):</label>
-                                    <textarea id="safety-coping" rows="3" placeholder="Ex: Exercițiul de respirație 4-7-8, ascult playlist-ul de relaxare, merg la o plimbare scurtă fără telefon."></textarea>
+                                    <textarea id="safety-coping" rows="4" placeholder="Ex: Exercițiul de respirație 4-7-8, ascult playlist-ul de relaxare, merg la o plimbare scurtă fără telefon."></textarea>
                                 </div>
                                 <button type="submit" class="action-btn-primary btn-sm">Salvează Strategiile</button>
                             </form>
+                        </div>
+
+                        <!-- Interactive Breathing Exercise -->
+                        <div class="safety-card glass col-2">
+                            <h3>Exercițiu de Respirație Ghidată (Metoda 4-7-8)</h3>
+                            <p class="section-desc">Urmărește bula luminoasă pentru a-ți reduce ritmul cardiac și a diminua anxietatea sau atacul de panică.</p>
+                            <div class="breathing-container">
+                                <div class="breathing-circle-wrapper">
+                                    <div id="breathing-circle" class="breathing-circle">
+                                        <span id="breathing-instruction">Pregătit?</span>
+                                        <span id="breathing-timer" class="breathing-timer"></span>
+                                    </div>
+                                </div>
+                                <div class="breathing-controls">
+                                    <button type="button" id="breathing-start-btn" class="action-btn-primary" onclick="toggleBreathingExercise()">Începe Respirația</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Quick Coping Suggestions -->
+                        <div class="safety-card glass col-2">
+                            <h3>Sugestii Rapide de Calmare</h3>
+                            <p class="section-desc">Apasă pe oricare sugestie de mai jos pentru a o extinde. Dacă ți se potrivește, adaug-o în planul tău personal printr-un singur click.</p>
+                            <div class="suggestions-accordion">
+                                <div class="suggestion-item">
+                                    <button type="button" class="suggestion-header" onclick="toggleSuggestionDetail('sugg-grounding')">
+                                        <span>Tehnica de Împământare 5-4-3-2-1 (Anxietate / Atac de Panică)</span>
+                                        <span class="chevron" id="chevron-sugg-grounding">▼</span>
+                                    </button>
+                                    <div id="sugg-grounding" class="suggestion-content" style="display: none;">
+                                        <p>Pentru a te deconecta de la gândurile panicarde și a te ancora în prezent, identifică și numește cu voce tare:</p>
+                                        <ul class="sugg-bullet-list">
+                                            <li><strong>5 lucruri</strong> pe care le poți vedea în jurul tău</li>
+                                            <li><strong>4 lucruri</strong> pe care le poți atinge fizic</li>
+                                            <li><strong>3 sunete</strong> distincte pe care le poți auzi</li>
+                                            <li><strong>2 mirosuri</strong> pe care le poți distinge în aer</li>
+                                            <li><strong>1 lucru</strong> bun pe care îl poți gusta sau o calitate personală</li>
+                                        </ul>
+                                        <button type="button" class="action-btn-primary btn-sm" onclick="addSuggestionToCoping('Tehnica 5-4-3-2-1: Numește 5 lucruri pe care le vezi, 4 pe care le atingi, 3 pe care le auzi, 2 pe care le miroși, 1 pe care îl guști.')">+ Adaugă la strategiile mele</button>
+                                    </div>
+                                </div>
+
+                                <div class="suggestion-item">
+                                    <button type="button" class="suggestion-header" onclick="toggleSuggestionDetail('sugg-behavioral')">
+                                        <span>Activare Comportamentală Minimă (Depresie / Apatie)</span>
+                                        <span class="chevron" id="chevron-sugg-behavioral">▼</span>
+                                    </button>
+                                    <div id="sugg-behavioral" class="suggestion-content" style="display: none;">
+                                        <p>Când dispoziția este extrem de joasă, motivația lipsește complet și tindezi să te izolezi, fă acțiuni minuscule:</p>
+                                        <ul class="sugg-bullet-list">
+                                            <li>Bea un pahar plin cu apă rece.</li>
+                                            <li>Deschide fereastra larg și inspiră aer proaspăt timp de 1 minut.</li>
+                                            <li>Spală-ți fața cu apă foarte rece pentru a stimula nervul vag.</li>
+                                            <li>Fă un exercițiu simplu de întindere (stretching) pentru 2 minute.</li>
+                                        </ul>
+                                        <button type="button" class="action-btn-primary btn-sm" onclick="addSuggestionToCoping('Activare Comportamentală: Bea un pahar cu apă, deschide fereastra, spală fața cu apă rece, stretching de 2 min.')">+ Adaugă la strategiile mele</button>
+                                    </div>
+                                </div>
+
+                                <div class="suggestion-item">
+                                    <button type="button" class="suggestion-header" onclick="toggleSuggestionDetail('sugg-release')">
+                                        <span>Descărcare Fizică & Distragere (Iritabilitate / Furie)</span>
+                                        <span class="chevron" id="chevron-sugg-release">▼</span>
+                                    </button>
+                                    <div id="sugg-release" class="suggestion-content" style="display: none;">
+                                        <p>Pentru stările în care simți un exces de energie mentală și o agitație iritabilă care se poate transforma în furie sau hipomanie:</p>
+                                        <ul class="sugg-bullet-list">
+                                            <li>Scrie pe o foaie de hârtie toate gândurile tale haotice și furioase cât de repede poți, apoi rupe foaia în bucățele mici și arunc-o.</li>
+                                            <li>Fă 10 genuflexiuni rapide sau 1 minut de alergare pe loc pentru a consuma surplusul de adrenalină.</li>
+                                            <li>Pune o melodie energică și dansează sau mișcă-te energic în ritmul ei timp de 3 minute.</li>
+                                        </ul>
+                                        <button type="button" class="action-btn-primary btn-sm" onclick="addSuggestionToCoping('Descărcare Fizică: Scrie gândurile furioase și rupe foaia, 10 genuflexiuni rapide, mișcare pe muzică energică.')">+ Adaugă la strategiile mele</button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

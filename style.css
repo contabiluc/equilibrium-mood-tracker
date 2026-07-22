@@ -1507,6 +1507,178 @@ textarea:focus {
     }
 }
 
+/* Section Sub-descriptions */
+.section-desc {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    line-height: 1.4;
+    margin-bottom: 1.5rem;
+}
+
+/* Interactive Breathing Exercise Bubble */
+.breathing-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+    padding: 1rem 0;
+}
+
+.breathing-circle-wrapper {
+    width: 250px;
+    height: 250px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.breathing-circle {
+    width: 130px;
+    height: 130px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(99, 102, 241, 0.2) 0%, rgba(99, 102, 241, 0.05) 70%);
+    border: 2px solid rgba(99, 102, 241, 0.4);
+    box-shadow: 0 0 20px rgba(99, 102, 241, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-primary);
+    font-weight: 700;
+    font-size: 0.95rem;
+    text-align: center;
+    transition: all 1s ease-in-out; /* Smooth size transition */
+    user-select: none;
+    position: absolute;
+}
+
+/* Breathing states */
+.breathing-circle.inhale {
+    width: 220px;
+    height: 220px;
+    background: radial-gradient(circle, rgba(16, 185, 129, 0.35) 0%, rgba(16, 185, 129, 0.08) 75%);
+    border-color: rgba(16, 185, 129, 0.7);
+    box-shadow: 0 0 35px rgba(16, 185, 129, 0.45);
+    color: #ffffff;
+    font-size: 1.15rem;
+}
+
+.breathing-circle.hold {
+    width: 220px;
+    height: 220px;
+    background: radial-gradient(circle, rgba(245, 158, 11, 0.35) 0%, rgba(245, 158, 11, 0.08) 75%);
+    border-color: rgba(245, 158, 11, 0.7);
+    box-shadow: 0 0 35px rgba(245, 158, 11, 0.45), 0 0 15px rgba(245, 158, 11, 0.2) inset;
+    color: #ffffff;
+    font-size: 1.15rem;
+    animation: breathingPulse 2s infinite ease-in-out;
+}
+
+.breathing-circle.exhale {
+    width: 130px;
+    height: 130px;
+    background: radial-gradient(circle, rgba(99, 102, 241, 0.3) 0%, rgba(99, 102, 241, 0.05) 70%);
+    border-color: rgba(99, 102, 241, 0.6);
+    box-shadow: 0 0 25px rgba(99, 102, 241, 0.3);
+    color: #ffffff;
+    font-size: 0.95rem;
+}
+
+.breathing-timer {
+    font-family: var(--font-heading);
+    font-size: 1.75rem;
+    font-weight: 800;
+    margin-top: 0.25rem;
+    opacity: 0.9;
+}
+
+.breathing-controls {
+    display: flex;
+    justify-content: center;
+}
+
+/* Coping Accordion styling */
+.suggestions-accordion {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.suggestion-item {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: all 0.2s ease;
+}
+
+.suggestion-item:hover {
+    border-color: var(--card-border-focus);
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.suggestion-header {
+    width: 100%;
+    background: transparent;
+    border: none;
+    outline: none;
+    padding: 1rem 1.25rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    text-align: left;
+    color: var(--text-primary);
+    font-family: var(--font-primary);
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+}
+
+.suggestion-header .chevron {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    transition: transform 0.2s ease;
+}
+
+.suggestion-header.active .chevron {
+    transform: rotate(180deg);
+    color: var(--text-primary);
+}
+
+.suggestion-content {
+    padding: 0 1.25rem 1.25rem 1.25rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.04);
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    animation: fadeIn 0.3s ease forwards;
+}
+
+.suggestion-content p {
+    margin-bottom: 0.75rem;
+    margin-top: 0.75rem;
+}
+
+.sugg-bullet-list {
+    margin-left: 1.25rem;
+    margin-bottom: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.sugg-bullet-list li {
+    line-height: 1.4;
+}
+
+@keyframes breathingPulse {
+    0% { box-shadow: 0 0 35px rgba(245, 158, 11, 0.45); }
+    50% { box-shadow: 0 0 50px rgba(245, 158, 11, 0.65); }
+    100% { box-shadow: 0 0 35px rgba(245, 158, 11, 0.45); }
+}
+
 /* -------------------------------------------------------------
    Responsive Design & Mobile Optimization
 ------------------------------------------------------------- */

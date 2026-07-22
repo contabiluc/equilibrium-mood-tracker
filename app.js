@@ -113,6 +113,11 @@ function saveEntriesToStorage() {
 
 // Tab view switching logic
 function switchTab(tabId) {
+    // If leaving safety tab, stop breathing exercise
+    if (tabId !== 'safety') {
+        stopBreathingIfRunning();
+    }
+
     // Hide all views
     document.querySelectorAll('.tab-view').forEach(view => view.classList.remove('active'));
     document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
@@ -972,4 +977,134 @@ function checkBackupWarning() {
 
     // Show banner if conditions met
     banner.style.display = 'flex';
+}
+
+// Toggle Coping Suggestions Accordion Details
+function toggleSuggestionDetail(id) {
+    const content = document.getElementById(id);
+    const chevron = document.getElementById(`chevron-${id}`);
+    const header = content.previousElementSibling;
+    
+    if (content.style.display === 'none') {
+        content.style.display = 'block';
+        header.classList.add('active');
+        chevron.textContent = '▲';
+    } else {
+        content.style.display = 'none';
+        header.classList.remove('active');
+        chevron.textContent = '▼';
+    }
+}
+
+// Add Suggestion Text to Personal Coping strategies Textarea
+function addSuggestionToCoping(text) {
+    const copingTextarea = document.getElementById('safety-coping');
+    if (!copingTextarea) return;
+
+    const currentVal = copingTextarea.value.trim();
+    if (currentVal === '') {
+        copingTextarea.value = text;
+    } else {
+        // Check if suggestion already exists to avoid duplicate spamming
+        if (currentVal.includes(text)) {
+            showToast("Această sugestie este deja în planul tău.");
+            return;
+        }
+        copingTextarea.value = currentVal + "\n\n" + text;
+    }
+
+    // Trigger local state update and save
+    safetyPlan.coping = copingTextarea.value;
+    localStorage.setItem('equilibrium_safety_plan', JSON.stringify(safetyPlan));
+    showToast("Sugestia a fost adăugată la strategiile tale de calmare.");
+}
+
+// Interactive Breathing Exercise State Variables
+let breathingIntervalId = null;
+let isBreathingRunning = false;
+
+function toggleBreathingExercise() {
+    const circle = document.getElementById('breathing-circle');
+    const instruction = document.getElementById('breathing-instruction');
+    const timerText = document.getElementById('breathing-timer');
+    const btn = document.getElementById('breathing-start-btn');
+
+    if (!circle || !instruction || !timerText || !btn) return;
+
+    if (isBreathingRunning) {
+        // Stop exercise
+        stopBreathingIfRunning();
+    } else {
+        // Start exercise
+        isBreathingRunning = true;
+        btn.textContent = 'Oprește Respirația';
+        btn.classList.remove('action-btn-primary');
+        btn.classList.add('action-btn-danger');
+        showToast("Exercițiul de respirație a început. Urmărește instrucțiunile.");
+
+        runBreathingCycle(circle, instruction, timerText);
+    }
+}
+
+function stopBreathingIfRunning() {
+    if (!isBreathingRunning) return;
+    
+    clearInterval(breathingIntervalId);
+    breathingIntervalId = null;
+    isBreathingRunning = false;
+    
+    const circle = document.getElementById('breathing-circle');
+    const instruction = document.getElementById('breathing-instruction');
+    const timerText = document.getElementById('breathing-timer');
+    const btn = document.getElementById('breathing-start-btn');
+    
+    if (circle && instruction && timerText && btn) {
+        circle.className = 'breathing-circle';
+        instruction.textContent = 'Pregătit?';
+        timerText.textContent = '';
+        btn.textContent = 'Începe Respirația';
+        btn.classList.remove('action-btn-danger');
+        btn.classList.add('action-btn-primary');
+    }
+    showToast("Exercițiul de respirație a fost oprit.");
+}
+
+function runBreathingCycle(circle, instruction, timerText) {
+    let currentState = 'inhale'; // states: inhale, hold, exhale
+    let timerValue = 4;
+
+    const updateUI = () => {
+        circle.className = 'breathing-circle ' + currentState;
+        timerText.textContent = timerValue;
+        
+        if (currentState === 'inhale') {
+            instruction.textContent = 'Inspiră adânc...';
+        } else if (currentState === 'hold') {
+            instruction.textContent = 'Menține aerul...';
+        } else if (currentState === 'exhale') {
+            instruction.textContent = 'Expiră lent pe gură...';
+        }
+    };
+
+    updateUI();
+
+    breathingIntervalId = setInterval(() => {
+        timerValue--;
+        
+        if (timerValue <= 0) {
+            // State transitions
+            if (currentState === 'inhale') {
+                currentState = 'hold';
+                timerValue = 7;
+            } else if (currentState === 'hold') {
+                currentState = 'exhale';
+                timerValue = 8;
+            } else if (currentState === 'exhale') {
+                currentState = 'inhale';
+                timerValue = 4;
+            }
+        }
+        
+        updateUI();
+    }, 1000);
 }
