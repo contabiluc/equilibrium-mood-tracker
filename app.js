@@ -620,10 +620,11 @@ function drawCustomChart(entries) {
     ctx.clearRect(0, 0, width, height);
 
     // Grid coordinates calculations
-    const paddingLeft = 40;
-    const paddingRight = 20;
-    const paddingTop = 45;
-    const paddingBottom = 40;
+    const isMobileCanvas = width < 480;
+    const paddingLeft = isMobileCanvas ? 32 : 45;
+    const paddingRight = isMobileCanvas ? 15 : 20;
+    const paddingTop = isMobileCanvas ? 35 : 45;
+    const paddingBottom = isMobileCanvas ? 30 : 40;
 
     const chartWidth = width - paddingLeft - paddingRight;
     const chartHeight = height - paddingTop - paddingBottom;
@@ -647,8 +648,8 @@ function drawCustomChart(entries) {
 
         // Draw horizontal grid texts
         let label = val > 0 ? `+${val}` : `${val}`;
-        if (val === 0) label = "0 (Stabil)";
-        ctx.fillText(label, paddingLeft - 10, y + 3);
+        if (val === 0) label = isMobileCanvas ? "0" : "0 (Stabil)";
+        ctx.fillText(label, paddingLeft - 6, y + 3);
     });
 
     // Draw Stable reference band (0 line - bold green)
@@ -759,9 +760,12 @@ function drawCustomChart(entries) {
 
     // Draw Title/Indicator
     ctx.fillStyle = '#f8fafc';
-    ctx.font = 'bold 12px Outfit';
+    ctx.font = isMobileCanvas ? '600 11px Outfit' : 'bold 12px Outfit';
     ctx.textAlign = 'left';
-    ctx.fillText(`Grafic perioada: ${currentChartPeriod} Zile (Ultima intrare: ${entries[entries.length - 1].date})`, paddingLeft, paddingTop - 20);
+    const titleStr = isMobileCanvas 
+        ? `Grafic: ${currentChartPeriod} Zile` 
+        : `Grafic perioada: ${currentChartPeriod} Zile (Ultima intrare: ${entries[entries.length - 1].date})`;
+    ctx.fillText(titleStr, paddingLeft, paddingTop - 14);
 }
 
 // Draw a placeholder state if no data
