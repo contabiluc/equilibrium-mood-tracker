@@ -233,8 +233,8 @@ function switchTab(tabId) {
     const headerSubtitle = document.getElementById('header-subtitle');
     
     if (tabId === 'dashboard') {
-        headerTitle.textContent = "Analiză Stare & Statistici";
-        headerSubtitle.textContent = "Graficul evoluției tale și asocieri simptomatice bazate pe date.";
+        headerTitle.textContent = "Monitorizare & Echilibru Emotiv";
+        headerSubtitle.textContent = "Perspectivă clară asupra evoluției tale zilnice, calității somnului și factorilor de stabilitate.";
         updateDashboard();
     } else if (tabId === 'log') {
         headerTitle.textContent = "Înregistrare Stare Zilnică";
