@@ -180,8 +180,37 @@ function saveEntriesToStorage() {
     localStorage.setItem('equilibrium_mood_entries', JSON.stringify(moodEntries));
 }
 
+// Mobile Sandwich / Hamburger Menu Logic
+function toggleMobileMenu() {
+    const sidebar = document.querySelector('.sidebar');
+    if (sidebar && sidebar.classList.contains('open')) {
+        closeMobileMenu();
+    } else {
+        openMobileMenu();
+    }
+}
+
+function openMobileMenu() {
+    const sidebar = document.querySelector('.sidebar');
+    const backdrop = document.getElementById('mobile-menu-backdrop');
+    if (sidebar) sidebar.classList.add('open');
+    if (backdrop) backdrop.classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeMobileMenu() {
+    const sidebar = document.querySelector('.sidebar');
+    const backdrop = document.getElementById('mobile-menu-backdrop');
+    if (sidebar) sidebar.classList.remove('open');
+    if (backdrop) backdrop.classList.remove('active');
+    document.body.style.overflow = '';
+}
+
 // Tab view switching logic
 function switchTab(tabId) {
+    // Always close mobile sandwich menu when a tab is selected
+    closeMobileMenu();
+
     // If leaving safety tab, stop breathing exercise
     if (tabId !== 'safety') {
         stopBreathingIfRunning();
@@ -577,15 +606,15 @@ function drawCustomChart(entries) {
 
     const ctx = canvas.getContext('2d');
     
-    // Handle High DPI / Retina screen scaling
+    // Handle High DPI / Retina screen scaling & dynamic height
     const rect = canvas.getBoundingClientRect();
     const dpr = window.devicePixelRatio || 1;
-    canvas.width = rect.width * dpr;
-    canvas.height = 350 * dpr; // fixed height matching container CSS
-    ctx.scale(dpr, dpr);
+    const width = rect.width || 300;
+    const height = rect.height || 280;
 
-    const width = rect.width;
-    const height = 350;
+    canvas.width = width * dpr;
+    canvas.height = height * dpr;
+    ctx.scale(dpr, dpr);
 
     // Clear canvas
     ctx.clearRect(0, 0, width, height);
@@ -740,11 +769,14 @@ function drawPlaceholderChart(message = "Adăugați înregistrări pentru grafic
     const canvas = document.getElementById('mood-chart');
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
-    const width = canvas.clientWidth;
-    const height = 350;
+    const rect = canvas.getBoundingClientRect();
+    const dpr = window.devicePixelRatio || 1;
+    const width = rect.width || 300;
+    const height = rect.height || 280;
     
-    canvas.width = width;
-    canvas.height = height;
+    canvas.width = width * dpr;
+    canvas.height = height * dpr;
+    ctx.scale(dpr, dpr);
     ctx.clearRect(0, 0, width, height);
 
     ctx.fillStyle = '#64748b';
@@ -1012,6 +1044,14 @@ window.addEventListener('DOMContentLoaded', () => {
                 backdrop.style.display = 'none';
             }
         });
+    });
+
+    // Close mobile menu or modals on Escape key
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            closeMobileMenu();
+            closeSOSModal();
+        }
     });
 
     // Listen to resize to make the canvas chart responsive

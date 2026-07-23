@@ -177,17 +177,43 @@
         </div>
     </div>
 
+    <!-- Mobile Menu Backdrop -->
+    <div id="mobile-menu-backdrop" class="mobile-menu-backdrop" onclick="closeMobileMenu()"></div>
+
+    <!-- Mobile Top Header Bar with Hamburger Menu -->
+    <div class="mobile-topbar">
+        <div class="brand">
+            <div class="brand-logo">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8z"/>
+                    <path d="M12 6v6l4 2"/>
+                </svg>
+            </div>
+            <h2>Equilibrium</h2>
+        </div>
+        <button class="hamburger-btn" id="hamburger-btn" onclick="toggleMobileMenu()" aria-label="Meniu de navigare">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <line x1="3" y1="6" x2="21" y2="6"></line>
+                <line x1="3" y1="12" x2="21" y2="12"></line>
+                <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+        </button>
+    </div>
+
     <div class="app-container">
         <!-- Sidebar Navigation -->
         <aside class="sidebar">
             <div class="brand">
-                <div class="brand-logo">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8z"/>
-                        <path d="M12 6v6l4 2"/>
-                    </svg>
+                <div class="brand-info">
+                    <div class="brand-logo">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8z"/>
+                            <path d="M12 6v6l4 2"/>
+                        </svg>
+                    </div>
+                    <h2>Equilibrium</h2>
                 </div>
-                <h2>Equilibrium</h2>
+                <button class="sidebar-close-btn" onclick="closeMobileMenu()" aria-label="Închide meniul">&times;</button>
             </div>
             
             <nav class="nav-menu">
@@ -703,7 +729,7 @@
                     <div class="history-header">
                         <h2>Istoric Jurnal & Intrări Anterioare</h2>
                         <div class="history-actions">
-                            <input type="text" id="history-search" placeholder="Caută în notițe..." oninput="filterHistory()">
+                            <input type="text" id="history-search" placeholder="Caută..." oninput="filterHistory()">
                         </div>
                     </div>
                     <div class="history-list" id="history-list">
