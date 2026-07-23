@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------
-   Equilibrium Mood Tracker - Application Logic
+   Staicumine Mood Tracker - Application Logic
 ------------------------------------------------------------- */
 
 // State Management
@@ -41,31 +41,37 @@ function generateMockData() {
     const mockPatterns = [
         { mood: -3, sleep: 5.5, anxiety: 6, energy: 3, symptoms: ['tristete', 'lipsa_concentrare'], med: true, notes: 'M-am trezit foarte obosit și fără energie. Activitățile de la serviciu mi s-au părut copleșitoare. Am stat retras.' },
         { mood: -2, sleep: 6.0, anxiety: 5, energy: 4, symptoms: ['tristete', 'retragere_sociala'], med: true, notes: 'Puțin mai bine ca ieri, dar tot am o senzație de greutate în piept. Am dormit ceva mai mult.' },
-        { mood: -1, sleep: 7.0, anxiety: 4, energy: 5, symptoms: ['lipsa_concentrare'], med: true, notes: 'Starea de spirit se îmbunătățește ușor. Am reușit să fac o plimbare scurtă după-amiază. Somnul a fost mai odihnitor.' },
-        { mood: 0, sleep: 8.0, anxiety: 2, energy: 6, symptoms: [], med: true, notes: 'Zi stabilă, echilibrată. Productivitate normală la muncă, fără gânduri negative sau iritabilitate.' },
-        { mood: 0, sleep: 7.5, anxiety: 3, energy: 6, symptoms: [], med: true, notes: 'O altă zi bună. M-am întâlnit cu un prieten la cafea. Totul decurge calm.' },
-        { mood: 1, sleep: 8.5, anxiety: 2, energy: 7, symptoms: [], med: true, notes: 'Mă simt foarte optimist și plin de inițiativă astăzi. Somn excelent.' },
-        { mood: 3, sleep: 5.0, anxiety: 5, energy: 9, symptoms: ['ganduri_accelerate', 'iritabilitate'], med: true, notes: 'Energie debordantă. Am dormit doar 5 ore dar nu mă simt obosit deloc. Vorbesc repede și am o mulțime de idei noi, însă sunt ușor iritabil.' },
-        { mood: 2, sleep: 6.5, anxiety: 4, energy: 8, symptoms: ['agitatie_motorie'], med: true, notes: 'Încă am energie ridicată, dar am încercat să aplic tehnici de relaxare pentru a nu deveni prea agitat. Am reușit să dorm puțin mai mult la prânz.' },
-        { mood: 1, sleep: 7.0, anxiety: 3, energy: 7, symptoms: [], med: true, notes: 'Starea începe să revină la normal. Energia este ridicată dar controlabilă.' },
-        { mood: 0, sleep: 8.0, anxiety: 1, energy: 6, symptoms: [], med: true, notes: 'Echilibru complet astăzi. Am luat tratamentul corect și am dormit 8 ore solide.' }
+        { mood: 0, sleep: 7.5, anxiety: 2, energy: 5, med: true, notes: "O zi liniștită. Plimbare scurtă în parc.", symptoms: [] },
+        { mood: 0, sleep: 8.0, anxiety: 1, energy: 5, med: true, notes: "Somn bun. Stare generală stabilă.", symptoms: [] },
+        { mood: 1, sleep: 7.0, anxiety: 3, energy: 6, med: true, notes: "Idei multe la muncă. Energie ridicată.", symptoms: ["insomnie_ușoară"] },
+        { mood: 2, sleep: 5.5, anxiety: 4, energy: 8, med: true, notes: "Vorbesc repede, multe proiecte începute.", symptoms: ["insomnie_ușoară", "iritabilitate"] },
+        { mood: 2, sleep: 5.0, anxiety: 5, energy: 8, med: false, notes: "Am uitat pastila. Agitație.", symptoms: ["insomnie_ușoară", "impulsivitate"] },
+        { mood: 1, sleep: 6.5, anxiety: 3, energy: 6, med: true, notes: "M-am liniștit puțin seara.", symptoms: [] },
+        { mood: 0, sleep: 7.0, anxiety: 2, energy: 5, med: true, notes: "Zi obișnuită de lucru.", symptoms: [] },
+        { mood: -1, sleep: 8.5, anxiety: 3, energy: 4, med: true, notes: "Oboseală nespecifică. Lipsă de motivație.", symptoms: ["oboseală"] },
+        { mood: -2, sleep: 9.5, anxiety: 5, energy: 2, med: true, notes: "Tristețe nemotivată. Greu de ieșit din casă.", symptoms: ["oboseală", "tristețe"] },
+        { mood: -2, sleep: 9.0, anxiety: 4, energy: 3, med: true, notes: "Încă fără energie. Am vorbit cu un prieten.", symptoms: ["oboseală"] },
+        { mood: -1, sleep: 8.0, anxiety: 2, energy: 4, med: true, notes: "Ușoară îmbunătățire.", symptoms: [] },
+        { mood: 0, sleep: 7.5, anxiety: 2, energy: 5, med: true, notes: "Revenire la starea neutră.", symptoms: [] },
+        { mood: 0, sleep: 7.5, anxiety: 1, energy: 5, med: true, notes: "Zi excelentă în familie.", symptoms: [] },
+        { mood: 0, sleep: 7.0, anxiety: 2, energy: 5, med: true, notes: "Monitorizare de rutină.", symptoms: [] }
     ];
 
-    for (let i = 9; i >= 0; i--) {
+    for (let i = 13; i >= 0; i--) {
         const d = new Date(today);
-        d.setDate(today.getDate() - i);
+        d.setDate(d.getDate() - i);
         const dateStr = d.toISOString().split('T')[0];
-        
-        const pattern = mockPatterns[9 - i];
+        const pat = mockPatterns[13 - i];
+
         entries.push({
             date: dateStr,
-            mood: pattern.mood,
-            sleep: pattern.sleep,
-            anxiety: pattern.anxiety,
-            energy: pattern.energy,
-            symptoms: pattern.symptoms,
-            medicationTaken: pattern.med,
-            notes: pattern.notes
+            mood: pat.mood,
+            sleep: pat.sleep,
+            anxiety: pat.anxiety,
+            energy: pat.energy,
+            medicationTaken: pat.med,
+            notes: pat.notes,
+            symptoms: pat.symptoms
         });
     }
     
@@ -74,8 +80,8 @@ function generateMockData() {
 
 // Load Data from LocalStorage
 function loadData() {
-    const storedEntries = localStorage.getItem('equilibrium_mood_entries');
-    const isDemo = localStorage.getItem('equilibrium_is_demo') === 'true';
+    const storedEntries = localStorage.getItem('staicumine_mood_entries') || localStorage.getItem('equilibrium_mood_entries');
+    const isDemo = (localStorage.getItem('staicumine_is_demo') || localStorage.getItem('equilibrium_is_demo')) === 'true';
     
     if (storedEntries) {
         moodEntries = JSON.parse(storedEntries);
@@ -86,13 +92,13 @@ function loadData() {
     } else {
         // First time user: generate mock data to demonstrate app potential
         moodEntries = generateMockData();
-        localStorage.setItem('equilibrium_mood_entries', JSON.stringify(moodEntries));
-        localStorage.setItem('equilibrium_is_demo', 'true');
+        localStorage.setItem('staicumine_mood_entries', JSON.stringify(moodEntries));
+        localStorage.setItem('staicumine_is_demo', 'true');
         // Show onboarding modal
         setTimeout(() => showOnboarding(), 800);
     }
 
-    const storedSafety = localStorage.getItem('equilibrium_safety_plan');
+    const storedSafety = localStorage.getItem('staicumine_safety_plan') || localStorage.getItem('equilibrium_safety_plan');
     if (storedSafety) {
         safetyPlan = JSON.parse(storedSafety);
         // Populate inputs
@@ -116,6 +122,8 @@ function showDemoBanner() {
 // Clear demo data and start fresh
 function clearDemoData() {
     if (confirm('Ești sigur că vrei să ștergi datele demo și să începi cu un jurnal gol? Această acțiune nu poate fi anulată.')) {
+        localStorage.removeItem('staicumine_mood_entries');
+        localStorage.removeItem('staicumine_is_demo');
         localStorage.removeItem('equilibrium_mood_entries');
         localStorage.removeItem('equilibrium_is_demo');
         moodEntries = [];
@@ -167,7 +175,7 @@ function onboardingNext() {
 function closeOnboarding() {
     const modal = document.getElementById('onboarding-modal');
     if (modal) modal.style.display = 'none';
-    localStorage.setItem('equilibrium_onboarding_done', 'true');
+    localStorage.setItem('staicumine_onboarding_done', 'true');
 }
 
 // Sort entries by date ascending
@@ -175,9 +183,9 @@ function sortEntries() {
     moodEntries.sort((a, b) => new Date(a.date) - new Date(b.date));
 }
 
-// Save mood entries to LocalStorage
+// Save entries to LocalStorage
 function saveEntriesToStorage() {
-    localStorage.setItem('equilibrium_mood_entries', JSON.stringify(moodEntries));
+    localStorage.setItem('staicumine_mood_entries', JSON.stringify(moodEntries));
 }
 
 // Mobile Sandwich / Hamburger Menu Logic
@@ -368,7 +376,7 @@ function saveSafetyPlan(event) {
     safetyPlan.therapistName = document.getElementById('safety-therapist-name').value.trim();
     safetyPlan.emergencyName = document.getElementById('safety-emergency-name').value.trim();
     
-    localStorage.setItem('equilibrium_safety_plan', JSON.stringify(safetyPlan));
+    localStorage.setItem('staicumine_safety_plan', JSON.stringify(safetyPlan));
     showToast("Contactele de încredere au fost salvate.");
 }
 
@@ -378,7 +386,7 @@ function saveSafetyStrategies(event) {
     safetyPlan.triggers = document.getElementById('safety-triggers').value.trim();
     safetyPlan.coping = document.getElementById('safety-coping').value.trim();
     
-    localStorage.setItem('equilibrium_safety_plan', JSON.stringify(safetyPlan));
+    localStorage.setItem('staicumine_safety_plan', JSON.stringify(safetyPlan));
     showToast("Strategiile de coping au fost salvate.");
 }
 
@@ -940,12 +948,12 @@ function exportData() {
     
     const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(dataObj, null, 2));
     const dlAnchorElem = document.createElement('a');
-    dlAnchorElem.setAttribute("href",     dataStr     );
-    dlAnchorElem.setAttribute("download", `Equilibrium_Backup_${new Date().toISOString().split('T')[0]}.json`);
+    dlAnchorElem.setAttribute("href", dataStr);
+    dlAnchorElem.setAttribute("download", `Staicumine_Backup_${new Date().toISOString().split('T')[0]}.json`);
     dlAnchorElem.click();
     
     // Save last backup date & hide banner
-    localStorage.setItem('equilibrium_last_backup_date', new Date().toISOString());
+    localStorage.setItem('staicumine_last_backup_date', new Date().toISOString());
     const banner = document.getElementById('backup-warning-banner');
     if (banner) banner.style.display = 'none';
     
@@ -983,7 +991,7 @@ function importData(event) {
 
                     if (safety.docName || safety.therapistName || safety.emergencyName) {
                         safetyPlan = { ...safetyPlan, ...safety };
-                        localStorage.setItem('equilibrium_safety_plan', JSON.stringify(safetyPlan));
+                        localStorage.setItem('staicumine_safety_plan', JSON.stringify(safetyPlan));
                     }
 
                     sortEntries();
@@ -1067,8 +1075,8 @@ window.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-// Toggle Bipolar Scale Assessment Guide
-function toggleMoodGuide() {
+// Helper: Toggle Mood Guide Accordion Panel
+function toggleMoodGuidePanel() {
     const panel = document.getElementById('mood-guide-panel');
     if (!panel) return;
     if (panel.style.display === 'none') {
@@ -1080,7 +1088,7 @@ function toggleMoodGuide() {
 
 // Close backup warning banner & hide it for 7 days
 function closeBackupBanner() {
-    localStorage.setItem('equilibrium_backup_banner_closed_at', new Date().toISOString());
+    localStorage.setItem('staicumine_backup_banner_closed_at', new Date().toISOString());
     const banner = document.getElementById('backup-warning-banner');
     if (banner) banner.style.display = 'none';
     showToast("Notificarea de backup a fost ascunsă pentru 7 zile.");
@@ -1097,8 +1105,8 @@ function checkBackupWarning() {
         return;
     }
 
-    const lastBackupStr = localStorage.getItem('equilibrium_last_backup_date');
-    const bannerClosedStr = localStorage.getItem('equilibrium_backup_banner_closed_at');
+    const lastBackupStr = localStorage.getItem('staicumine_last_backup_date') || localStorage.getItem('equilibrium_last_backup_date');
+    const bannerClosedStr = localStorage.getItem('staicumine_backup_banner_closed_at') || localStorage.getItem('equilibrium_backup_banner_closed_at');
     const now = new Date();
 
     // Check if backup happened recently (last 7 days)
@@ -1163,7 +1171,7 @@ function addSuggestionToCoping(text) {
 
     // Trigger local state update and save
     safetyPlan.coping = copingTextarea.value;
-    localStorage.setItem('equilibrium_safety_plan', JSON.stringify(safetyPlan));
+    localStorage.setItem('staicumine_safety_plan', JSON.stringify(safetyPlan));
     showToast("Sugestia a fost adăugată la strategiile tale de calmare.");
 }
 
