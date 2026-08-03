@@ -2588,3 +2588,134 @@ textarea:focus {
 .section-desc {
     color: #9bafc7;
 }
+
+/* -------------------------------------------------------
+   Ghiduri & Articole Utile (SEO Section)
+------------------------------------------------------- */
+.guides-header {
+    margin-bottom: 1.5rem;
+}
+
+.guides-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.guide-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    transition: transform var(--transition-normal), border-color var(--transition-normal);
+}
+
+.guide-card:hover {
+    border-color: var(--card-border-focus);
+    transform: translateY(-2px);
+}
+
+.guide-badge {
+    align-self: flex-start;
+    padding: 0.25rem 0.75rem;
+    border-radius: var(--radius-full);
+    background: rgba(99, 102, 241, 0.12);
+    border: 1px solid rgba(99, 102, 241, 0.3);
+    color: var(--primary-light);
+    font-size: 0.78rem;
+    font-weight: 600;
+    margin-bottom: 0.85rem;
+    letter-spacing: 0.03em;
+}
+
+.guide-card h3 {
+    font-family: var(--font-primary);
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1.4;
+    margin-bottom: 0.6rem;
+}
+
+.guide-excerpt {
+    font-size: 0.92rem;
+    color: #9bafc7;
+    line-height: 1.55;
+    margin-bottom: 1rem;
+}
+
+.guide-full-content {
+    border-top: 1px solid var(--card-border);
+    padding-top: 1.25rem;
+    margin-top: 0.5rem;
+    margin-bottom: 1rem;
+    animation: fadeIn 0.3s ease;
+}
+
+.guide-full-content h4 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--primary-light);
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.guide-full-content p {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: 0.85rem;
+}
+
+.guide-steps {
+    padding-left: 1.25rem;
+    margin-bottom: 1.25rem;
+}
+
+.guide-steps li {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: 0.5rem;
+}
+
+.guide-action-box {
+    background: rgba(99, 102, 241, 0.08);
+    border: 1px solid rgba(99, 102, 241, 0.25);
+    border-radius: var(--radius-md);
+    padding: 1rem;
+    margin-top: 1rem;
+}
+
+.guide-action-box p {
+    font-size: 0.88rem;
+    color: var(--text-primary);
+    margin-bottom: 0.75rem;
+}
+
+.guide-toggle-btn {
+    align-self: flex-start;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--card-border);
+    color: var(--primary-light);
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius-md);
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background var(--transition-fast), border-color var(--transition-fast);
+    margin-top: auto;
+}
+
+.guide-toggle-btn:hover {
+    background: rgba(99, 102, 241, 0.15);
+    border-color: rgba(99, 102, 241, 0.4);
+}
+
+.guide-toggle-btn.expanded {
+    color: var(--text-secondary);
+}

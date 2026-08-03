@@ -258,6 +258,26 @@ function switchTab(tabId) {
     } else if (tabId === 'settings') {
         headerTitle.textContent = "Securitate Date & Setări";
         headerSubtitle.textContent = "Exportă, importă sau șterge datele stocate exclusiv în browser.";
+    } else if (tabId === 'guides') {
+        headerTitle.textContent = "Ghiduri & Articole Utile";
+        headerSubtitle.textContent = "Recomandări bazate pe dovezi științifice pentru calmarea anxietății, somn odihnitor și echilibru emotiv.";
+    }
+}
+
+// Toggle Guide Read More expander
+function toggleGuideReadMore(id) {
+    const content = document.getElementById(`guide-content-${id}`);
+    const btn = document.getElementById(`btn-toggle-${id}`);
+    if (!content || !btn) return;
+
+    if (content.style.display === 'none') {
+        content.style.display = 'block';
+        btn.textContent = 'Ascunde articolul ↑';
+        btn.classList.add('expanded');
+    } else {
+        content.style.display = 'none';
+        btn.textContent = 'Citește tot articolul ↓';
+        btn.classList.remove('expanded');
     }
 }
 

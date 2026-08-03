@@ -244,6 +244,13 @@
                     </svg>
                     <span>Istoric Jurnal</span>
                 </button>
+                <button class="nav-btn" id="btn-guides" onclick="switchTab('guides')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+                        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+                    </svg>
+                    <span>Ghiduri &amp; Articole</span>
+                </button>
                 <button class="nav-btn" id="btn-settings" onclick="switchTab('settings')">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <circle cx="12" cy="12" r="3"/>
@@ -779,6 +786,92 @@
                         <p>Aplicație creată cu accent pe confidențialitate și simplitate, pentru a susține persoanele afectate de tulburări de dispoziție în eforturile lor zilnice de monitorizare și auto-observare. Datele stocate pot fi exportate pentru a fi folosite ca referință în timpul consultațiilor medicale sau de psihoterapie.</p>
                         <p><em>Notă: Această aplicație are scop informativ și de auto-monitorizare. Nu înlocuiește sfatul medical profesionist, diagnosticul sau tratamentul.</em></p>
                     </div>
+                </div>
+            </section>
+
+            <!-- Guides & Articles View -->
+            <section id="view-guides" class="tab-view">
+                <div class="guides-header">
+                    <h2>Ghiduri &amp; Articole Utile</h2>
+                    <p class="subtitle">Informații bazate pe dovezi științifice pentru calmarea anxietății, somn odihnitor și echilibru emotiv.</p>
+                </div>
+
+                <div class="guides-grid">
+                    <!-- Guide 1 -->
+                    <article class="guide-card glass" id="guide-478">
+                        <div class="guide-badge">Terapie &amp; Calmare</div>
+                        <h3>Tehnica de Respirație 4-7-8: Cum să-ți reduci anxietatea în 2 minute</h3>
+                        <p class="guide-excerpt">Descoperă cum exercițiul 4-7-8 dezvoltat de Dr. Andrew Weil activează sistemul nervos parasimpatic și încetinește ritmul cardiac în momente de stres sau atac de panică.</p>
+                        
+                        <div class="guide-full-content" id="guide-content-478" style="display: none;">
+                            <h4>Ce este metoda 4-7-8?</h4>
+                            <p>Metoda 4-7-8 este o tehnică de respirație bazată pe practica străveche de pranayama. Ea funcționează ca un „tranchilizant natural” pentru sistemul nervos. Prin menținerea aerului și expirarea prelungită, reduci ritmul cardiac și semnalezi creierului că ești în siguranță.</p>
+                            
+                            <h4>Cum se practică pas cu pas:</h4>
+                            <ol class="guide-steps">
+                                <li><strong>Inspiră pe nas</strong> încet și profund timp de <strong>4 secunde</strong>.</li>
+                                <li><strong>Menține-ți respirația</strong> fără efort timp de <strong>7 secunde</strong>.</li>
+                                <li><strong>Expiră complet pe gură</strong> făcând un sunet lin de șuierat timp de <strong>8 secunde</strong>.</li>
+                                <li>Repetă acest ciclu de 4 ori consecutiv.</li>
+                            </ol>
+
+                            <div class="guide-action-box">
+                                <p>💡 <strong>Încearcă exercițiul ghidat direct în Staicumine:</strong></p>
+                                <button class="action-btn-primary" onclick="switchTab('safety'); setTimeout(() => toggleBreathingGuide(), 300);">Deschide Exercițiul 4-7-8 Interactiv</button>
+                            </div>
+                        </div>
+
+                        <button class="guide-toggle-btn" id="btn-toggle-478" onclick="toggleGuideReadMore('478')">Citește tot articolul ↓</button>
+                    </article>
+
+                    <!-- Guide 2 -->
+                    <article class="guide-card glass" id="guide-journal">
+                        <div class="guide-badge">Auto-Monitorizare</div>
+                        <h3>Cum se ține un Jurnal de Dispoziție pentru Psihoterapeut sau Psihiatru</h3>
+                        <p class="guide-excerpt">Află de ce scara bipolară (-5 la +5) este recomandată de medici și cum notarea zilnică a somnului și tratamentului te ajută la consultații.</p>
+
+                        <div class="guide-full-content" id="guide-content-journal" style="display: none;">
+                            <h4>De ce este important un jurnal de dispoziție?</h4>
+                            <p>În timpul unei consultații scurte de 30-45 de minute, este dificil să-ți amintești cu exactitate cum te-ai simțit în ultimele 30 sau 90 de zile. Un jurnal digital oferă o imagine bazată pe date reale și previne modificarea amintirilor cauzată de starea prezentă.</p>
+
+                            <h4>Ce parametri sunt esențiali de urmărit:</h4>
+                            <ul class="guide-steps">
+                                <li><strong>Scara Dispoziției (-5 la +5):</strong> 0 reprezintă starea neutră/echilibrată, valorile cu + indică hipomanie/energie crescută, iar cele cu - indică stări depresive.</li>
+                                <li><strong>Durata Somnului:</strong> Somnul este cel mai stabil predictor al fluctuațiilor de dispoziție.</li>
+                                <li><strong>Aderența la Tratament:</strong> Notarea zilnică a medicației elimină dubiile privind dozele uitate.</li>
+                            </ul>
+
+                            <div class="guide-action-box">
+                                <p>📊 <strong>Începe primul tău jurnal în Staicumine:</strong></p>
+                                <button class="action-btn-primary" onclick="switchTab('log')">Adaugă o Înregistrare Nouă</button>
+                            </div>
+                        </div>
+
+                        <button class="guide-toggle-btn" id="btn-toggle-journal" onclick="toggleGuideReadMore('journal')">Citește tot articolul ↓</button>
+                    </article>
+
+                    <!-- Guide 3 -->
+                    <article class="guide-card glass" id="guide-sleep">
+                        <div class="guide-badge">Igienă Somn</div>
+                        <h3>Somnul și Anxietatea: De ce 1-2 nopți albe îți schimbă starea emoțională</h3>
+                        <p class="guide-excerpt">Legătura dintre amigdala cerebrală și privarea de somn, precum și 5 reguli de aur pentru a-ți regla ritmul circadian.</p>
+
+                        <div class="guide-full-content" id="guide-content-sleep" style="display: none;">
+                            <h4>Mecanismul neurobiologic al somnului</h4>
+                            <p>Când nu dormi suficient (sub 6 ore pe noapte), amigdala cerebrală — centrul de procesare a fricii și anxietății — devine hipersensibilă cu până la 60%. Din această cauză, mici provocări zilnice par copleșitoare.</p>
+
+                            <h4>5 Reguli pentru un somn odihnitor:</h4>
+                            <ol class="guide-steps">
+                                <li>Păstrează o oră fixă de trezire în fiecare dimineață.</li>
+                                <li>Evită ecranul telefonului cu 45-60 minute înainte de culcare.</li>
+                                <li>Dormitorul trebuie să fie răcoros (18-20°C) și întunecat.</li>
+                                <li>Fără cafea sau stimulente după ora 14:00.</li>
+                                <li>Dacă nu poți adormi în 20 de minute, ridică-te din pat și citește o carte la lumină caldă până îți revine somnul.</li>
+                            </ol>
+                        </div>
+
+                        <button class="guide-toggle-btn" id="btn-toggle-sleep" onclick="toggleGuideReadMore('sleep')">Citește tot articolul ↓</button>
+                    </article>
                 </div>
             </section>
         </main>
