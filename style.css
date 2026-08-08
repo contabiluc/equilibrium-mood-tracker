@@ -1385,44 +1385,40 @@ textarea:focus {
     font-weight: 600;
 }
 
-/* Backup Warning Banner */
+/* Backup Warning Banner - Slim & Discrete */
 .backup-banner {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: rgba(245, 158, 11, 0.08); /* Transparent Amber */
-    border: 1px solid rgba(245, 158, 11, 0.3);
-    border-radius: 12px;
-    padding: 1rem 1.5rem;
-    margin-bottom: 2rem;
+    background: rgba(99, 102, 241, 0.06);
+    border: 1px solid rgba(99, 102, 241, 0.2);
+    border-radius: 10px;
+    padding: 0.55rem 1rem;
+    margin-bottom: 1.25rem;
     animation: fadeIn 0.4s ease forwards;
 }
 
 .backup-banner-content {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
+    gap: 0.5rem;
     flex-grow: 1;
 }
 
-.backup-banner-icon {
-    font-size: 1.2rem;
-}
-
 .backup-banner-text {
-    font-size: 0.9rem;
+    font-size: 0.86rem;
     color: var(--text-secondary);
     line-height: 1.4;
 }
 
 .backup-link {
-    color: var(--color-anxiety);
+    color: var(--primary-light);
     font-weight: 600;
     text-decoration: underline;
 }
 
 .backup-link:hover {
-    color: #fbbf24;
+    color: var(--text-primary);
 }
 
 .backup-banner-close {
@@ -1430,10 +1426,11 @@ textarea:focus {
     border: none;
     outline: none;
     color: var(--text-muted);
-    font-size: 1.5rem;
+    font-size: 1.2rem;
     cursor: pointer;
     line-height: 1;
-    padding: 0 0.5rem;
+    padding: 0 0.3rem;
+    margin-left: 0.5rem;
     transition: color 0.2s ease;
 }
 

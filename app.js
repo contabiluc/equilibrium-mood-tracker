@@ -1016,12 +1016,67 @@ function exportData() {
     dlAnchorElem.setAttribute("download", `Staicumine_Backup_${new Date().toISOString().split('T')[0]}.json`);
     dlAnchorElem.click();
     
-    // Save last backup date & hide banner
+    // Save last backup date & update banner status
     localStorage.setItem('staicumine_last_backup_date', new Date().toISOString());
-    const banner = document.getElementById('backup-warning-banner');
-    if (banner) banner.style.display = 'none';
+    checkBackupWarning();
     
     showToast("Datele au fost exportate cu succes!");
+}
+
+// Check if we should display backup warning banner
+function checkBackupWarning() {
+    const banner = document.getElementById('backup-warning-banner');
+    const textWrapper = document.getElementById('backup-banner-text-wrapper');
+    if (!banner) return;
+
+    // If there is no data, no need to alert
+    if (moodEntries.length === 0) {
+        banner.style.display = 'none';
+        return;
+    }
+
+    const lastBackupStr = localStorage.getItem('staicumine_last_backup_date') || localStorage.getItem('equilibrium_last_backup_date');
+    const bannerClosedStr = localStorage.getItem('staicumine_backup_banner_closed_at') || localStorage.getItem('equilibrium_backup_banner_closed_at');
+    const now = new Date();
+
+    if (lastBackupStr) {
+        const lastBackupDate = new Date(lastBackupStr);
+        const day = lastBackupDate.getDate().toString().padStart(2, '0');
+        const month = (lastBackupDate.getMonth() + 1).toString().padStart(2, '0');
+        const year = lastBackupDate.getFullYear();
+        
+        if (textWrapper) {
+            textWrapper.innerHTML = `<span class="backup-banner-text">🔒 Ultimul backup: <strong>${day}.${month}.${year}</strong> <a href="#" onclick="exportData(); return false;" class="backup-link" style="margin-left:6px">(Exportă din nou)</a></span>`;
+        }
+
+        // If user closed banner recently, hide
+        if (bannerClosedStr) {
+            const bannerClosed = new Date(bannerClosedStr);
+            const diffDays = Math.ceil(Math.abs(now - bannerClosed) / (1000 * 60 * 60 * 24));
+            if (diffDays <= 7) {
+                banner.style.display = 'none';
+                return;
+            }
+        }
+        banner.style.display = 'flex';
+        return;
+    }
+
+    // Initial state before any export
+    if (textWrapper) {
+        textWrapper.innerHTML = `<span class="backup-banner-text">🔒 Datele sunt stocate local. <a href="#" onclick="exportData(); return false;" class="backup-link">Exportă un backup</a> pentru a evita pierderea lor.</span>`;
+    }
+
+    if (bannerClosedStr) {
+        const bannerClosed = new Date(bannerClosedStr);
+        const diffDays = Math.ceil(Math.abs(now - bannerClosed) / (1000 * 60 * 60 * 24));
+        if (diffDays <= 7) {
+            banner.style.display = 'none';
+            return;
+        }
+    }
+
+    banner.style.display = 'flex';
 }
 
 // Restore & Import backup
