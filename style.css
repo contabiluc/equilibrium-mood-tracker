@@ -2870,3 +2870,51 @@ textarea:focus {
     color: var(--emerald);
     flex-shrink: 0;
 }
+
+/* -------------------------------------------------------
+   Educational Empty State for Chart
+------------------------------------------------------- */
+.chart-empty-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem 1.5rem;
+    text-align: center;
+    min-height: 240px;
+    border: 1px dashed var(--card-border);
+    border-radius: var(--radius-md);
+    background: rgba(255, 255, 255, 0.015);
+}
+
+.empty-icon-badge {
+    font-size: 2.2rem;
+    margin-bottom: 0.75rem;
+    background: rgba(99, 102, 241, 0.1);
+    width: 58px;
+    height: 58px;
+    border-radius: var(--radius-full);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.chart-empty-container h4 {
+    font-family: var(--font-primary);
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+}
+
+.chart-empty-container p {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    max-width: 440px;
+    line-height: 1.55;
+    margin-bottom: 1.25rem;
+}
+
+.chart-empty-container button {
+    box-shadow: 0 4px 14px rgba(99, 102, 241, 0.35);
+}

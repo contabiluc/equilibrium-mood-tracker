@@ -382,16 +382,28 @@
                 <div class="chart-container glass">
                     <div class="chart-header">
                         <h3>Evoluția dispoziției</h3>
-                        <div class="chart-filters">
+                        <div class="chart-filters" id="chart-filters-container">
                             <button class="filter-btn active" id="filter-btn-7" onclick="changeChartPeriod(7)">7 Zile</button>
                             <button class="filter-btn" id="filter-btn-30" onclick="changeChartPeriod(30)">30 Zile</button>
                             <button class="filter-btn" id="filter-btn-90" onclick="changeChartPeriod(90)">90 Zile</button>
                         </div>
                     </div>
-                    <div class="canvas-wrapper">
+
+                    <!-- Empty State CTA Card (shown when 0 entries exist) -->
+                    <div id="chart-empty-card" class="chart-empty-container" style="display: none;">
+                        <div class="empty-icon-badge">📊</div>
+                        <h4>Începe să-ți urmărești evoluția</h4>
+                        <p>Completează primul check-in pentru a vedea aici evoluția dispoziției, somnului și anxietății.</p>
+                        <button class="action-btn-primary" onclick="switchTab('log')">
+                            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
+                            <span>Fă primul check-in</span>
+                        </button>
+                    </div>
+
+                    <div class="canvas-wrapper" id="canvas-wrapper">
                         <canvas id="mood-chart"></canvas>
                     </div>
-                    <div class="chart-legend">
+                    <div class="chart-legend" id="chart-legend">
                         <span class="legend-item"><span class="legend-dot mood-dot"></span> Dispoziție (-5 la +5)</span>
                         <span class="legend-item"><span class="legend-dot sleep-dot"></span> Somn (ore)</span>
                         <span class="legend-item"><span class="legend-dot anxiety-dot"></span> Anxietate (0 la 10)</span>

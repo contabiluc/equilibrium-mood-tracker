@@ -415,9 +415,18 @@ function updateDashboard() {
     // Check if we need to show the backup warning banner
     checkBackupWarning();
 
+    const emptyCard = document.getElementById('chart-empty-card');
+    const canvasWrapper = document.getElementById('canvas-wrapper');
+    const chartLegend = document.getElementById('chart-legend');
+    const filtersContainer = document.getElementById('chart-filters-container');
+
     if (moodEntries.length === 0) {
         resetDashboardStats();
-        drawPlaceholderChart();
+        if (emptyCard) emptyCard.style.display = 'flex';
+        if (canvasWrapper) canvasWrapper.style.display = 'none';
+        if (chartLegend) chartLegend.style.display = 'none';
+        if (filtersContainer) filtersContainer.style.display = 'none';
+        renderInsights([]);
         return;
     }
 
@@ -426,9 +435,19 @@ function updateDashboard() {
     
     if (filteredEntries.length === 0) {
         resetDashboardStats();
-        drawPlaceholderChart("Fără date în această perioadă");
+        if (emptyCard) emptyCard.style.display = 'flex';
+        if (canvasWrapper) canvasWrapper.style.display = 'none';
+        if (chartLegend) chartLegend.style.display = 'none';
+        if (filtersContainer) filtersContainer.style.display = 'none';
+        renderInsights([]);
         return;
     }
+
+    // Entries exist
+    if (emptyCard) emptyCard.style.display = 'none';
+    if (canvasWrapper) canvasWrapper.style.display = 'block';
+    if (chartLegend) chartLegend.style.display = 'flex';
+    if (filtersContainer) filtersContainer.style.display = 'flex';
 
     calculateStats(filteredEntries);
     renderInsights(filteredEntries);
