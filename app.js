@@ -466,17 +466,17 @@ function getEntriesForPeriod(days) {
 // Reset stats cards to empty states
 function resetDashboardStats() {
     document.getElementById('stat-avg-mood').textContent = "-";
-    document.getElementById('stat-avg-mood-desc').textContent = "Echilibrat";
+    document.getElementById('stat-avg-mood-desc').textContent = "Fără date";
     
     document.getElementById('stat-avg-sleep').textContent = "-";
-    document.getElementById('stat-avg-sleep-desc').textContent = "Bun";
+    document.getElementById('stat-avg-sleep-desc').textContent = "Fără date";
     
     document.getElementById('stat-avg-anxiety').textContent = "-";
-    document.getElementById('stat-avg-anxiety-desc').textContent = "Moderată";
+    document.getElementById('stat-avg-anxiety-desc').textContent = "Fără date";
     
     if (document.getElementById('stat-avg-energy')) {
         document.getElementById('stat-avg-energy').textContent = "-";
-        document.getElementById('stat-avg-energy-desc').textContent = "Bună";
+        document.getElementById('stat-avg-energy-desc').textContent = "Fără date";
     }
 
     if (document.getElementById('summary-total-entries')) {
