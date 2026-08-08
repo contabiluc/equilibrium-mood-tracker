@@ -3182,12 +3182,27 @@ textarea:focus {
 .sliders-grid-2 {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 1.25rem;
+    gap: 1.5rem;
+    margin-top: 0.5rem;
+}
+
+.slider-box {
+    display: flex;
+    flex-direction: column;
+}
+
+.slider-box label {
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.75rem;
+    display: block;
 }
 
 @media (max-width: 600px) {
     .sliders-grid-2 {
         grid-template-columns: 1fr;
+        gap: 1.5rem;
     }
 }
 
