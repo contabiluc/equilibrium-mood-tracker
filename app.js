@@ -245,8 +245,8 @@ function switchTab(tabId) {
         headerSubtitle.textContent = "Monitorizează-ți starea. Înțelege-ți tiparele.";
         updateDashboard();
     } else if (tabId === 'log') {
-        headerTitle.textContent = "Înregistrare Stare Zilnică";
-        headerSubtitle.textContent = "Jurnalizează dispoziția, calitatea somnului și tratamentul administrat.";
+        headerTitle.textContent = "Check-in Zilnic";
+        headerSubtitle.textContent = "Urmărește-ți dispoziția, somnul și factorii care îți influențează starea.";
         resetLogForm();
     } else if (tabId === 'safety') {
         headerTitle.textContent = "Plan de Criză Personal";
@@ -410,8 +410,65 @@ function saveSafetyStrategies(event) {
     showToast("Strategiile de coping au fost salvate.");
 }
 
+// Render Hero Card based on user check-in lifecycle state
+function renderHeroCard() {
+    const container = document.getElementById('welcome-hero-card-container');
+    if (!container) return;
+
+    const todayStr = new Date().toISOString().split('T')[0];
+    const todayEntry = moodEntries.find(e => e.date === todayStr);
+
+    if (moodEntries.length === 0) {
+        container.innerHTML = `
+            <div class="welcome-hero-card glass onboarding-hero">
+                <div class="welcome-hero-text">
+                    <h2>Bună! 👋</h2>
+                    <p class="welcome-hero-sub">Cum te simți astăzi?</p>
+                    <p class="hero-onboarding-hint">Primul tău check-in durează aproximativ 30 de secunde.</p>
+                </div>
+                <button class="checkin-btn-hero" onclick="switchTab('log')">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
+                    <span>+ Începe primul check-in</span>
+                </button>
+            </div>
+        `;
+    } else if (!todayEntry) {
+        container.innerHTML = `
+            <div class="welcome-hero-card glass">
+                <div class="welcome-hero-text">
+                    <h2>Bună! 👋</h2>
+                    <p class="welcome-hero-sub">Cum te simți astăzi?</p>
+                </div>
+                <button class="checkin-btn-hero" onclick="switchTab('log')">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
+                    <span>+ Fă check-in-ul de azi</span>
+                </button>
+            </div>
+        `;
+    } else {
+        container.innerHTML = `
+            <div class="welcome-hero-card glass completed-hero">
+                <div class="welcome-hero-text">
+                    <h2>Bună! 👋</h2>
+                    <p class="welcome-hero-sub">Ai completat check-in-ul pentru astăzi.</p>
+                </div>
+                <div class="hero-completed-actions">
+                    <span class="completed-badge">✓ Check-in complet pentru azi</span>
+                    <button class="edit-btn-hero" onclick="switchTab('log')">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                        <span>Editează</span>
+                    </button>
+                </div>
+            </div>
+        `;
+    }
+}
+
 // Dynamic dashboard update: Stats & Chart
 function updateDashboard() {
+    // Render dynamic lifecycle Hero Card (Onboarding vs Daily vs Completed)
+    renderHeroCard();
+
     // Check if we need to show the backup warning banner
     checkBackupWarning();
 

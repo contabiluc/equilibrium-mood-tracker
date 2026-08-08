@@ -230,7 +230,7 @@
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M12 5v14M5 12h14"/>
                     </svg>
-                    <span>Adaugă Stare</span>
+                    <span>Check-in</span>
                 </button>
                 <button class="nav-btn" id="btn-safety" onclick="switchTab('safety')">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -295,17 +295,8 @@
                     <button class="demo-banner-btn" onclick="clearDemoData()">Șterge demo și începe</button>
                 </div>
 
-                <!-- 1. CHECK-IN (Hero Greeting & Action Card) -->
-                <div class="welcome-hero-card glass">
-                    <div class="welcome-hero-text">
-                        <h2>Bună!</h2>
-                        <p class="welcome-hero-sub">Cum te simți astăzi?</p>
-                    </div>
-                    <button class="checkin-btn-hero" onclick="switchTab('log')">
-                        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
-                        <span>Fă check-in-ul de azi</span>
-                    </button>
-                </div>
+                <!-- 1. CHECK-IN (Dynamic Hero Greeting & Action Card Container) -->
+                <div id="welcome-hero-card-container"></div>
 
                 <!-- 2. 4 INDICATORI (Starea ta, Somn, Anxietate, Energie) -->
                 <div class="stats-grid">

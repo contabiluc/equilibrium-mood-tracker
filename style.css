@@ -2769,6 +2769,53 @@ textarea:focus {
     box-shadow: 0 6px 20px rgba(99, 102, 241, 0.45);
 }
 
+.hero-onboarding-hint {
+    font-size: 0.88rem;
+    color: var(--primary-light);
+    margin-top: 0.35rem;
+    font-weight: 500;
+}
+
+.hero-completed-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.completed-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: rgba(16, 185, 129, 0.12);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+    color: var(--emerald);
+    padding: 0.55rem 1.1rem;
+    border-radius: var(--radius-full);
+    font-size: 0.88rem;
+    font-weight: 600;
+}
+
+.edit-btn-hero {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--card-border);
+    color: var(--text-secondary);
+    padding: 0.55rem 1.1rem;
+    border-radius: var(--radius-full);
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.edit-btn-hero:hover {
+    background: rgba(255, 255, 255, 0.12);
+    color: var(--text-primary);
+}
+
 .dashboard-split-row {
     display: grid;
     grid-template-columns: 1.6fr 1fr;
