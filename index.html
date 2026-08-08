@@ -447,25 +447,36 @@
             <!-- Log Mood View -->
             <section id="view-log" class="tab-view">
                 <div class="log-form-container glass">
-                    <h2>Înregistrează Starea de Spirit pentru Astăzi</h2>
+                    <div class="form-header-bar">
+                        <div>
+                            <h2>Înregistrează starea de azi</h2>
+                            <p class="form-header-sub">Completează câteva informații despre dispoziție, somn și cum te-ai simțit.</p>
+                        </div>
+                        <span class="checkin-time-badge">⚡ Check-in ~ 45 sec</span>
+                    </div>
+
                     <form id="mood-form" onsubmit="saveMoodEntry(event)">
                         
                         <!-- Date selector -->
-                        <div class="form-group inline-group">
-                            <label for="entry-date">Data Înregistrării</label>
-                            <input type="date" id="entry-date" required>
+                        <div class="form-group inline-group date-picker-box">
+                            <label for="entry-date">Data check-in-ului</label>
+                            <input type="date" id="entry-date" required onchange="checkExistingEntryForDate(this.value)">
+                            <div id="duplicate-date-warning" class="date-warning-badge" style="display:none;">
+                                ⚠️ Ai deja un check-in salvat pentru această dată. Trimiterea va actualiza înregistrarea existentă.
+                            </div>
                         </div>
 
-                        <!-- Mood selector (Bipolar Scale -5 to +5) -->
-                        <div class="form-group">
-                            <div class="form-label-row">
-                                <label class="form-label-with-desc">
-                                    <span>Dispoziție Principală</span>
-                                    <span class="label-desc">Cum te situezi pe axa Depresie - Stabilitate - Manie?</span>
-                                </label>
+                        <!-- Step 1: Mood Selector (Horizontal 7-column Bipolar Grid) -->
+                        <div class="form-step-card">
+                            <div class="step-header">
+                                <span class="step-number">1</span>
+                                <div class="step-title-group">
+                                    <h3>Cum te-ai simțit astăzi?</h3>
+                                    <p>Alege nivelul care descrie cel mai bine starea ta.</p>
+                                </div>
                                 <button type="button" class="info-toggle-btn" onclick="toggleMoodGuide()">
                                     <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-right:4px; vertical-align:middle;"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
-                                    Ghid Evaluare
+                                    Ghid
                                 </button>
                             </div>
                             
@@ -473,141 +484,190 @@
                             <div id="mood-guide-panel" class="mood-guide-panel" style="display: none;">
                                 <h4>Ghid de Autoevaluare (Axa Dispoziției)</h4>
                                 <div class="mood-guide-grid">
-                                    <div class="mood-guide-item item-mania-5"><strong>+5 (Manie Severă):</strong> Energie extremă, impulsivitate ridicată, somn sub 3h, agitație extremă.</div>
-                                    <div class="mood-guide-item item-mania-3"><strong>+3 (Manie/Hipomanie Mod.):</strong> Hiperactiv, foarte vorbăreț, iritabilitate crescută, idei multe.</div>
-                                    <div class="mood-guide-item item-mania-1"><strong>+1 (Hipomanie Ușoară):</strong> Stare foarte bună de spirit, optimism, productivitate ridicată.</div>
-                                    <div class="mood-guide-item item-stable"><strong>0 (Stabil / Eutimic):</strong> Echilibru emoțional normal, reacții firești, stare calmă.</div>
-                                    <div class="mood-guide-item item-depr-1"><strong>-1 (Depresie Ușoară):</strong> Tristețe trecătoare, lipsă de chef, oboseală moderată.</div>
-                                    <div class="mood-guide-item item-depr-3"><strong>-3 (Depresie Mod.):</strong> Retragere socială, plâns facil, anedonie, energie foarte scăzută.</div>
-                                    <div class="mood-guide-item item-depr-5"><strong>-5 (Depresie Severă):</strong> Imposibilitate de funcționare, sentiment de inutilitate severe. (Cere ajutor!)</div>
+                                    <div class="mood-guide-item item-mania-5"><strong>+5 (Manie Severă):</strong> Energie extremă, impulsivitate ridicată, somn sub 3h.</div>
+                                    <div class="mood-guide-item item-mania-3"><strong>+3 (Manie Mod.):</strong> Hiperactiv, foarte vorbăreț, iritabilitate crescută.</div>
+                                    <div class="mood-guide-item item-mania-1"><strong>+1 (Hipomanie):</strong> Stare foarte bună de spirit, optimism, productivitate.</div>
+                                    <div class="mood-guide-item item-stable"><strong>0 (Stabil / Eutimic):</strong> Echilibru emoțional normal, stare calmă.</div>
+                                    <div class="mood-guide-item item-depr-1"><strong>-1 (Depresie Ușoară):</strong> Tristețe trecătoare, oboseală moderată.</div>
+                                    <div class="mood-guide-item item-depr-3"><strong>-3 (Depresie Mod.):</strong> Retragere socială, plâns facil, energie scăzută.</div>
+                                    <div class="mood-guide-item item-depr-5"><strong>-5 (Depresie Severă):</strong> Imposibilitate de funcționare. (Cere ajutor!)</div>
                                 </div>
                             </div>
                             
-                            <div class="bipolar-selector">
-                                <button type="button" class="bipolar-btn mania-severe" data-val="5" onclick="setMoodValue(5)">
-                                    <span class="val">+5</span>
-                                    <span class="label">Manie Severă</span>
-                                </button>
-                                <button type="button" class="bipolar-btn mania-moderate" data-val="3" onclick="setMoodValue(3)">
-                                    <span class="val">+3</span>
-                                    <span class="label">Manie Mod.</span>
-                                </button>
-                                <button type="button" class="bipolar-btn mania-mild" data-val="1" onclick="setMoodValue(1)">
-                                    <span class="val">+1</span>
-                                    <span class="label">Hipomanie</span>
-                                </button>
-                                <button type="button" class="bipolar-btn stable active" data-val="0" onclick="setMoodValue(0)">
-                                    <span class="val">0</span>
-                                    <span class="label">Stabil</span>
-                                </button>
-                                <button type="button" class="bipolar-btn depression-mild" data-val="-1" onclick="setMoodValue(-1)">
-                                    <span class="val">-1</span>
-                                    <span class="label">Depr. Ușoară</span>
-                                </button>
-                                <button type="button" class="bipolar-btn depression-moderate" data-val="-3" onclick="setMoodValue(-3)">
-                                    <span class="val">-3</span>
-                                    <span class="label">Depr. Mod.</span>
-                                </button>
-                                <button type="button" class="bipolar-btn depression-severe" data-val="-5" onclick="setMoodValue(-5)">
+                            <div class="bipolar-selector-7">
+                                <button type="button" class="bipolar-btn-7 depression-severe" data-val="-5" onclick="setMoodValue(-5)">
                                     <span class="val">-5</span>
-                                    <span class="label">Depr. Severă</span>
+                                    <span class="lbl-top">Dep. sev.</span>
+                                </button>
+                                <button type="button" class="bipolar-btn-7 depression-moderate" data-val="-3" onclick="setMoodValue(-3)">
+                                    <span class="val">-3</span>
+                                    <span class="lbl-top">Dep. mod.</span>
+                                </button>
+                                <button type="button" class="bipolar-btn-7 depression-mild" data-val="-1" onclick="setMoodValue(-1)">
+                                    <span class="val">-1</span>
+                                    <span class="lbl-top">Dep. ușoară</span>
+                                </button>
+                                <button type="button" class="bipolar-btn-7 stable active" data-val="0" onclick="setMoodValue(0)">
+                                    <span class="val">0</span>
+                                    <span class="lbl-top">Stabil</span>
+                                </button>
+                                <button type="button" class="bipolar-btn-7 mania-mild" data-val="1" onclick="setMoodValue(1)">
+                                    <span class="val">+1</span>
+                                    <span class="lbl-top">Hipomanie</span>
+                                </button>
+                                <button type="button" class="bipolar-btn-7 mania-moderate" data-val="3" onclick="setMoodValue(3)">
+                                    <span class="val">+3</span>
+                                    <span class="lbl-top">Manie mod.</span>
+                                </button>
+                                <button type="button" class="bipolar-btn-7 mania-severe" data-val="5" onclick="setMoodValue(5)">
+                                    <span class="val">+5</span>
+                                    <span class="lbl-top">Manie sev.</span>
                                 </button>
                             </div>
                             <input type="hidden" id="mood-value" value="0">
                         </div>
 
-                        <!-- Grid for Sliders (Sleep, Anxiety, Energy) -->
-                        <div class="form-row-3">
-                            <!-- Sleep duration -->
-                            <div class="form-group">
-                                <label for="sleep-hours">Ore de Somn (noaptea trecută)</label>
-                                <div class="slider-wrapper">
-                                    <input type="range" id="sleep-hours" min="0" max="16" step="0.5" value="8" oninput="updateSliderVal('sleep-hours-val', this.value)">
-                                    <span class="slider-val-badge" id="sleep-hours-val">8 ore</span>
+                        <!-- Step 2: Sleep Duration -->
+                        <div class="form-step-card">
+                            <div class="step-header">
+                                <span class="step-number">2</span>
+                                <div class="step-title-group">
+                                    <h3>Cum ai dormit?</h3>
+                                    <p>Cât ai dormit noaptea trecută?</p>
+                                </div>
+                            </div>
+                            <div class="slider-wrapper-bottom">
+                                <input type="range" id="sleep-hours" min="0" max="16" step="0.5" value="8" oninput="updateSliderVal('sleep-hours-val', this.value); saveDraft();">
+                                <div class="slider-val-badge-bottom" id="sleep-hours-val">8 ore</div>
+                            </div>
+                        </div>
+
+                        <!-- Step 3: Physical & Mental State (Anxiety & Energy Sliders) -->
+                        <div class="form-step-card">
+                            <div class="step-header">
+                                <span class="step-number">3</span>
+                                <div class="step-title-group">
+                                    <h3>Cum te simți fizic?</h3>
+                                    <p>Urmărește nivelul de anxietate și energie.</p>
                                 </div>
                             </div>
 
-                            <!-- Anxiety slider -->
-                            <div class="form-group">
-                                <label for="anxiety-level">Nivel de Anxietate (0 - 10)</label>
-                                <div class="slider-wrapper">
-                                    <input type="range" id="anxiety-level" min="0" max="10" step="1" value="2" oninput="updateSliderVal('anxiety-val', this.value)">
-                                    <span class="slider-val-badge" id="anxiety-val">2 (Scăzută)</span>
+                            <div class="sliders-grid-2">
+                                <div class="slider-box">
+                                    <label for="anxiety-level">Nivel de anxietate</label>
+                                    <div class="slider-wrapper-bottom">
+                                        <input type="range" id="anxiety-level" min="0" max="10" step="1" value="2" oninput="updateSliderVal('anxiety-val', this.value); saveDraft();">
+                                        <div class="slider-val-badge-bottom" id="anxiety-val">2 / 10 • Tolerabilă</div>
+                                    </div>
                                 </div>
-                            </div>
 
-                            <!-- Energy slider -->
-                            <div class="form-group">
-                                <label for="energy-level">Nivel de Energie (0 - 10)</label>
-                                <div class="slider-wrapper">
-                                    <input type="range" id="energy-level" min="0" max="10" step="1" value="5" oninput="updateSliderVal('energy-val', this.value)">
-                                    <span class="slider-val-badge" id="energy-val">5 (Normală)</span>
+                                <div class="slider-box">
+                                    <label for="energy-level">Nivel de energie</label>
+                                    <div class="slider-wrapper-bottom">
+                                        <input type="range" id="energy-level" min="0" max="10" step="1" value="5" oninput="updateSliderVal('energy-val', this.value); saveDraft();">
+                                        <div class="slider-val-badge-bottom" id="energy-val">5 / 10 • Moderată</div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Symptoms Checklist -->
-                        <div class="form-group">
-                            <label>Simptome Observate Astăzi (Selectează tot ce se aplică)</label>
-                            <div class="symptoms-grid">
-                                <label class="checkbox-card">
-                                    <input type="checkbox" name="symptom" value="iritabilitate">
-                                    <span class="checkbox-text">Iritabilitate</span>
-                                </label>
-                                <label class="checkbox-card">
-                                    <input type="checkbox" name="symptom" value="ganduri_accelerate">
-                                    <span class="checkbox-text">Gânduri accelerate</span>
-                                </label>
-                                <label class="checkbox-card">
-                                    <input type="checkbox" name="symptom" value="agitatie_motorie">
-                                    <span class="checkbox-text">Agitație psihomotorie</span>
-                                </label>
-                                <label class="checkbox-card">
-                                    <input type="checkbox" name="symptom" value="tristete">
-                                    <span class="checkbox-text">Tristețe / Plâns</span>
-                                </label>
-                                <label class="checkbox-card">
-                                    <input type="checkbox" name="symptom" value="lipsa_concentrare">
-                                    <span class="checkbox-text">Lipsă de concentrare</span>
-                                </label>
-                                <label class="checkbox-card">
-                                    <input type="checkbox" name="symptom" value="retragere_sociala">
-                                    <span class="checkbox-text">Retragere socială</span>
-                                </label>
-                                <label class="checkbox-card">
-                                    <input type="checkbox" name="symptom" value="atac_panica">
-                                    <span class="checkbox-text">Atac de panică</span>
-                                </label>
-                                <label class="checkbox-card">
-                                    <input type="checkbox" name="symptom" value="impulsivitate">
-                                    <span class="checkbox-text">Impulsivitate</span>
-                                </label>
+                        <!-- Step 4: Symptoms Checklist (Entire Card Clickable!) -->
+                        <div class="form-step-card">
+                            <div class="step-header">
+                                <span class="step-number">4</span>
+                                <div class="step-title-group">
+                                    <h3>Ai observat ceva astăzi?</h3>
+                                    <p>Selectează stările sau simptomele trăite.</p>
+                                </div>
                             </div>
-                        </div>
 
-                        <!-- Medication Tracker -->
-                        <div class="medication-section-wrapper">
-                            <div class="form-group inline-group-checkbox">
-                                <label class="switch">
-                                    <input type="checkbox" id="medication-taken" checked>
-                                    <span class="slider-round"></span>
-                                </label>
-                                <div class="medication-label-container">
-                                    <span class="checkbox-label-text">Am luat medicația prescrisă astăzi</span>
-                                    <span class="medication-help-text">Bifează "Da" dacă ți-ai administrat schema de tratament prescrisă de medic (indiferent de numărul de pastile sau doze). Monitorizarea ajută la corelarea complianței cu stabilitatea dispoziției.</span>
+                            <div class="symptoms-cards-grid">
+                                <div class="symptom-card" onclick="toggleSymptomCard(this)">
+                                    <input type="checkbox" name="symptom" value="iritabilitate" style="display:none">
+                                    <span class="symptom-icon">✓</span>
+                                    <span class="symptom-text">Iritabilitate</span>
+                                </div>
+                                <div class="symptom-card" onclick="toggleSymptomCard(this)">
+                                    <input type="checkbox" name="symptom" value="ganduri_accelerate" style="display:none">
+                                    <span class="symptom-icon">✓</span>
+                                    <span class="symptom-text">Gânduri accelerate</span>
+                                </div>
+                                <div class="symptom-card" onclick="toggleSymptomCard(this)">
+                                    <input type="checkbox" name="symptom" value="agitatie_motorie" style="display:none">
+                                    <span class="symptom-icon">✓</span>
+                                    <span class="symptom-text">Agitație motorie</span>
+                                </div>
+                                <div class="symptom-card" onclick="toggleSymptomCard(this)">
+                                    <input type="checkbox" name="symptom" value="tristete" style="display:none">
+                                    <span class="symptom-icon">✓</span>
+                                    <span class="symptom-text">Tristețe / Plâns</span>
+                                </div>
+                                <div class="symptom-card" onclick="toggleSymptomCard(this)">
+                                    <input type="checkbox" name="symptom" value="lipsa_concentrare" style="display:none">
+                                    <span class="symptom-icon">✓</span>
+                                    <span class="symptom-text">Lipsă de concentrare</span>
+                                </div>
+                                <div class="symptom-card" onclick="toggleSymptomCard(this)">
+                                    <input type="checkbox" name="symptom" value="retragere_sociala" style="display:none">
+                                    <span class="symptom-icon">✓</span>
+                                    <span class="symptom-text">Retragere socială</span>
+                                </div>
+                                <div class="symptom-card" onclick="toggleSymptomCard(this)">
+                                    <input type="checkbox" name="symptom" value="atac_panica" style="display:none">
+                                    <span class="symptom-icon">✓</span>
+                                    <span class="symptom-text">Atac de panică</span>
+                                </div>
+                                <div class="symptom-card" onclick="toggleSymptomCard(this)">
+                                    <input type="checkbox" name="symptom" value="impulsivitate" style="display:none">
+                                    <span class="symptom-icon">✓</span>
+                                    <span class="symptom-text">Impulsivitate</span>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Notes / Journal Entry -->
-                        <div class="form-group">
-                            <label for="journal-notes">Însemnări zilnice / Declanșatori (Triggers)</label>
-                            <textarea id="journal-notes" rows="4" placeholder="Ce s-a întâmplat astăzi? Ai identificat declanșatori (stres, cafeină, conflicte, schimbări de vreme)? Scrie aici gândurile tale..."></textarea>
+                        <!-- Step 5: Treatment Switch -->
+                        <div class="form-step-card">
+                            <div class="step-header">
+                                <span class="step-number">5</span>
+                                <div class="step-title-group">
+                                    <h3>Tratament</h3>
+                                </div>
+                            </div>
+
+                            <div class="medication-section-wrapper">
+                                <div class="form-group inline-group-checkbox">
+                                    <label class="switch">
+                                        <input type="checkbox" id="medication-taken" checked onchange="saveDraft()">
+                                        <span class="slider-round"></span>
+                                    </label>
+                                    <div class="medication-label-container">
+                                        <span class="checkbox-label-text">Am urmat tratamentul prescris astăzi</span>
+                                        <span class="medication-help-text">Bifează "Da" dacă ți-ai administrat schema de tratament prescrisă de medic.</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Step 6: Journal / Triggers -->
+                        <div class="form-step-card">
+                            <div class="step-header">
+                                <span class="step-number">6</span>
+                                <div class="step-title-group">
+                                    <h3>Ce a influențat starea ta astăzi?</h3>
+                                </div>
+                            </div>
+
+                            <textarea id="journal-notes" rows="3" placeholder="Ai observat ceva care ți-a influențat starea? Poate fi stres, conflicte, cafea, lipsă de somn, muncă etc." oninput="saveDraft()"></textarea>
+                        </div>
+
+                        <!-- Draft status notice -->
+                        <div id="draft-status-notice" class="draft-status-notice" style="display:none;">
+                            💾 Draft salvat automat <span id="draft-time-label"></span>
                         </div>
 
                         <!-- Form Actions -->
                         <div class="form-actions">
-                            <button type="submit" class="action-btn-primary submit-btn">Salvează Înregistrarea</button>
+                            <button type="submit" class="action-btn-primary submit-btn">Salvează check-in-ul</button>
                             <button type="button" class="action-btn-secondary" onclick="switchTab('dashboard')">Renunță</button>
                         </div>
 

@@ -295,11 +295,17 @@ function resetLogForm() {
     document.getElementById('energy-level').value = 5;
     updateSliderVal('energy-val', 5);
     
-    // Uncheck symptoms
-    document.querySelectorAll('input[name="symptom"]').forEach(cb => cb.checked = false);
+    // Reset symptom cards
+    document.querySelectorAll('.symptom-card').forEach(card => {
+        card.classList.remove('selected');
+        const input = card.querySelector('input[name="symptom"]');
+        if (input) input.checked = false;
+    });
     
     document.getElementById('medication-taken').checked = true;
     document.getElementById('journal-notes').value = '';
+    checkExistingEntryForDate(document.getElementById('entry-date').value);
+    restoreDraft();
 }
 
 // Handle slider value display badges
@@ -307,38 +313,141 @@ function updateSliderVal(badgeId, value) {
     const badge = document.getElementById(badgeId);
     if (!badge) return;
     
+    const val = parseFloat(value);
+
     if (badgeId === 'sleep-hours-val') {
-        badge.textContent = `${value} ore`;
+        badge.textContent = `${val} ore`;
     } else if (badgeId === 'anxiety-val') {
         let label = 'Scăzută';
-        if (value >= 9) label = 'Extremă / Panicilă';
-        else if (value >= 7) label = 'Severă';
-        else if (value >= 5) label = 'Moderată';
-        else if (value >= 3) label = 'Tolerabilă';
-        else if (value <= 0) label = 'Nulă';
-        badge.textContent = `${value} (${label})`;
+        if (val >= 9) label = 'Extremă';
+        else if (val >= 7) label = 'Severă';
+        else if (val >= 5) label = 'Moderată';
+        else if (val >= 2) label = 'Tolerabilă';
+        else if (val <= 1) label = 'Scăzută';
+        badge.textContent = `${val} / 10 • ${label}`;
     } else if (badgeId === 'energy-val') {
-        let label = 'Normală';
-        if (value >= 9) label = 'Extremă';
-        else if (value >= 7) label = 'Ridicată';
-        else if (value >= 3) label = 'Scăzută';
-        else if (value <= 2) label = 'Foarte Scăzută';
-        badge.textContent = `${value} (${label})`;
+        let label = 'Moderată';
+        if (val >= 9) label = 'Foarte bună';
+        else if (val >= 7) label = 'Bună';
+        else if (val >= 5) label = 'Moderată';
+        else if (val >= 3) label = 'Scăzută';
+        else if (val <= 2) label = 'Foarte scăzută';
+        badge.textContent = `${val} / 10 • ${label}`;
     }
 }
 
-// Mood values selector buttons
+// Mood values selector buttons (7-column Bipolar Grid)
 function setMoodValue(val) {
     document.getElementById('mood-value').value = val;
     
     // Toggle active state on buttons
-    document.querySelectorAll('.bipolar-btn').forEach(btn => {
+    document.querySelectorAll('.bipolar-btn, .bipolar-btn-7').forEach(btn => {
         if (parseInt(btn.getAttribute('data-val')) === val) {
             btn.classList.add('active');
         } else {
             btn.classList.remove('active');
         }
     });
+    saveDraft();
+}
+
+// Toggle symptom card click
+function toggleSymptomCard(cardElement) {
+    const checkbox = cardElement.querySelector('input[name="symptom"]');
+    if (!checkbox) return;
+
+    checkbox.checked = !checkbox.checked;
+    if (checkbox.checked) {
+        cardElement.classList.add('selected');
+    } else {
+        cardElement.classList.remove('selected');
+    }
+    saveDraft();
+}
+
+// Check if duplicate entry exists for selected date
+function checkExistingEntryForDate(dateStr) {
+    const warning = document.getElementById('duplicate-date-warning');
+    if (!warning) return;
+
+    const existing = moodEntries.find(e => e.date === dateStr);
+    if (existing) {
+        warning.style.display = 'block';
+    } else {
+        warning.style.display = 'none';
+    }
+    saveDraft();
+}
+
+// Auto-Draft Management (LocalStorage)
+function saveDraft() {
+    const draftData = {
+        date: document.getElementById('entry-date')?.value,
+        mood: document.getElementById('mood-value')?.value,
+        sleep: document.getElementById('sleep-hours')?.value,
+        anxiety: document.getElementById('anxiety-level')?.value,
+        energy: document.getElementById('energy-level')?.value,
+        medicationTaken: document.getElementById('medication-taken')?.checked,
+        journalNotes: document.getElementById('journal-notes')?.value,
+        symptoms: Array.from(document.querySelectorAll('input[name="symptom"]:checked')).map(cb => cb.value),
+        savedAt: new Date().toISOString()
+    };
+    localStorage.setItem('staicumine_checkin_draft', JSON.stringify(draftData));
+    
+    const notice = document.getElementById('draft-status-notice');
+    const label = document.getElementById('draft-time-label');
+    if (notice && label) {
+        notice.style.display = 'block';
+        label.textContent = '(salvat automat)';
+    }
+}
+
+function restoreDraft() {
+    const draftStr = localStorage.getItem('staicumine_checkin_draft');
+    if (!draftStr) return;
+    try {
+        const draft = JSON.parse(draftStr);
+        if (draft.mood !== undefined) setMoodValue(parseInt(draft.mood));
+        if (draft.sleep !== undefined) {
+            document.getElementById('sleep-hours').value = draft.sleep;
+            updateSliderVal('sleep-hours-val', draft.sleep);
+        }
+        if (draft.anxiety !== undefined) {
+            document.getElementById('anxiety-level').value = draft.anxiety;
+            updateSliderVal('anxiety-val', draft.anxiety);
+        }
+        if (draft.energy !== undefined) {
+            document.getElementById('energy-level').value = draft.energy;
+            updateSliderVal('energy-val', draft.energy);
+        }
+        if (draft.medicationTaken !== undefined) {
+            document.getElementById('medication-taken').checked = draft.medicationTaken;
+        }
+        if (draft.journalNotes !== undefined) {
+            document.getElementById('journal-notes').value = draft.journalNotes;
+        }
+        if (draft.symptoms && Array.isArray(draft.symptoms)) {
+            document.querySelectorAll('.symptom-card').forEach(card => {
+                const input = card.querySelector('input[name="symptom"]');
+                if (input && draft.symptoms.includes(input.value)) {
+                    input.checked = true;
+                    card.classList.add('selected');
+                }
+            });
+        }
+        const notice = document.getElementById('draft-status-notice');
+        const label = document.getElementById('draft-time-label');
+        if (notice && label) {
+            notice.style.display = 'block';
+            label.textContent = '(restaurat din sesiune)';
+        }
+    } catch(e) {}
+}
+
+function clearDraft() {
+    localStorage.removeItem('staicumine_checkin_draft');
+    const notice = document.getElementById('draft-status-notice');
+    if (notice) notice.style.display = 'none';
 }
 
 // Save Mood Entry Form Handler
@@ -373,17 +482,18 @@ function saveMoodEntry(event) {
     // Check if an entry already exists for this date, overwrite if so
     const existingIndex = moodEntries.findIndex(e => e.date === date);
     if (existingIndex !== -1) {
-        if (confirm(`Există deja o înregistrare pentru data de ${formatDateRO(date)}. Dorești să o suprascrii?`)) {
+        if (confirm(`Există deja un check-in pentru data de ${formatDateRO(date)}. Dorești să-l actualizezi?`)) {
             moodEntries[existingIndex] = newEntry;
-            showToast("Înregistrarea a fost actualizată cu succes!");
+            showToast("Check-in-ul a fost actualizat cu succes!");
         } else {
             return;
         }
     } else {
         moodEntries.push(newEntry);
-        showToast("Starea de spirit a fost înregistrată!");
+        showToast("Check-in-ul a fost salvat!");
     }
 
+    clearDraft();
     sortEntries();
     saveEntriesToStorage();
     switchTab('dashboard');
