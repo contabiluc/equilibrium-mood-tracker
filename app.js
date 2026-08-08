@@ -241,8 +241,8 @@ function switchTab(tabId) {
     const headerSubtitle = document.getElementById('header-subtitle');
     
     if (tabId === 'dashboard') {
-        headerTitle.textContent = "Monitorizare & Echilibru Emoțional";
-        headerSubtitle.textContent = "Perspectivă clară asupra evoluției tale zilnice, calității somnului și factorilor de stabilitate.";
+        headerTitle.textContent = "Staicumine";
+        headerSubtitle.textContent = "Monitorizează-ți starea. Înțelege-ți tiparele.";
         updateDashboard();
     } else if (tabId === 'log') {
         headerTitle.textContent = "Înregistrare Stare Zilnică";
