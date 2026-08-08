@@ -447,16 +447,25 @@ function getEntriesForPeriod(days) {
 // Reset stats cards to empty states
 function resetDashboardStats() {
     document.getElementById('stat-avg-mood').textContent = "-";
-    document.getElementById('stat-avg-mood-desc').textContent = "Fără date înregistrate";
+    document.getElementById('stat-avg-mood-desc').textContent = "Echilibrat";
     
     document.getElementById('stat-avg-sleep').textContent = "-";
-    document.getElementById('stat-avg-sleep-desc').textContent = "Introdu somn zilnic";
+    document.getElementById('stat-avg-sleep-desc').textContent = "Bun";
     
     document.getElementById('stat-avg-anxiety').textContent = "-";
-    document.getElementById('stat-avg-anxiety-desc').textContent = "Fără măsurători";
+    document.getElementById('stat-avg-anxiety-desc').textContent = "Moderată";
     
-    document.getElementById('stat-med-compliance').textContent = "-";
-    document.getElementById('stat-med-compliance-desc').textContent = "Fără tratament înregistrat";
+    if (document.getElementById('stat-avg-energy')) {
+        document.getElementById('stat-avg-energy').textContent = "-";
+        document.getElementById('stat-avg-energy-desc').textContent = "Bună";
+    }
+
+    if (document.getElementById('summary-total-entries')) {
+        document.getElementById('summary-total-entries').textContent = "0 check-in-uri";
+        document.getElementById('summary-avg-sleep').textContent = "0.0 h somn mediu";
+        document.getElementById('summary-avg-anxiety').textContent = "0.0 anxietate medie";
+        document.getElementById('summary-med-adherence').textContent = "0% aderență tratament";
+    }
 }
 
 // Calculate dashboard indicators
@@ -464,12 +473,14 @@ function calculateStats(entries) {
     let totalMood = 0;
     let totalSleep = 0;
     let totalAnxiety = 0;
+    let totalEnergy = 0;
     let medCount = 0;
     
     entries.forEach(e => {
         totalMood += e.mood;
         totalSleep += e.sleep;
         totalAnxiety += e.anxiety;
+        totalEnergy += (e.energy !== undefined ? e.energy : 5);
         if (e.medicationTaken) medCount++;
     });
 
@@ -477,39 +488,53 @@ function calculateStats(entries) {
     const avgMood = totalMood / count;
     const avgSleep = totalSleep / count;
     const avgAnxiety = totalAnxiety / count;
+    const avgEnergy = totalEnergy / count;
     const medAdherence = (medCount / count) * 100;
 
     // Mood description — ton cald, non-clinic
     let moodSign = avgMood > 0 ? "+" : "";
     document.getElementById('stat-avg-mood').textContent = `${moodSign}${avgMood.toFixed(1)}`;
     
-    let moodDesc = "Te simți echilibrat";
+    let moodDesc = "Echilibrat";
     if (avgMood > 3) moodDesc = "Stare foarte ridicată";
-    else if (avgMood > 1.5) moodDesc = "Stare ridicată constant";
-    else if (avgMood > 0.5) moodDesc = "Stare puțin mai ridicată";
-    else if (avgMood < -3) moodDesc = "Perioadă grea — caută suport";
-    else if (avgMood < -1.5) moodDesc = "Perioadă dificilă";
-    else if (avgMood < -0.5) moodDesc = "Ușor sub echilibru";
+    else if (avgMood > 1.5) moodDesc = "Elevată";
+    else if (avgMood > 0.5) moodDesc = "Ușor ridicată";
+    else if (avgMood < -3) moodDesc = "Depresie severă";
+    else if (avgMood < -1.5) moodDesc = "Dificilă";
+    else if (avgMood < -0.5) moodDesc = "Ușor scăzută";
     
     document.getElementById('stat-avg-mood-desc').textContent = moodDesc;
     
     // Sleep avg
-    document.getElementById('stat-avg-sleep').textContent = `${avgSleep.toFixed(1)}h`;
-    let sleepDesc = "Durată bună de odihnă";
-    if (avgSleep < 6) sleepDesc = "Somn insuficient — ai grijă de tine";
-    else if (avgSleep > 9) sleepDesc = "Somn mai lung decât obișnuit";
+    document.getElementById('stat-avg-sleep').textContent = `${avgSleep.toFixed(1)} h`;
+    let sleepDesc = "Bun";
+    if (avgSleep < 6) sleepDesc = "Scăzut";
+    else if (avgSleep > 9) sleepDesc = "Prea lung";
     document.getElementById('stat-avg-sleep-desc').textContent = sleepDesc;
 
     // Anxiety avg
     document.getElementById('stat-avg-anxiety').textContent = `${avgAnxiety.toFixed(1)}`;
-    let anxietyDesc = "Nivel confortabil";
-    if (avgAnxiety >= 7) anxietyDesc = "Nivel ridicat — respiră, ești în siguranță";
-    else if (avgAnxiety >= 4) anxietyDesc = "Ușor tensionat";
+    let anxietyDesc = "Scăzută";
+    if (avgAnxiety >= 7) anxietyDesc = "Ridicată";
+    else if (avgAnxiety >= 3.5) anxietyDesc = "Moderată";
     document.getElementById('stat-avg-anxiety-desc').textContent = anxietyDesc;
 
-    // Medication compliance
-    document.getElementById('stat-med-compliance').textContent = `${medAdherence.toFixed(0)}%`;
-    document.getElementById('stat-med-compliance-desc').textContent = `${medCount} din ${count} zile cu tratament luat`;
+    // Energy avg
+    if (document.getElementById('stat-avg-energy')) {
+        document.getElementById('stat-avg-energy').textContent = `${avgEnergy.toFixed(1)}`;
+        let energyDesc = "Bună";
+        if (avgEnergy >= 7.5) energyDesc = "Foarte ridicată";
+        else if (avgEnergy < 4) energyDesc = "Scăzută";
+        document.getElementById('stat-avg-energy-desc').textContent = energyDesc;
+    }
+
+    // Summary Box
+    if (document.getElementById('summary-total-entries')) {
+        document.getElementById('summary-total-entries').textContent = `${count} check-in-uri`;
+        document.getElementById('summary-avg-sleep').textContent = `${avgSleep.toFixed(1)} h somn mediu`;
+        document.getElementById('summary-avg-anxiety').textContent = `${avgAnxiety.toFixed(1)} anxietate medie`;
+        document.getElementById('summary-med-adherence').textContent = `${medAdherence.toFixed(0)}% aderență tratament`;
+    }
 }
 
 // Generate dynamic statistical insights from data
