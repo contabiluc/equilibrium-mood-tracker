@@ -295,15 +295,7 @@
                     <button class="demo-banner-btn" onclick="clearDemoData()">Șterge demo și începe</button>
                 </div>
 
-                <!-- Backup Warning Banner (Slim & Discrete) -->
-                <div id="backup-warning-banner" class="backup-banner glass" style="display: none;">
-                    <div class="backup-banner-content" id="backup-banner-text-wrapper">
-                        <span class="backup-banner-text">🔒 Datele sunt stocate local. <a href="#" onclick="exportData(); return false;" class="backup-link">Exportă un backup</a> pentru a evita pierderea lor.</span>
-                    </div>
-                    <button class="backup-banner-close" onclick="closeBackupBanner()" aria-label="Închide notificarea">&times;</button>
-                </div>
-
-                <!-- Hero Greeting & Action Card -->
+                <!-- 1. CHECK-IN (Hero Greeting & Action Card) -->
                 <div class="welcome-hero-card glass">
                     <div class="welcome-hero-text">
                         <h2>Bună!</h2>
@@ -315,7 +307,7 @@
                     </button>
                 </div>
 
-                <!-- Overview Metrics Grid (Starea ta, Somn, Anxietate, Energie) -->
+                <!-- 2. 4 INDICATORI (Starea ta, Somn, Anxietate, Energie) -->
                 <div class="stats-grid">
                     <div class="stat-card glass">
                         <div class="stat-header">
@@ -371,7 +363,7 @@
                     </div>
                 </div>
 
-                <!-- Main Mood Evolution Chart -->
+                <!-- 3. GRAFIC (Evoluția dispoziției) -->
                 <div class="chart-container glass">
                     <div class="chart-header">
                         <h3>Evoluția dispoziției</h3>
@@ -403,7 +395,7 @@
                     </div>
                 </div>
 
-                <!-- Split Row: Ce observăm & Rezumat -->
+                <!-- 4. OBSERVAȚII & 5. REZUMAT -->
                 <div class="dashboard-split-row">
                     <div class="insights-container glass">
                         <h3>Ce observăm</h3>
@@ -444,7 +436,14 @@
                     </div>
                 </div>
 
-                <!-- Privacy Guarantee Footer Banner -->
+                <!-- 6. BACKUP (Privacy Note & Discrete Backup Warning Banner) -->
+                <div id="backup-warning-banner" class="backup-banner glass" style="display: none;">
+                    <div class="backup-banner-content" id="backup-banner-text-wrapper">
+                        <span class="backup-banner-text">🔒 Datele sunt stocate local. <a href="#" onclick="exportData(); return false;" class="backup-link">Exportă un backup</a> pentru a evita pierderea lor.</span>
+                    </div>
+                    <button class="backup-banner-close" onclick="closeBackupBanner()" aria-label="Închide notificarea">&times;</button>
+                </div>
+
                 <div class="dashboard-footer-privacy glass">
                     <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
                         <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
