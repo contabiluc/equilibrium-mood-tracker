@@ -547,12 +547,14 @@ function calculateStats(entries) {
         document.getElementById('stat-avg-energy-desc').textContent = energyDesc;
     }
 
-    // Summary Box
-    if (document.getElementById('summary-total-entries')) {
-        document.getElementById('summary-total-entries').textContent = `${count} check-in-uri`;
-        document.getElementById('summary-avg-sleep').textContent = `${avgSleep.toFixed(1)} h somn mediu`;
-        document.getElementById('summary-avg-anxiety').textContent = `${avgAnxiety.toFixed(1)} anxietate medie`;
-        document.getElementById('summary-med-adherence').textContent = `${medAdherence.toFixed(0)}% aderență tratament`;
+    // Summary Box (Visual 2x2 Grid)
+    if (document.getElementById('summary-total-val')) {
+        document.getElementById('summary-total-val').textContent = `${count}`;
+        document.getElementById('summary-sleep-val').textContent = `${avgSleep.toFixed(1)} h`;
+        document.getElementById('summary-anxiety-val').textContent = `${avgAnxiety.toFixed(1)}/10`;
+        
+        let moodSign = avgMood > 0 ? "+" : "";
+        document.getElementById('summary-mood-val').textContent = `${moodSign}${avgMood.toFixed(1)}`;
     }
 }
 
@@ -567,7 +569,7 @@ function renderInsights(entries) {
                 <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.5" style="color:var(--text-muted);margin-bottom:0.75rem">
                     <path d="M9 19v-6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2zm0 0V9a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v10m-6 0a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2m0 0V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-2a2 2 0 0 1-2-2z"/>
                 </svg>
-                <p style="font-size:0.9rem;color:var(--text-muted);text-align:center;line-height:1.5">Ai nevoie de <strong style="color:var(--text-secondary)">cel puțin 7 zile</strong> de date pentru ca Analiza Inteligentă să-ți ofere recomandări relevante și personalizate.</p>
+                <p style="font-size:0.9rem;color:var(--text-muted);text-align:center;line-height:1.5">Ai nevoie de <strong style="color:var(--text-secondary)">cel puțin 3-7 zile</strong> de date pentru ca Analiza Inteligentă să-ți ofere recomandări relevante și personalizate.</p>
             </div>`;
         return;
     }
@@ -586,8 +588,8 @@ function renderInsights(entries) {
             insights.push({
                 type: 'alert',
                 icon: '😴',
-                title: 'Somnul contează mult pentru tine',
-                desc: `Am observat că în zilele cu somn sub 6.5 ore, te simți mai tensionat (anxietate medie: ${avgAnxietyLowSleep.toFixed(1)} față de ${avgAnxietyNormalSleep.toFixed(1)} în zilele cu somn suficient). Odihna bună este un instrument puternic.`
+                title: 'Somnul și anxietatea par asociate',
+                desc: `În ultimele ${entries.length} zile, anxietatea medie a fost ${avgAnxietyLowSleep.toFixed(1)} în zilele cu mai puțin de 6.5 ore de somn și ${avgAnxietyNormalSleep.toFixed(1)} în cele cu somn suficient.`
             });
         }
     }
@@ -599,18 +601,18 @@ function renderInsights(entries) {
             type: 'alert',
             icon: '💊',
             title: `Tratament omis în ${missedMedDays.length} ${missedMedDays.length === 1 ? 'zi' : 'zile'}`,
-            desc: `Continuitatea tratamentului face diferența în menținerea echilibrului. Dacă ai omis din motive practice, discută cu medicul tău despre alternative care să se potrivească stilului tău de viață.`
+            desc: `Continuitatea tratamentului face diferența în menținerea echilibrului. În ultimele ${entries.length} zile ai înregistrat ${missedMedDays.length} zile fără tratament.`
         });
     } else {
         insights.push({
             type: 'stable',
             icon: '🌟',
-            title: 'Tratament luat consecvent — bravo!',
-            desc: 'Ai luat tratamentul în fiecare zi din această perioadă. Consecvența este unul dintre cei mai importanți factori pentru stabilitate pe termen lung.'
+            title: 'Tratament luat consecvent',
+            desc: `Ai luat tratamentul în fiecare zi din cele ${entries.length} zile înregistrate în această perioadă.`
         });
     }
 
-    // Analyze High Energy/Mania Warning — ton cald, fără termeni alarmişti
+    // Analyze High Energy/Mania Warning
     const manicDays = entries.filter(e => e.mood >= 2);
     if (manicDays.length >= 2) {
         const avgSleepManic = manicDays.reduce((sum, e) => sum + e.sleep, 0) / manicDays.length;
@@ -618,9 +620,9 @@ function renderInsights(entries) {
             insights.push({
                 type: 'alert',
                 icon: '🔆',
-                title: 'Starea ta medie a fost mai ridicată săptămâna asta',
+                title: 'Stare mai ridicată asociată cu somn scăzut',
                 clinicalNote: 'Semnal timpuriu de hipomanie',
-                desc: `Am observat că te-ai simțit mai energic, dar și că ai dormit mai puțin (${avgSleepManic.toFixed(1)}h în medie). Această combinație merită atenție. Ar fi util să contactezi medicul curant.`
+                desc: `Am observat energie crescută cu un somn mediu scăzut (${avgSleepManic.toFixed(1)}h). Ar fi util să discuți cu medicul curant.`
             });
         }
     }
@@ -631,14 +633,14 @@ function renderInsights(entries) {
         insights.push({
             type: 'stable',
             icon: '⚖️',
-            title: `${stableDays.length} zile de echilibru — continuă tot așa!`,
-            desc: `Felicitări! Rutina ta funcționează. Continuă ce faci — somnul regulat, mișcarea și prezența socială contribuie mult la această stabilitate.`
+            title: `${stableDays.length} zile de echilibru menținut`,
+            desc: `Rutina ta oferă stabilitate emoțională. Continuă obiceiurile sănătoase de odihnă.`
         });
     }
 
     // Render insights list
     if (insights.length === 0) {
-        list.innerHTML = `<div class="insight-card"><div class="insight-title">Totul pare în ordine</div><div class="insight-desc">Nu am găsit devieri sau corelații notabile în datele tale recente. Continuă să monitorizezi zilnic!</div></div>`;
+        list.innerHTML = `<div class="insight-card"><div class="insight-title">Date echilibrate</div><div class="insight-desc">Nu am găsit devieri sau corelații notabile în datele tale recente. Continuă monitorizarea!</div></div>`;
     } else {
         insights.forEach(ins => {
             const card = document.createElement('div');
@@ -649,6 +651,7 @@ function renderInsights(entries) {
             card.innerHTML = `
                 <div class="insight-title">${ins.icon ? ins.icon + ' ' : ''}${ins.title} ${clinicalTag}</div>
                 <div class="insight-desc">${ins.desc}</div>
+                <div class="insight-footer">🔎 Bazat pe ${entries.length} check-in-uri</div>
             `;
             list.appendChild(card);
         });
