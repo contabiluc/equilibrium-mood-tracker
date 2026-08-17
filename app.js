@@ -765,6 +765,7 @@ function updateDashboard() {
     calculateStats(filteredEntries);
     renderInsights(filteredEntries);
     drawCustomChart(filteredEntries);
+    renderSparklines(filteredEntries);
 }
 
 // Helper to filter entries based on timeframe
@@ -987,7 +988,145 @@ function changeChartPeriod(days) {
     updateDashboard();
 }
 
-// Canvas-based Beautiful Chart Draw Engine
+// Chart State
+let currentChartMetric = 'mood'; // 'mood' | 'sleep' | 'anxiety' | 'energy' | 'all'
+
+function setChartMetric(metric) {
+    currentChartMetric = metric;
+    
+    // Update metric selector button states
+    document.querySelectorAll('.metric-btn').forEach(btn => {
+        if (btn.getAttribute('data-metric') === metric) {
+            btn.classList.add('active');
+        } else {
+            btn.classList.remove('active');
+        }
+    });
+
+    // Update main chart title and subtitle based on metric
+    const titleEl = document.getElementById('chart-main-title');
+    const subEl = document.getElementById('chart-main-sub');
+
+    if (metric === 'mood') {
+        if (titleEl) titleEl.textContent = "Evoluția dispoziției";
+        if (subEl) subEl.textContent = "Scară calibrată: -5 (Depresie) la +5 (Manie)";
+    } else if (metric === 'sleep') {
+        if (titleEl) titleEl.textContent = "Ore de somn";
+        if (subEl) subEl.textContent = "Scară calibrată: 0 la 16 ore (Zona optimă 6.5h - 9h)";
+    } else if (metric === 'anxiety') {
+        if (titleEl) titleEl.textContent = "Nivel de anxietate";
+        if (subEl) subEl.textContent = "Scară calibrată: 0 (Scăzută) la 10 (Severă)";
+    } else if (metric === 'energy') {
+        if (titleEl) titleEl.textContent = "Nivel de energie";
+        if (subEl) subEl.textContent = "Scară calibrată: 0 (Scăzută) la 10 (Foarte bună)";
+    } else if (metric === 'all') {
+        if (titleEl) titleEl.textContent = "Toți indicatorii suprapuși";
+        if (subEl) subEl.textContent = "Urmărire comparativă pe scară procentuală normalizată";
+    }
+
+    const filteredEntries = getEntriesForPeriod(currentChartPeriod);
+    drawCustomChart(filteredEntries);
+    renderSparklines(filteredEntries);
+}
+
+function renderChartLegend() {
+    const legendEl = document.getElementById('chart-legend');
+    if (!legendEl) return;
+
+    if (currentChartMetric === 'mood') {
+        legendEl.innerHTML = `
+            <span class="legend-item"><span class="legend-dot" style="background: #818cf8;"></span> Dispoziție (-5 la +5)</span>
+            <span class="legend-item"><span class="legend-dot" style="background: #10b981;"></span> Linia de Stabilitate (0)</span>
+        `;
+    } else if (currentChartMetric === 'sleep') {
+        legendEl.innerHTML = `
+            <span class="legend-item"><span class="legend-dot" style="background: #38bdf8;"></span> Ore Somn (0-16h)</span>
+            <span class="legend-item"><span class="legend-dot" style="background: rgba(56, 189, 248, 0.25);"></span> Zona optimă de somn (6.5h - 9h)</span>
+        `;
+    } else if (currentChartMetric === 'anxiety') {
+        legendEl.innerHTML = `
+            <span class="legend-item"><span class="legend-dot" style="background: #f59e0b;"></span> Anxietate (0-10)</span>
+            <span class="legend-item"><span class="legend-dot" style="background: rgba(16, 185, 129, 0.25);"></span> Zona de confort (0-3)</span>
+        `;
+    } else if (currentChartMetric === 'energy') {
+        legendEl.innerHTML = `
+            <span class="legend-item"><span class="legend-dot" style="background: #10b981;"></span> Energie (0-10)</span>
+        `;
+    } else if (currentChartMetric === 'all') {
+        legendEl.innerHTML = `
+            <span class="legend-item"><span class="legend-dot" style="background: #818cf8;"></span> Dispoziție</span>
+            <span class="legend-item"><span class="legend-dot" style="background: #38bdf8;"></span> Somn</span>
+            <span class="legend-item"><span class="legend-dot" style="background: #f59e0b;"></span> Anxietate</span>
+            <span class="legend-item"><span class="legend-dot" style="background: #10b981;"></span> Energie</span>
+        `;
+    }
+}
+
+function renderSparklines(entries) {
+    const grid = document.getElementById('mini-sparklines-grid');
+    if (!grid) return;
+
+    if (!entries || entries.length === 0) {
+        grid.style.display = 'none';
+        return;
+    }
+
+    grid.style.display = 'grid';
+    const lastEntry = entries[entries.length - 1];
+
+    const moodValEl = document.getElementById('sparkline-val-mood');
+    const sleepValEl = document.getElementById('sparkline-val-sleep');
+    const anxietyValEl = document.getElementById('sparkline-val-anxiety');
+    const energyValEl = document.getElementById('sparkline-val-energy');
+
+    if (moodValEl) moodValEl.textContent = lastEntry.mood > 0 ? `+${lastEntry.mood}` : `${lastEntry.mood}`;
+    if (sleepValEl) sleepValEl.textContent = `${lastEntry.sleep}h`;
+    if (anxietyValEl) anxietyValEl.textContent = `${lastEntry.anxiety}/10`;
+    if (energyValEl) energyValEl.textContent = `${lastEntry.energy}/10`;
+
+    drawMiniSparkline('sparkline-canvas-mood', entries.map(e => e.mood), -5, 5, '#818cf8');
+    drawMiniSparkline('sparkline-canvas-sleep', entries.map(e => e.sleep), 0, 16, '#38bdf8');
+    drawMiniSparkline('sparkline-canvas-anxiety', entries.map(e => e.anxiety), 0, 10, '#f59e0b');
+    drawMiniSparkline('sparkline-canvas-energy', entries.map(e => e.energy), 0, 10, '#10b981');
+}
+
+function drawMiniSparkline(canvasId, values, minY, maxY, color) {
+    const canvas = document.getElementById(canvasId);
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+
+    const rect = canvas.getBoundingClientRect();
+    const dpr = window.devicePixelRatio || 1;
+    const width = rect.width || 120;
+    const height = rect.height || 36;
+
+    canvas.width = width * dpr;
+    canvas.height = height * dpr;
+    ctx.scale(dpr, dpr);
+    ctx.clearRect(0, 0, width, height);
+
+    if (values.length < 2) return;
+
+    const pad = 4;
+    const w = width - pad * 2;
+    const h = height - pad * 2;
+
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+
+    values.forEach((v, idx) => {
+        const x = pad + (idx / (values.length - 1)) * w;
+        const normY = (v - minY) / (maxY - minY);
+        const y = height - pad - normY * h;
+        if (idx === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+    });
+
+    ctx.stroke();
+}
+
+// Canvas-based Calibrated Chart Engine
 function drawCustomChart(entries) {
     const canvas = document.getElementById('mood-chart');
     if (!canvas) return;
@@ -1003,13 +1142,10 @@ function drawCustomChart(entries) {
     canvas.width = width * dpr;
     canvas.height = height * dpr;
     ctx.scale(dpr, dpr);
-
-    // Clear canvas
     ctx.clearRect(0, 0, width, height);
 
-    // Grid coordinates calculations
     const isMobileCanvas = width < 480;
-    const paddingLeft = isMobileCanvas ? 32 : 45;
+    const paddingLeft = isMobileCanvas ? 42 : 55;
     const paddingRight = isMobileCanvas ? 15 : 20;
     const paddingTop = isMobileCanvas ? 35 : 45;
     const paddingBottom = isMobileCanvas ? 30 : 40;
@@ -1017,39 +1153,81 @@ function drawCustomChart(entries) {
     const chartWidth = width - paddingLeft - paddingRight;
     const chartHeight = height - paddingTop - paddingBottom;
 
-    // Draw horizontal grid lines for Mood Values (-5 to +5)
-    const moodLines = [-5, -3, 0, 3, 5];
+    let minY = -5, maxY = 5;
+    let gridSteps = [];
+    let lineColor = '#818cf8';
+    let gradientStart = 'rgba(99, 102, 241, 0.22)';
+    let formatLabel = (v) => v > 0 ? `+${v}` : `${v}`;
+
+    if (currentChartMetric === 'mood') {
+        minY = -5; maxY = 5;
+        gridSteps = [-5, -3, 0, 3, 5];
+        lineColor = '#818cf8';
+        gradientStart = 'rgba(99, 102, 241, 0.22)';
+        formatLabel = (v) => v === 0 ? "0 (Stabil)" : v > 0 ? `+${v}` : `${v}`;
+    } else if (currentChartMetric === 'sleep') {
+        minY = 0; maxY = 16;
+        gridSteps = [0, 4, 8, 12, 16];
+        lineColor = '#38bdf8';
+        gradientStart = 'rgba(56, 189, 248, 0.22)';
+        formatLabel = (v) => `${v}h`;
+    } else if (currentChartMetric === 'anxiety') {
+        minY = 0; maxY = 10;
+        gridSteps = [0, 3, 5, 8, 10];
+        lineColor = '#f59e0b';
+        gradientStart = 'rgba(245, 158, 11, 0.22)';
+        formatLabel = (v) => `${v}`;
+    } else if (currentChartMetric === 'energy') {
+        minY = 0; maxY = 10;
+        gridSteps = [0, 3, 5, 8, 10];
+        lineColor = '#10b981';
+        gradientStart = 'rgba(16, 185, 129, 0.22)';
+        formatLabel = (v) => `${v}`;
+    } else if (currentChartMetric === 'all') {
+        minY = 0; maxY = 10;
+        gridSteps = [0, 2.5, 5, 7.5, 10];
+        formatLabel = (v) => `${v * 10}%`;
+    }
+
+    // Draw Grid Lines & Axis Labels
     ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
     ctx.lineWidth = 1;
-    ctx.fillStyle = '#64748b'; // Label colors
+    ctx.fillStyle = '#64748b';
     ctx.font = '500 10px Inter';
     ctx.textAlign = 'right';
 
-    moodLines.forEach(val => {
-        // Map val range [-5, 5] to canvas coordinates
-        const y = getYCoordinate(val, -5, 5, chartHeight, paddingTop);
-        
+    gridSteps.forEach(val => {
+        const y = getYCoordinate(val, minY, maxY, chartHeight, paddingTop);
         ctx.beginPath();
         ctx.moveTo(paddingLeft, y);
         ctx.lineTo(width - paddingRight, y);
         ctx.stroke();
 
-        // Draw horizontal grid texts
-        let label = val > 0 ? `+${val}` : `${val}`;
-        if (val === 0) label = isMobileCanvas ? "0" : "0 (Stabil)";
-        ctx.fillText(label, paddingLeft - 6, y + 3);
+        ctx.fillText(formatLabel(val), paddingLeft - 6, y + 3);
     });
 
-    // Draw Stable reference band (0 line - bold green)
-    const stableY = getYCoordinate(0, -5, 5, chartHeight, paddingTop);
-    ctx.strokeStyle = 'rgba(16, 185, 129, 0.3)';
-    ctx.lineWidth = 2.5;
-    ctx.beginPath();
-    ctx.moveTo(paddingLeft, stableY);
-    ctx.lineTo(width - paddingRight, stableY);
-    ctx.stroke();
+    // Draw Target / Reference Bands
+    if (currentChartMetric === 'mood') {
+        const stableY = getYCoordinate(0, -5, 5, chartHeight, paddingTop);
+        ctx.strokeStyle = 'rgba(16, 185, 129, 0.4)';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(paddingLeft, stableY);
+        ctx.lineTo(width - paddingRight, stableY);
+        ctx.stroke();
+    } else if (currentChartMetric === 'sleep') {
+        const sleepTargetTop = getYCoordinate(9, 0, 16, chartHeight, paddingTop);
+        const sleepTargetBottom = getYCoordinate(6.5, 0, 16, chartHeight, paddingTop);
+        ctx.fillStyle = 'rgba(56, 189, 248, 0.07)';
+        ctx.fillRect(paddingLeft, sleepTargetTop, chartWidth, sleepTargetBottom - sleepTargetTop);
+    } else if (currentChartMetric === 'anxiety') {
+        const anxLowTop = getYCoordinate(3, 0, 10, chartHeight, paddingTop);
+        const anxLowBottom = getYCoordinate(0, 0, 10, chartHeight, paddingTop);
+        ctx.fillStyle = 'rgba(16, 185, 129, 0.06)';
+        ctx.fillRect(paddingLeft, anxLowTop, chartWidth, anxLowBottom - anxLowTop);
+    }
 
-    // Map X coordinates for each entry
+    // Map X & Y coordinates for each entry
     const points = [];
     const count = entries.length;
 
@@ -1057,94 +1235,101 @@ function drawCustomChart(entries) {
         const x = count === 1 
             ? paddingLeft + chartWidth / 2 
             : paddingLeft + (idx / (count - 1)) * chartWidth;
+        
+        let val = e.mood;
+        if (currentChartMetric === 'sleep') val = e.sleep;
+        else if (currentChartMetric === 'anxiety') val = e.anxiety;
+        else if (currentChartMetric === 'energy') val = e.energy;
+
         points.push({
             x: x,
+            y: getYCoordinate(val, minY, maxY, chartHeight, paddingTop),
             moodY: getYCoordinate(e.mood, -5, 5, chartHeight, paddingTop),
             sleepY: getYCoordinate(e.sleep, 0, 16, chartHeight, paddingTop),
             anxietyY: getYCoordinate(e.anxiety, 0, 10, chartHeight, paddingTop),
+            energyY: getYCoordinate(e.energy, 0, 10, chartHeight, paddingTop),
             entry: e
         });
     });
 
-    // 1. Draw Sleep Area (Dashed Lavender Line)
-    ctx.strokeStyle = 'rgba(167, 139, 250, 0.4)';
-    ctx.lineWidth = 1.5;
-    ctx.setLineDash([4, 4]);
-    ctx.beginPath();
-    points.forEach((p, idx) => {
-        if (idx === 0) ctx.moveTo(p.x, p.sleepY);
-        else ctx.lineTo(p.x, p.sleepY);
-    });
-    ctx.stroke();
-    ctx.setLineDash([]); // Reset line dash
+    if (currentChartMetric !== 'all') {
+        // Draw single metric line with gradient fill
+        if (points.length > 1) {
+            const areaGrad = ctx.createLinearGradient(0, paddingTop, 0, height - paddingBottom);
+            areaGrad.addColorStop(0, gradientStart);
+            areaGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+            
+            ctx.fillStyle = areaGrad;
+            ctx.beginPath();
+            ctx.moveTo(points[0].x, height - paddingBottom);
+            points.forEach(p => ctx.lineTo(p.x, p.y));
+            ctx.lineTo(points[points.length - 1].x, height - paddingBottom);
+            ctx.closePath();
+            ctx.fill();
+        }
 
-    // 2. Draw Anxiety Area (Dotted Amber Line)
-    ctx.strokeStyle = 'rgba(245, 158, 11, 0.4)';
-    ctx.lineWidth = 1.5;
-    ctx.setLineDash([2, 3]);
-    ctx.beginPath();
-    points.forEach((p, idx) => {
-        if (idx === 0) ctx.moveTo(p.x, p.anxietyY);
-        else ctx.lineTo(p.x, p.anxietyY);
-    });
-    ctx.stroke();
-    ctx.setLineDash([]); // Reset line dash
-
-    // 3. Draw Mood Gradient Fill & Line (Main Indigo glowing line)
-    // Draw gradient underneath mood line
-    if (points.length > 1) {
-        const areaGrad = ctx.createLinearGradient(0, paddingTop, 0, height - paddingBottom);
-        areaGrad.addColorStop(0, 'rgba(99, 102, 241, 0.18)');
-        areaGrad.addColorStop(1, 'rgba(99, 102, 241, 0.0)');
-        
-        ctx.fillStyle = areaGrad;
+        // Main Stroke Line
+        ctx.strokeStyle = lineColor;
+        ctx.lineWidth = 3;
         ctx.beginPath();
-        ctx.moveTo(points[0].x, stableY); // start on stable line
-        points.forEach(p => ctx.lineTo(p.x, p.moodY));
-        ctx.lineTo(points[points.length - 1].x, stableY); // end on stable line
-        ctx.closePath();
-        ctx.fill();
-    }
-
-    // Draw main glowing mood stroke line
-    ctx.strokeStyle = '#6366f1';
-    ctx.lineWidth = 3.5;
-    ctx.beginPath();
-    points.forEach((p, idx) => {
-        if (idx === 0) ctx.moveTo(p.x, p.moodY);
-        else ctx.lineTo(p.x, p.moodY);
-    });
-    ctx.stroke();
-
-    // Draw points & Labels
-    points.forEach((p, idx) => {
-        // Circle point for mood
-        ctx.fillStyle = getMoodColor(p.entry.mood);
-        ctx.strokeStyle = '#ffffff';
-        ctx.lineWidth = 1.5;
-        ctx.beginPath();
-        ctx.arc(p.x, p.moodY, 5, 0, Math.PI * 2);
-        ctx.fill();
+        points.forEach((p, idx) => {
+            if (idx === 0) ctx.moveTo(p.x, p.y);
+            else ctx.lineTo(p.x, p.y);
+        });
         ctx.stroke();
 
-        // Draw date text on Bottom Axis
-        ctx.fillStyle = '#94a3b8';
-        ctx.font = '500 9px Inter';
-        ctx.textAlign = 'center';
-        
-        const dateObj = new Date(p.entry.date);
-        const dayStr = dateObj.getDate().toString().padStart(2, '0');
-        const monthStr = (dateObj.getMonth() + 1).toString().padStart(2, '0');
-        
-        // Optimize horizontal axis spacing (skip labels if too crowded)
+        // Points
+        points.forEach(p => {
+            ctx.fillStyle = lineColor;
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = 1.5;
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, 4.5, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+        });
+    } else {
+        // Draw all 4 lines (Mood, Sleep, Anxiety, Energy)
+        const drawLine = (getY, color, isDashed = false) => {
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 2;
+            if (isDashed) ctx.setLineDash([4, 4]);
+            else ctx.setLineDash([]);
+            ctx.beginPath();
+            points.forEach((p, idx) => {
+                if (idx === 0) ctx.moveTo(p.x, getY(p));
+                else ctx.lineTo(p.x, getY(p));
+            });
+            ctx.stroke();
+            ctx.setLineDash([]);
+        };
+
+        drawLine(p => p.moodY, '#818cf8');
+        drawLine(p => p.sleepY, '#38bdf8', true);
+        drawLine(p => p.anxietyY, '#f59e0b', true);
+        drawLine(p => p.energyY, '#10b981');
+    }
+
+    // X-Axis Date Labels
+    ctx.fillStyle = '#64748b';
+    ctx.font = '500 10px Inter';
+    ctx.textAlign = 'center';
+
+    points.forEach((p, idx) => {
         let drawLabel = true;
-        if (currentChartPeriod === 30 && idx % 3 !== 0) drawLabel = false;
-        if (currentChartPeriod === 90 && idx % 9 !== 0) drawLabel = false;
+        if (count > 7 && currentChartPeriod === 30 && idx % 3 !== 0) drawLabel = false;
+        if (count > 7 && currentChartPeriod === 90 && idx % 9 !== 0) drawLabel = false;
         
         if (drawLabel) {
+            const dateObj = new Date(p.entry.date);
+            const dayStr = dateObj.getDate().toString().padStart(2, '0');
+            const monthStr = (dateObj.getMonth() + 1).toString().padStart(2, '0');
             ctx.fillText(`${dayStr}/${monthStr}`, p.x, height - paddingBottom + 18);
         }
     });
+
+    renderChartLegend();
+}
 
     // Draw Title/Indicator
     ctx.fillStyle = '#f8fafc';

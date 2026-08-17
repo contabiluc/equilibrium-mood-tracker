@@ -400,14 +400,27 @@
                     </div>
                 </div>
 
-                <!-- 3. GRAFIC (Evoluția dispoziției) -->
+                <!-- 3. GRAFIC (Evoluție calibrată & comutator de metrici) -->
                 <div class="chart-container glass">
-                    <div class="chart-header">
-                        <h3>Evoluția dispoziției</h3>
-                        <div class="chart-filters" id="chart-filters-container">
-                            <button class="filter-btn active" id="filter-btn-7" onclick="changeChartPeriod(7)">7 Zile</button>
-                            <button class="filter-btn" id="filter-btn-30" onclick="changeChartPeriod(30)">30 Zile</button>
-                            <button class="filter-btn" id="filter-btn-90" onclick="changeChartPeriod(90)">90 Zile</button>
+                    <div class="chart-header-row">
+                        <div class="chart-header-title-box">
+                            <h3 id="chart-main-title">Evoluția dispoziției</h3>
+                            <p class="chart-subtitle" id="chart-main-sub">Scară calibrată: -5 (Depresie) la +5 (Manie)</p>
+                        </div>
+                        
+                        <div class="chart-controls-group">
+                            <div class="chart-metric-selector" id="chart-metric-selector">
+                                <button class="metric-btn active" data-metric="mood" onclick="setChartMetric('mood')">💜 Dispoziție</button>
+                                <button class="metric-btn" data-metric="sleep" onclick="setChartMetric('sleep')">😴 Somn</button>
+                                <button class="metric-btn" data-metric="anxiety" onclick="setChartMetric('anxiety')">⚡ Anxietate</button>
+                                <button class="metric-btn" data-metric="energy" onclick="setChartMetric('energy')">🔋 Energie</button>
+                                <button class="metric-btn" data-metric="all" onclick="setChartMetric('all')">📊 Toate</button>
+                            </div>
+                            <div class="chart-filters" id="chart-filters-container">
+                                <button class="filter-btn active" id="filter-btn-7" onclick="changeChartPeriod(7)">7 Zile</button>
+                                <button class="filter-btn" id="filter-btn-30" onclick="changeChartPeriod(30)">30 Zile</button>
+                                <button class="filter-btn" id="filter-btn-90" onclick="changeChartPeriod(90)">90 Zile</button>
+                            </div>
                         </div>
                     </div>
 
@@ -425,10 +438,49 @@
                     <div class="canvas-wrapper" id="canvas-wrapper">
                         <canvas id="mood-chart"></canvas>
                     </div>
+
                     <div class="chart-legend" id="chart-legend">
-                        <span class="legend-item"><span class="legend-dot mood-dot"></span> Dispoziție (-5 la +5)</span>
-                        <span class="legend-item"><span class="legend-dot sleep-dot"></span> Somn (ore)</span>
-                        <span class="legend-item"><span class="legend-dot anxiety-dot"></span> Anxietate (0 la 10)</span>
+                        <!-- Dynamic legend updated based on selected metric -->
+                    </div>
+                </div>
+
+                <!-- 3b. MINI-SPARKLINES DEDICATE (Dintr-o privire pentru fiecare indicator) -->
+                <div id="mini-sparklines-grid" class="mini-sparklines-grid">
+                    <div class="sparkline-card glass" onclick="setChartMetric('mood')">
+                        <div class="sparkline-header">
+                            <span class="sparkline-title">💜 Dispoziție</span>
+                            <span class="sparkline-val" id="sparkline-val-mood">-</span>
+                        </div>
+                        <div class="sparkline-canvas-box">
+                            <canvas id="sparkline-canvas-mood" class="sparkline-canvas"></canvas>
+                        </div>
+                    </div>
+                    <div class="sparkline-card glass" onclick="setChartMetric('sleep')">
+                        <div class="sparkline-header">
+                            <span class="sparkline-title">😴 Somn</span>
+                            <span class="sparkline-val" id="sparkline-val-sleep">-</span>
+                        </div>
+                        <div class="sparkline-canvas-box">
+                            <canvas id="sparkline-canvas-sleep" class="sparkline-canvas"></canvas>
+                        </div>
+                    </div>
+                    <div class="sparkline-card glass" onclick="setChartMetric('anxiety')">
+                        <div class="sparkline-header">
+                            <span class="sparkline-title">⚡ Anxietate</span>
+                            <span class="sparkline-val" id="sparkline-val-anxiety">-</span>
+                        </div>
+                        <div class="sparkline-canvas-box">
+                            <canvas id="sparkline-canvas-anxiety" class="sparkline-canvas"></canvas>
+                        </div>
+                    </div>
+                    <div class="sparkline-card glass" onclick="setChartMetric('energy')">
+                        <div class="sparkline-header">
+                            <span class="sparkline-title">🔋 Energie</span>
+                            <span class="sparkline-val" id="sparkline-val-energy">-</span>
+                        </div>
+                        <div class="sparkline-canvas-box">
+                            <canvas id="sparkline-canvas-energy" class="sparkline-canvas"></canvas>
+                        </div>
                     </div>
                 </div>
 
