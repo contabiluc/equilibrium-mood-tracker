@@ -275,27 +275,27 @@ function switchTab(tabId, skipReset = false) {
     const headerSubtitle = document.getElementById('header-subtitle');
     
     if (tabId === 'dashboard') {
-        headerTitle.textContent = "Staicumine";
+        headerTitle.textContent = "Acasă";
         headerSubtitle.textContent = "Monitorizează-ți starea. Înțelege-ți tiparele.";
         updateDashboard();
     } else if (tabId === 'log') {
-        headerTitle.textContent = "Check-in Zilnic";
+        headerTitle.textContent = "Check-in";
         headerSubtitle.textContent = "Urmărește-ți dispoziția, somnul și factorii care îți influențează starea.";
         if (!skipReset) {
             resetLogForm();
         }
     } else if (tabId === 'history') {
-        headerTitle.textContent = "Istoric & Evoluție";
+        headerTitle.textContent = "Istoric";
         headerSubtitle.textContent = "Revizuiește toate înregistrările tale și observă dinamica emoțională.";
         renderHistory();
     } else if (tabId === 'safety') {
-        headerTitle.textContent = "Plan de Siguranță";
+        headerTitle.textContent = "Plan de siguranță";
         headerSubtitle.textContent = "Strategii personale și resurse de suport în caz de criză.";
     } else if (tabId === 'settings') {
-        headerTitle.textContent = "Securitate Date & Setări";
+        headerTitle.textContent = "Date & setări";
         headerSubtitle.textContent = "Exportă, importă sau șterge datele stocate exclusiv în browser.";
     } else if (tabId === 'guides') {
-        headerTitle.textContent = "Ghiduri & Articole Utile";
+        headerTitle.textContent = "Resurse";
         headerSubtitle.textContent = "Recomandări bazate pe dovezi științifice pentru calmarea anxietății, somn odihnitor și echilibru emotiv.";
     }
 }
