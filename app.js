@@ -240,7 +240,6 @@ function openMobileMenu() {
     if (backdrop) backdrop.classList.add('active');
     document.body.style.overflow = 'hidden';
 }
-
 function closeMobileMenu() {
     const sidebar = document.querySelector('.sidebar');
     const backdrop = document.getElementById('mobile-menu-backdrop');
@@ -250,7 +249,7 @@ function closeMobileMenu() {
 }
 
 // Tab view switching logic
-function switchTab(tabId) {
+function switchTab(tabId, skipReset = false) {
     // Always close mobile sandwich menu when a tab is selected
     closeMobileMenu();
 
@@ -282,14 +281,16 @@ function switchTab(tabId) {
     } else if (tabId === 'log') {
         headerTitle.textContent = "Check-in Zilnic";
         headerSubtitle.textContent = "Urmărește-ți dispoziția, somnul și factorii care îți influențează starea.";
-        resetLogForm();
-    } else if (tabId === 'safety') {
-        headerTitle.textContent = "Plan de Criză Personal";
-        headerSubtitle.textContent = "Pregătire preventivă și resurse rapide de asistență psihologică.";
+        if (!skipReset) {
+            resetLogForm();
+        }
     } else if (tabId === 'history') {
-        headerTitle.textContent = "Istoricul Înregistrărilor";
-        headerSubtitle.textContent = "Parcurge sau editează însemnările tale din zilele anterioare.";
+        headerTitle.textContent = "Istoric & Evoluție";
+        headerSubtitle.textContent = "Revizuiește toate înregistrările tale și observă dinamica emoțională.";
         renderHistory();
+    } else if (tabId === 'safety') {
+        headerTitle.textContent = "Plan de Siguranță";
+        headerSubtitle.textContent = "Strategii personale și resurse de suport în caz de criză.";
     } else if (tabId === 'settings') {
         headerTitle.textContent = "Securitate Date & Setări";
         headerSubtitle.textContent = "Exportă, importă sau șterge datele stocate exclusiv în browser.";
@@ -299,25 +300,88 @@ function switchTab(tabId) {
     }
 }
 
-// Toggle Guide Read More expander
-function toggleGuideReadMore(id) {
-    const content = document.getElementById(`guide-content-${id}`);
-    const btn = document.getElementById(`btn-toggle-${id}`);
-    if (!content || !btn) return;
+// Edit Existing Entry Handler
+let isEditingMode = false;
 
-    if (content.style.display === 'none') {
-        content.style.display = 'block';
-        btn.textContent = 'Ascunde articolul ↑';
-        btn.classList.add('expanded');
-    } else {
-        content.style.display = 'none';
-        btn.textContent = 'Citește tot articolul ↓';
-        btn.classList.remove('expanded');
+function editEntry(dateStr) {
+    const entry = moodEntries.find(e => e.date === dateStr);
+    if (!entry) {
+        showToast("Nu am găsit înregistrarea pentru această dată.");
+        return;
     }
+
+    isEditingMode = true;
+    
+    // Switch to log tab without resetting form
+    switchTab('log', true);
+
+    // Populate form inputs
+    document.getElementById('entry-date').value = entry.date;
+    setMoodValue(entry.mood);
+
+    document.getElementById('sleep-hours').value = entry.sleep;
+    updateSliderVal('sleep-hours-val', entry.sleep);
+
+    document.getElementById('anxiety-level').value = entry.anxiety;
+    updateSliderVal('anxiety-val', entry.anxiety);
+
+    document.getElementById('energy-level').value = entry.energy;
+    updateSliderVal('energy-val', entry.energy);
+
+    document.getElementById('medication-taken').checked = !!entry.medicationTaken;
+    document.getElementById('journal-notes').value = entry.notes || '';
+
+    // Populate Symptoms Checklist
+    document.querySelectorAll('.symptom-card').forEach(card => {
+        const input = card.querySelector('input[name="symptom"]');
+        if (input) {
+            const isChecked = entry.symptoms && entry.symptoms.includes(input.value);
+            input.checked = isChecked;
+            if (isChecked) {
+                card.classList.add('selected');
+            } else {
+                card.classList.remove('selected');
+            }
+        }
+    });
+
+    // Update Form Header Title & Submit CTA
+    const formTitle = document.querySelector('#view-log .form-header-bar h2');
+    if (formTitle) formTitle.textContent = "Editează check-in-ul";
+
+    const submitBtn = document.querySelector('#view-log button[type="submit"]');
+    if (submitBtn) submitBtn.textContent = "Actualizează check-in-ul";
+
+    // Show edit mode badge
+    let editBadge = document.getElementById('edit-mode-notice-badge');
+    if (!editBadge) {
+        editBadge = document.createElement('div');
+        editBadge.id = 'edit-mode-notice-badge';
+        editBadge.className = 'edit-mode-notice-badge';
+        const formHeader = document.querySelector('#view-log .form-header-bar');
+        if (formHeader) formHeader.parentNode.insertBefore(editBadge, formHeader.nextSibling);
+    }
+    editBadge.innerHTML = `✏️ Modifici check-in-ul salvat din <strong>${formatDateRO(entry.date)}</strong>`;
+    editBadge.style.display = 'block';
+
+    checkExistingEntryForDate(entry.date);
+    showToast(`Editare activă pentru ${formatDateRO(entry.date)}`);
 }
 
 // Reset log form input values
 function resetLogForm() {
+    isEditingMode = false;
+
+    // Reset Form Header & CTA text
+    const formTitle = document.querySelector('#view-log .form-header-bar h2');
+    if (formTitle) formTitle.textContent = "Înregistrează starea de azi";
+
+    const submitBtn = document.querySelector('#view-log button[type="submit"]');
+    if (submitBtn) submitBtn.textContent = "Salvează check-in-ul";
+
+    const editBadge = document.getElementById('edit-mode-notice-badge');
+    if (editBadge) editBadge.style.display = 'none';
+
     document.getElementById('entry-date').value = new Date().toISOString().split('T')[0];
     setMoodValue(0);
     
@@ -599,7 +663,7 @@ function renderHeroCard() {
                 </div>
                 <div class="hero-completed-actions">
                     <span class="completed-badge">✓ Check-in complet pentru azi</span>
-                    <button class="edit-btn-hero" onclick="switchTab('log')">
+                    <button class="edit-btn-hero" onclick="editEntry('${todayStr}')">
                         <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
                         <span>Editează</span>
                     </button>
@@ -1140,12 +1204,16 @@ function renderHistory() {
             ${symptomsHtml}
 
             <div class="history-item-footer">
+                <button class="edit-entry-btn" onclick="editEntry('${e.date}')">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                    Editează
+                </button>
                 <button class="delete-entry-btn" onclick="deleteEntry('${e.date}')">
                     <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
                         <polyline points="3 6 5 6 21 6"></polyline>
                         <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
                     </svg>
-                    Șterge Înregistrarea
+                    Șterge
                 </button>
             </div>
         `;
