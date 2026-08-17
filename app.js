@@ -2086,12 +2086,22 @@ function closeCrisisHelpModal() {
 
 function startCrisisBreathing() {
     closeCrisisHelpModal();
+    navigateToBreathingExercise();
+}
+
+function navigateToBreathingExercise() {
     switchTab('safety');
     setTimeout(() => {
-        const breathingBox = document.getElementById('breathing-circle');
-        if (breathingBox) breathingBox.scrollIntoView({ behavior: 'smooth' });
-        if (!breathingActive) toggleBreathingExercise();
-    }, 300);
+        const targetElement = document.getElementById('breathing-widget-container') || document.querySelector('.actionable-guide-card') || document.getElementById('breathing-circle');
+        if (targetElement) {
+            targetElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            targetElement.classList.add('highlight-pulse');
+            setTimeout(() => targetElement.classList.remove('highlight-pulse'), 1500);
+        }
+        if (!breathingActive) {
+            toggleBreathingExercise();
+        }
+    }, 250);
 }
 
 // Articles & Guides expand/collapse handler

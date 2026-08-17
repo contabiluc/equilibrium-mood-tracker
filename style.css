@@ -4391,3 +4391,14 @@ textarea:focus {
 .sugg-details-body p {
     margin-bottom: 0.35rem;
 }
+
+/* Highlight Pulse Animation for Direct Scroll Navigation */
+.highlight-pulse {
+    animation: pulseGlow 1.5s ease;
+}
+
+@keyframes pulseGlow {
+    0% { box-shadow: 0 0 0 rgba(99, 102, 241, 0); }
+    50% { box-shadow: 0 0 25px rgba(99, 102, 241, 0.6); border-color: var(--primary-light); }
+    100% { box-shadow: 0 0 0 rgba(99, 102, 241, 0); }
+}
