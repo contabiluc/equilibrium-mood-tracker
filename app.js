@@ -1402,76 +1402,162 @@ function getMoodColor(val) {
     return '#6366f1';
 }
 
-// Render History Journal Entries List
+// Render History Journal Entries List (Grouped by Month & Scannable Compact Cards)
 function renderHistory() {
     const list = document.getElementById('history-list');
+    if (!list) return;
     list.innerHTML = '';
 
     if (moodEntries.length === 0) {
         list.innerHTML = `
             <div class="empty-state">
                 <p>Nu există nicio înregistrare salvată până acum.</p>
-                <button class="action-btn-primary" onclick="switchTab('log')">Adaugă prima ta stare</button>
+                <button class="action-btn-primary" onclick="switchTab('log')">Fă primul check-in</button>
             </div>
         `;
         return;
     }
 
-    // Copy and reverse order to show newest first
+    // Sort newest first
     const sortedDesc = [...moodEntries].sort((a, b) => new Date(b.date) - new Date(a.date));
 
-    sortedDesc.forEach(e => {
-        const item = document.createElement('div');
-        item.className = 'history-item';
-        item.setAttribute('data-id', e.date);
+    // Group by Month & Year (e.g. "AUGUST 2026")
+    const groupedByMonth = {};
+    sortedDesc.forEach(entry => {
+        const dateObj = new Date(entry.date);
+        const monthNamesRO = [
+            "IANUARIE", "FEBRUARIE", "MARTIE", "APRILIE", "MAI", "IUNIE",
+            "IULIE", "AUGUST", "SEPTEMBRIE", "OCTOMBRIE", "NOIEMBRIE", "DECEMBRIE"
+        ];
+        const monthYearKey = `${monthNamesRO[dateObj.getMonth()]} ${dateObj.getFullYear()}`;
+        if (!groupedByMonth[monthYearKey]) {
+            groupedByMonth[monthYearKey] = [];
+        }
+        groupedByMonth[monthYearKey].push(entry);
+    });
 
-        // Symptoms HTML string builder
-        let symptomsHtml = '';
-        if (e.symptoms && e.symptoms.length > 0) {
-            symptomsHtml = `
-                <div class="history-symptoms">
-                    ${e.symptoms.map(s => `<span class="symptom-tag">${capitalizeFirst(s)}</span>`).join('')}
+    // Render grouped months
+    Object.keys(groupedByMonth).forEach(monthKey => {
+        const monthEntries = groupedByMonth[monthKey];
+
+        const monthGroup = document.createElement('div');
+        monthGroup.className = 'history-month-group';
+
+        const monthHeader = document.createElement('div');
+        monthHeader.className = 'history-month-header';
+        monthHeader.innerHTML = `
+            <span class="month-title">${monthKey}</span>
+            <span class="month-count">${monthEntries.length} ${monthEntries.length === 1 ? 'check-in' : 'check-in-uri'}</span>
+        `;
+        monthGroup.appendChild(monthHeader);
+
+        const itemsBox = document.createElement('div');
+        itemsBox.className = 'history-items-box';
+
+        monthEntries.forEach(e => {
+            const dateObj = new Date(e.date);
+            const dayNum = dateObj.getDate().toString().padStart(2, '0');
+            const monthShortNamesRO = ["JAN", "FEB", "MAR", "APR", "MAI", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+            const monthShort = monthShortNamesRO[dateObj.getMonth()];
+
+            const moodSign = e.mood > 0 ? "+" : "";
+            const moodValText = e.mood === 0 ? "0" : `${moodSign}${e.mood}`;
+
+            // Build symptoms text preview
+            let symptomsText = '';
+            if (e.symptoms && e.symptoms.length > 0) {
+                symptomsText = e.symptoms.map(s => capitalizeFirst(s)).join(', ');
+            }
+
+            const item = document.createElement('div');
+            item.className = 'history-item-compact glass';
+            item.setAttribute('data-id', e.date);
+            item.onclick = () => showEntryDetailModal(e.date);
+
+            item.innerHTML = `
+                <div class="history-item-left">
+                    <div class="history-date-badge">
+                        <span class="day-num">${dayNum}</span>
+                        <span class="month-name">${monthShort}</span>
+                    </div>
+                    <div class="history-metrics-row">
+                        <span class="metric-chip mood-chip" style="background:${getMoodColor(e.mood)}">${moodValText}</span>
+                        <span class="metric-chip sleep-chip">${e.sleep}h</span>
+                        <span class="metric-chip anxiety-chip">anx. ${e.anxiety}</span>
+                        <span class="metric-chip energy-chip">en. ${e.energy}</span>
+                    </div>
+                </div>
+
+                <div class="history-item-right" onclick="event.stopPropagation()">
+                    <div class="history-sub-info">
+                        <span class="med-tag ${e.medicationTaken ? 'yes' : 'no'}">${e.medicationTaken ? '✓ Tratament' : '✗ Fără tratament'}</span>
+                        ${symptomsText ? `<span class="symptoms-summary-tag">${symptomsText}</span>` : ''}
+                    </div>
+                    <div class="history-actions-inline">
+                        <button class="btn-detail-link" onclick="showEntryDetailModal('${e.date}')">Vezi detalii →</button>
+                        <button class="btn-edit-link" onclick="editEntry('${e.date}')" title="Editează">✏️</button>
+                    </div>
                 </div>
             `;
-        }
+            itemsBox.appendChild(item);
+        });
 
-        // Mood label evaluation
-        let moodSign = e.mood > 0 ? "+" : "";
-        let moodClass = getMoodTextClass(e.mood);
-        let moodValText = e.mood === 0 ? "0 (Stabil)" : `${moodSign}${e.mood}`;
-
-        item.innerHTML = `
-            <div class="history-item-header">
-                <div class="history-date">${formatDateRO(e.date)}</div>
-                <div class="history-indicators">
-                    <span class="indicator-badge badge-mood ${moodClass}" style="background-color: ${getMoodColor(e.mood)}">Dispoziție: ${moodValText}</span>
-                    <span class="indicator-badge badge-sleep">Somn: ${e.sleep}h</span>
-                    <span class="indicator-badge badge-anxiety">Anxietate: ${e.anxiety}</span>
-                    <span class="indicator-badge badge-energy">Energie: ${e.energy}</span>
-                    <span class="indicator-badge badge-med ${e.medicationTaken ? 'yes' : 'no'}">${e.medicationTaken ? 'Medicament Luat' : 'Medicament Lipsă'}</span>
-                </div>
-            </div>
-            
-            ${e.notes ? `<div class="history-body">${escapeHTML(e.notes)}</div>` : '<div class="history-body italic" style="color: var(--text-muted)">Nicio notă sau jurnal scris în această zi.</div>'}
-            
-            ${symptomsHtml}
-
-            <div class="history-item-footer">
-                <button class="edit-entry-btn" onclick="editEntry('${e.date}')">
-                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-                    Editează
-                </button>
-                <button class="delete-entry-btn" onclick="deleteEntry('${e.date}')">
-                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2">
-                        <polyline points="3 6 5 6 21 6"></polyline>
-                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                    </svg>
-                    Șterge
-                </button>
-            </div>
-        `;
-        list.appendChild(item);
+        monthGroup.appendChild(itemsBox);
+        list.appendChild(monthGroup);
     });
+}
+
+function showEntryDetailModal(dateStr) {
+    const entry = moodEntries.find(e => e.date === dateStr);
+    if (!entry) return;
+
+    const modal = document.getElementById('entry-detail-modal');
+    if (!modal) return;
+
+    document.getElementById('detail-modal-date').textContent = formatDateRO(entry.date);
+    
+    const moodSign = entry.mood > 0 ? "+" : "";
+    document.getElementById('detail-mood').textContent = entry.mood === 0 ? "0 (Stabil)" : `${moodSign}${entry.mood}`;
+    document.getElementById('detail-sleep').textContent = `${entry.sleep}h`;
+    document.getElementById('detail-anxiety').textContent = `${entry.anxiety} / 10`;
+    document.getElementById('detail-energy').textContent = `${entry.energy} / 10`;
+    document.getElementById('detail-medication').textContent = entry.medicationTaken 
+        ? "✓ Am urmat tratamentul prescris astăzi" 
+        : "✗ Nu am urmat tratamentul pentru această zi";
+
+    // Symptoms
+    const symptomsBox = document.getElementById('detail-symptoms-box');
+    const symptomsList = document.getElementById('detail-symptoms-list');
+    if (entry.symptoms && entry.symptoms.length > 0) {
+        symptomsBox.style.display = 'block';
+        symptomsList.innerHTML = entry.symptoms.map(s => `<span class="symptom-tag-pill">${capitalizeFirst(s)}</span>`).join('');
+    } else {
+        symptomsBox.style.display = 'none';
+    }
+
+    // Notes
+    const notesBox = document.getElementById('detail-notes-box');
+    const notesText = document.getElementById('detail-notes-text');
+    if (entry.notes && entry.notes.trim()) {
+        notesBox.style.display = 'block';
+        notesText.textContent = entry.notes;
+    } else {
+        notesBox.style.display = 'none';
+    }
+
+    // Action buttons
+    const btnEdit = document.getElementById('detail-btn-edit');
+    const btnDelete = document.getElementById('detail-btn-delete');
+
+    if (btnEdit) btnEdit.onclick = () => { closeEntryDetailModal(); editEntry(dateStr); };
+    if (btnDelete) btnDelete.onclick = () => { closeEntryDetailModal(); deleteEntry(dateStr); };
+
+    modal.style.display = 'flex';
+}
+
+function closeEntryDetailModal() {
+    const modal = document.getElementById('entry-detail-modal');
+    if (modal) modal.style.display = 'none';
 }
 
 // Capitalize helper
