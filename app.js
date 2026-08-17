@@ -1495,7 +1495,8 @@ function renderHistory() {
                     </div>
                     <div class="history-actions-inline">
                         <button class="btn-detail-link" onclick="showEntryDetailModal('${e.date}')">Vezi detalii →</button>
-                        <button class="btn-edit-link" onclick="editEntry('${e.date}')" title="Editează">✏️</button>
+                        <button class="btn-edit-action" onclick="editEntry('${e.date}')">✏️ Editează</button>
+                        <button class="btn-delete-action" onclick="deleteEntry('${e.date}')" title="Șterge">🗑️</button>
                     </div>
                 </div>
             `;

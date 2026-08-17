@@ -3832,6 +3832,38 @@ textarea:focus {
     cursor: pointer;
 }
 
+.btn-edit-action {
+    background: rgba(99, 102, 241, 0.08);
+    border: 1px solid rgba(99, 102, 241, 0.25);
+    color: var(--primary-light);
+    font-size: 0.78rem;
+    font-weight: 600;
+    padding: 0.3rem 0.6rem;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-edit-action:hover {
+    background: rgba(99, 102, 241, 0.2);
+    border-color: var(--primary-light);
+}
+
+.btn-delete-action {
+    background: rgba(244, 63, 94, 0.08);
+    border: 1px solid rgba(244, 63, 94, 0.25);
+    color: #f43f5e;
+    font-size: 0.78rem;
+    padding: 0.3rem 0.5rem;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-delete-action:hover {
+    background: rgba(244, 63, 94, 0.2);
+}
+
 /* Entry Detail Modal Overlay */
 .detail-modal-card {
     max-width: 460px;
