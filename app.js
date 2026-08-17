@@ -872,21 +872,40 @@ function calculateStats(entries) {
     }
 }
 
-// Generate dynamic statistical insights from data (Cautious & Non-Clinical)
+// Generate dynamic statistical insights from data (Graduated Confidence UX)
 function renderInsights(entries) {
     const list = document.getElementById('insights-list');
     if (!list) return;
     list.innerHTML = '';
     
-    if (entries.length < 3) {
+    const count = entries.length;
+
+    // Stage 1: 0 - 2 check-ins -> Summary only, no observations yet
+    if (count < 3) {
         list.innerHTML = `
-            <div class="empty-state-insights">
-                <svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" stroke-width="1.5" style="color:var(--text-muted);margin-bottom:0.6rem">
-                    <path d="M9 19v-6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2zm0 0V9a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v10m-6 0a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2m0 0V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-2a2 2 0 0 1-2-2z"/>
-                </svg>
-                <p style="font-size:0.88rem;color:var(--text-muted);text-align:center;line-height:1.5">Completează <strong style="color:var(--text-secondary)">cel puțin 3 check-in-uri</strong> pentru ca secțiunea „Ce observăm” să-ți arate tipare și asocieri relevante din datele tale.</p>
+            <div class="empty-state-insights" style="text-align:center;padding:1.25rem 0.5rem">
+                <div class="empty-icon-badge" style="width:36px;height:36px;font-size:1.1rem;margin:0 auto 0.6rem;display:flex;align-items:center;justify-content:center;background:rgba(99,102,241,0.12);border-radius:50%">📈</div>
+                <h4 style="font-size:0.92rem;font-weight:700;color:var(--text-primary);margin-bottom:0.3rem">Colectăm mai multe date</h4>
+                <p style="font-size:0.84rem;color:var(--text-muted);line-height:1.5;max-width:320px;margin:0 auto">
+                    Secțiunea <strong>„Ce observăm”</strong> se activează după <strong>3 check-in-uri</strong> pentru a-ți arăta primele observații. Continuă să-ți înregistrezi starea zi de zi!
+                </p>
             </div>`;
         return;
+    }
+
+    // Determine confidence level badge based on check-in count
+    let confidenceLabel = '';
+    let confidenceBadgeClass = '';
+    
+    if (count >= 3 && count <= 6) {
+        confidenceLabel = '🌱 Observație preliminară';
+        confidenceBadgeClass = 'badge-preliminary';
+    } else if (count >= 7 && count <= 29) {
+        confidenceLabel = '📊 Tipar preliminar';
+        confidenceBadgeClass = 'badge-pattern';
+    } else {
+        confidenceLabel = '🌟 Tendință consistentă';
+        confidenceBadgeClass = 'badge-trend';
     }
 
     const insights = [];
@@ -895,23 +914,25 @@ function renderInsights(entries) {
     const lowSleepDays = entries.filter(e => e.sleep < 6.5);
     const normalSleepDays = entries.filter(e => e.sleep >= 6.5);
     
-    if (lowSleepDays.length >= 2 && normalSleepDays.length >= 2) {
+    if (lowSleepDays.length >= 1 && normalSleepDays.length >= 1) {
         const avgAnxietyLowSleep = lowSleepDays.reduce((sum, e) => sum + e.anxiety, 0) / lowSleepDays.length;
         const avgAnxietyNormalSleep = normalSleepDays.reduce((sum, e) => sum + e.anxiety, 0) / normalSleepDays.length;
         
-        if (avgAnxietyLowSleep > avgAnxietyNormalSleep + 1) {
+        if (avgAnxietyLowSleep > avgAnxietyNormalSleep + 0.8) {
             insights.push({
                 type: 'alert',
                 icon: '😴',
                 title: 'Somnul și anxietatea par asociate',
-                desc: `În ultimele ${entries.length} zile, anxietatea medie a fost de ${avgAnxietyLowSleep.toFixed(1)}/10 în zilele cu mai puțin de 6.5 ore de somn, comparativ cu ${avgAnxietyNormalSleep.toFixed(1)}/10 în cele cu somn suficient.`
+                desc: count <= 6 
+                    ? `O primă observație: anxietatea medie a fost de ${avgAnxietyLowSleep.toFixed(1)}/10 în zilele cu mai puțin de 6.5h somn, față de ${avgAnxietyNormalSleep.toFixed(1)}/10 în zilele cu somn odihnitor.`
+                    : `În ultimele ${count} zile, anxietatea medie a fost de ${avgAnxietyLowSleep.toFixed(1)}/10 în zilele cu mai puțin de 6.5 ore de somn, comparativ cu ${avgAnxietyNormalSleep.toFixed(1)}/10 în cele cu somn suficient.`
             });
         }
     }
 
-    // Analyze High Energy/Mood Pattern (Cautious & Friendly language, NO clinical diagnosis)
+    // Analyze High Energy/Mood Pattern (Cautious & Friendly language)
     const manicDays = entries.filter(e => e.mood >= 2);
-    if (manicDays.length >= 2) {
+    if (manicDays.length >= 1) {
         const avgSleepManic = manicDays.reduce((sum, e) => sum + e.sleep, 0) / manicDays.length;
         if (avgSleepManic < 6) {
             insights.push({
@@ -930,25 +951,25 @@ function renderInsights(entries) {
             type: 'alert',
             icon: '💊',
             title: `Monitorizarea tratamentului`,
-            desc: `Ai înregistrat ${missedMedDays.length} ${missedMedDays.length === 1 ? 'zi' : 'zile'} fără tratament în ultimele ${entries.length} zile. Menținerea rutei de tratament sprijină stabilitatea emoțională.`
+            desc: `Ai înregistrat ${missedMedDays.length} ${missedMedDays.length === 1 ? 'zi' : 'zile'} fără tratament în ultimele ${count} zile. Menținerea rutei de tratament sprijină stabilitatea emoțională.`
         });
     } else {
         insights.push({
             type: 'stable',
             icon: '🌱',
             title: 'Tratament urmat consecvent',
-            desc: `Ai bifat tratamentul în fiecare zi din cele ${entries.length} zile înregistrate.`
+            desc: `Ai bifat tratamentul în fiecare zi din cele ${count} zile înregistrate.`
         });
     }
 
     // General Stable Streak
     const stableDays = entries.filter(e => e.mood === 0);
-    if (stableDays.length >= 4) {
+    if (stableDays.length >= 2) {
         insights.push({
             type: 'stable',
             icon: '⚖️',
             title: `${stableDays.length} zile de echilibru menținut`,
-            desc: `Ai menținut o stare stabilă în cea mai mare parte a acestei perioade. Continuă obiceiurile sănătoase de somn.`
+            desc: `Ai menținut o stare stabilă în această perioadă. Continuă obiceiurile sănătoase de somn.`
         });
     }
 
@@ -960,9 +981,12 @@ function renderInsights(entries) {
             const card = document.createElement('div');
             card.className = `insight-card ${ins.type}`;
             card.innerHTML = `
-                <div class="insight-title">${ins.icon ? ins.icon + ' ' : ''}${ins.title}</div>
+                <div class="insight-card-top">
+                    <span class="insight-title">${ins.icon ? ins.icon + ' ' : ''}${ins.title}</span>
+                    <span class="confidence-badge ${confidenceBadgeClass}">${confidenceLabel}</span>
+                </div>
                 <div class="insight-desc">${ins.desc}</div>
-                <div class="insight-footer">🔎 Bazat pe ${entries.length} check-in-uri</div>
+                <div class="insight-footer">🔎 Bazat pe ${count} check-in-uri</div>
             `;
             list.appendChild(card);
         });
