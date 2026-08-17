@@ -2047,24 +2047,21 @@ function openCrisisHelpModal() {
     const nameEl = document.getElementById('crisis-trust-name');
     const phoneLink = document.getElementById('crisis-trust-phone-link');
 
-    if (safetyPlanData && (safetyPlanData.contactName || safetyPlanData.contactPhone)) {
-        const contactName = safetyPlanData.contactName || "Persoană de încredere";
-        const contactPhone = safetyPlanData.contactPhone || "";
-        if (nameEl) nameEl.textContent = contactPhone ? `${contactName} (${contactPhone})` : contactName;
+    if (typeof safetyPlan !== 'undefined' && safetyPlan && safetyPlan.emergencyName) {
+        const contactVal = safetyPlan.emergencyName.trim();
+        if (nameEl) nameEl.textContent = contactVal;
         if (phoneLink) {
-            if (contactPhone) {
-                phoneLink.href = `tel:${contactPhone.replace(/\s+/g, '')}`;
-                phoneLink.textContent = "📞 Sună acum";
-                phoneLink.onclick = null;
+            // Check if contactVal contains phone numbers
+            const digitsMatch = contactVal.match(/[\d\s+()-]{5,}/);
+            if (digitsMatch) {
+                const phoneDigits = digitsMatch[0].replace(/[^\d+]/g, '');
+                phoneLink.href = `tel:${phoneDigits}`;
+                phoneLink.textContent = `📞 Sună (${phoneDigits})`;
             } else {
                 phoneLink.href = "#";
-                phoneLink.textContent = "⚙️ Adaugă telefon";
-                phoneLink.onclick = (e) => {
-                    e.preventDefault();
-                    closeCrisisHelpModal();
-                    switchTab('safety');
-                };
+                phoneLink.textContent = "📞 Sună";
             }
+            phoneLink.onclick = null;
         }
     } else {
         if (nameEl) nameEl.textContent = "Neconfigurată în Planul de Siguranță.";

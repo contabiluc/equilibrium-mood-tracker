@@ -2187,13 +2187,14 @@ textarea:focus {
 /* -------------------------------------------------------
    Modal Backdrop & Base Box
 ------------------------------------------------------- */
+.modal,
 .modal-backdrop {
     position: fixed;
     inset: 0;
-    z-index: 1000;
-    background: rgba(4, 8, 20, 0.8);
-    backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
+    z-index: 2000;
+    background: rgba(4, 8, 20, 0.85);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     display: flex;
     align-items: center;
     justify-content: center;
