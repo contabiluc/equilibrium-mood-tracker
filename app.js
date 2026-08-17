@@ -2093,3 +2093,23 @@ function startCrisisBreathing() {
         if (!breathingActive) toggleBreathingExercise();
     }, 300);
 }
+
+// Articles & Guides expand/collapse handler
+function toggleGuideReadMore(guideId) {
+    const content = document.getElementById(`guide-content-${guideId}`);
+    const btn = document.getElementById(`btn-toggle-${guideId}`);
+    const chevron = document.getElementById(`chevron-${guideId}`);
+    if (!content || !btn) return;
+
+    const spanText = btn.querySelector('span');
+
+    if (content.style.display === 'none' || !content.style.display) {
+        content.style.display = 'block';
+        if (spanText) spanText.textContent = 'Ascunde articolul';
+        if (chevron) chevron.style.transform = 'rotate(180deg)';
+    } else {
+        content.style.display = 'none';
+        if (spanText) spanText.textContent = 'Citește articolul explicativ';
+        if (chevron) chevron.style.transform = 'rotate(0deg)';
+    }
+}

@@ -2671,27 +2671,37 @@ textarea:focus {
     margin-bottom: 0.75rem;
 }
 
+.guide-action-hero {
+    margin-top: 0.75rem;
+    margin-bottom: 0.5rem;
+}
+
 .guide-toggle-btn {
     align-self: flex-start;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
     background: rgba(255, 255, 255, 0.04);
     border: 1px solid var(--card-border);
     color: var(--primary-light);
-    padding: 0.5rem 1rem;
+    padding: 0.5rem 0.85rem;
     border-radius: var(--radius-md);
     font-size: 0.85rem;
     font-weight: 600;
     cursor: pointer;
-    transition: background var(--transition-fast), border-color var(--transition-fast);
-    margin-top: auto;
+    transition: all 0.2s ease;
+    margin-top: 0.5rem;
+}
+
+.guide-toggle-btn .chevron {
+    font-size: 0.75rem;
+    transition: transform 0.25s ease;
 }
 
 .guide-toggle-btn:hover {
     background: rgba(99, 102, 241, 0.15);
     border-color: rgba(99, 102, 241, 0.4);
-}
-
-.guide-toggle-btn.expanded {
-    color: var(--text-secondary);
+    color: white;
 }
 
 /* -------------------------------------------------------

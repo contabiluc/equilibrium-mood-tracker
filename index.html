@@ -1044,8 +1044,22 @@
                     <article class="guide-card glass" id="guide-478">
                         <div class="guide-badge">Terapie &amp; Calmare</div>
                         <h3>Tehnica de Respirație 4-7-8: Cum să-ți reduci anxietatea în 2 minute</h3>
-                        <p class="guide-excerpt">Descoperă cum exercițiul 4-7-8 dezvoltat de Dr. Andrew Weil activează sistemul nervos parasimpatic și încetinește ritmul cardiac în momente de stres sau atac de panică.</p>
+                        <p class="guide-excerpt">Exercițiu ghidat pentru încetinirea ritmului cardiac și calmare rapidă în atacuri de panică sau stres sever.</p>
                         
+                        <!-- Action First CTA -->
+                        <div class="guide-action-hero">
+                            <button class="action-btn-primary" onclick="switchTab('safety'); setTimeout(() => toggleBreathingExercise(), 300);">
+                                🫁 Deschide Exercițiul Interactiv 4-7-8
+                            </button>
+                        </div>
+
+                        <div class="guide-divider"></div>
+
+                        <button class="guide-toggle-btn" id="btn-toggle-478" onclick="toggleGuideReadMore('478')">
+                            <span>Citește articolul explicativ</span>
+                            <span class="chevron" id="chevron-478">▼</span>
+                        </button>
+
                         <div class="guide-full-content" id="guide-content-478" style="display: none;">
                             <h4>Ce este metoda 4-7-8?</h4>
                             <p>Metoda 4-7-8 este o tehnică de respirație bazată pe practica străveche de pranayama. Ea funcționează ca un „tranchilizant natural” pentru sistemul nervos. Prin menținerea aerului și expirarea prelungită, reduci ritmul cardiac și semnalezi creierului că ești în siguranță.</p>
@@ -1057,21 +1071,28 @@
                                 <li><strong>Expiră complet pe gură</strong> făcând un sunet lin de șuierat timp de <strong>8 secunde</strong>.</li>
                                 <li>Repetă acest ciclu de 4 ori consecutiv.</li>
                             </ol>
-
-                            <div class="guide-action-box">
-                                <p>💡 <strong>Încearcă exercițiul ghidat direct în Staicumine:</strong></p>
-                                <button class="action-btn-primary" onclick="switchTab('safety'); setTimeout(() => toggleBreathingGuide(), 300);">Deschide Exercițiul 4-7-8 Interactiv</button>
-                            </div>
                         </div>
-
-                        <button class="guide-toggle-btn" id="btn-toggle-478" onclick="toggleGuideReadMore('478')">Citește tot articolul ↓</button>
                     </article>
 
                     <!-- Guide 2 -->
                     <article class="guide-card glass" id="guide-journal">
                         <div class="guide-badge">Auto-Monitorizare</div>
                         <h3>Cum se ține un Jurnal de Dispoziție pentru Psihoterapeut sau Psihiatru</h3>
-                        <p class="guide-excerpt">Află de ce scara bipolară (-5 la +5) este recomandată de medici și cum notarea zilnică a somnului și tratamentului te ajută la consultații.</p>
+                        <p class="guide-excerpt">Ghid practic despre notarea zilnică pe scara bipolară (-5 la +5), somn și tratament pentru consultații medicale eficiente.</p>
+
+                        <!-- Action First CTA -->
+                        <div class="guide-action-hero">
+                            <button class="action-btn-primary" onclick="switchTab('log')">
+                                📝 Adaugă o Înregistrare Nouă
+                            </button>
+                        </div>
+
+                        <div class="guide-divider"></div>
+
+                        <button class="guide-toggle-btn" id="btn-toggle-journal" onclick="toggleGuideReadMore('journal')">
+                            <span>Citește articolul explicativ</span>
+                            <span class="chevron" id="chevron-journal">▼</span>
+                        </button>
 
                         <div class="guide-full-content" id="guide-content-journal" style="display: none;">
                             <h4>De ce este important un jurnal de dispoziție?</h4>
@@ -1083,21 +1104,28 @@
                                 <li><strong>Durata Somnului:</strong> Somnul este cel mai stabil predictor al fluctuațiilor de dispoziție.</li>
                                 <li><strong>Aderența la Tratament:</strong> Notarea zilnică a medicației elimină dubiile privind dozele uitate.</li>
                             </ul>
-
-                            <div class="guide-action-box">
-                                <p>📊 <strong>Începe primul tău jurnal în Staicumine:</strong></p>
-                                <button class="action-btn-primary" onclick="switchTab('log')">Adaugă o Înregistrare Nouă</button>
-                            </div>
                         </div>
-
-                        <button class="guide-toggle-btn" id="btn-toggle-journal" onclick="toggleGuideReadMore('journal')">Citește tot articolul ↓</button>
                     </article>
 
                     <!-- Guide 3 -->
                     <article class="guide-card glass" id="guide-sleep">
                         <div class="guide-badge">Igienă Somn</div>
                         <h3>Somnul și Anxietatea: De ce 1-2 nopți albe îți schimbă starea emoțională</h3>
-                        <p class="guide-excerpt">Legătura dintre amigdala cerebrală și privarea de somn, precum și 5 reguli de aur pentru a-ți regla ritmul circadian.</p>
+                        <p class="guide-excerpt">Mecanismul neurobiologic dintre amigdala cerebrală și privarea de somn + 5 reguli de aur pentru ritmul circadian.</p>
+
+                        <!-- Action First CTA -->
+                        <div class="guide-action-hero">
+                            <button class="action-btn-primary" onclick="switchTab('dashboard')">
+                                📊 Verifică Orele de Somn în Dashboard
+                            </button>
+                        </div>
+
+                        <div class="guide-divider"></div>
+
+                        <button class="guide-toggle-btn" id="btn-toggle-sleep" onclick="toggleGuideReadMore('sleep')">
+                            <span>Citește articolul explicativ</span>
+                            <span class="chevron" id="chevron-sleep">▼</span>
+                        </button>
 
                         <div class="guide-full-content" id="guide-content-sleep" style="display: none;">
                             <h4>Mecanismul neurobiologic al somnului</h4>
@@ -1112,8 +1140,6 @@
                                 <li>Dacă nu poți adormi în 20 de minute, ridică-te din pat și citește o carte la lumină caldă până îți revine somnul.</li>
                             </ol>
                         </div>
-
-                        <button class="guide-toggle-btn" id="btn-toggle-sleep" onclick="toggleGuideReadMore('sleep')">Citește tot articolul ↓</button>
                     </article>
                 </div>
             </section>
