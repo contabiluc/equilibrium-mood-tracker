@@ -927,9 +927,22 @@
                 <div class="history-container glass">
                     <div class="history-header">
                         <h2>Istoric Jurnal & Intrări Anterioare</h2>
-                        <div class="history-actions">
-                            <input type="text" id="history-search" placeholder="Caută..." oninput="filterHistory()">
+                    <div class="history-controls-row">
+                        <div class="history-search-wrapper">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+                            <input type="text" id="history-search" placeholder="Caută în jurnale, simptome sau dată..." oninput="filterHistory()">
                         </div>
+                        
+                        <div class="history-filter-pills" id="history-filter-pills">
+                            <button class="history-filter-pill active" data-filter="all" onclick="setHistoryFilter('all')">🌐 Toate</button>
+                            <button class="history-filter-pill" data-filter="mood-low" onclick="setHistoryFilter('mood-low')">📉 Dispoziție scăzută</button>
+                            <button class="history-filter-pill" data-filter="mood-stable" onclick="setHistoryFilter('mood-stable')">⚖️ Stabilă</button>
+                            <button class="history-filter-pill" data-filter="mood-high" onclick="setHistoryFilter('mood-high')">📈 Ridicată</button>
+                            <button class="history-filter-pill" data-filter="sleep-low" onclick="setHistoryFilter('sleep-low')">😴 Somn &lt; 6h</button>
+                            <button class="history-filter-pill" data-filter="anxiety-high" onclick="setHistoryFilter('anxiety-high')">⚡ Anxietate &gt; 6</button>
+                            <button class="history-filter-pill" data-filter="med-missed" onclick="setHistoryFilter('med-missed')">💊 Tratament omis</button>
+                        </div>
+                    </div>
                     </div>
                     <div class="history-list" id="history-list">
                         <!-- Entries loaded dynamically -->

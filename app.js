@@ -1402,6 +1402,25 @@ function getMoodColor(val) {
     return '#6366f1';
 }
 
+// History Filter State
+let currentHistoryFilter = 'all';
+
+function setHistoryFilter(filterId) {
+    currentHistoryFilter = filterId;
+    document.querySelectorAll('.history-filter-pill').forEach(btn => {
+        if (btn.getAttribute('data-filter') === filterId) {
+            btn.classList.add('active');
+        } else {
+            btn.classList.remove('active');
+        }
+    });
+    renderHistory();
+}
+
+function filterHistory() {
+    renderHistory();
+}
+
 // Render History Journal Entries List (Grouped by Month & Scannable Compact Cards)
 function renderHistory() {
     const list = document.getElementById('history-list');
@@ -1418,8 +1437,41 @@ function renderHistory() {
         return;
     }
 
+    const searchVal = (document.getElementById('history-search')?.value || '').toLowerCase().trim();
+
+    // Filter entries based on search input and active filter pill
+    const filtered = moodEntries.filter(e => {
+        // Text search
+        if (searchVal) {
+            const matchNotes = e.notes && e.notes.toLowerCase().includes(searchVal);
+            const matchDate = e.date.includes(searchVal);
+            const matchSymptoms = e.symptoms && e.symptoms.some(s => s.toLowerCase().includes(searchVal));
+            if (!matchNotes && !matchDate && !matchSymptoms) return false;
+        }
+
+        // Active analytical filter
+        if (currentHistoryFilter === 'mood-low') return e.mood < 0;
+        if (currentHistoryFilter === 'mood-stable') return e.mood === 0;
+        if (currentHistoryFilter === 'mood-high') return e.mood > 0;
+        if (currentHistoryFilter === 'sleep-low') return e.sleep < 6;
+        if (currentHistoryFilter === 'anxiety-high') return e.anxiety > 6;
+        if (currentHistoryFilter === 'med-missed') return !e.medicationTaken;
+
+        return true;
+    });
+
+    if (filtered.length === 0) {
+        list.innerHTML = `
+            <div class="empty-state">
+                <p>Nicio înregistrare nu se potrivește filtrelor selectate.</p>
+                <button class="action-btn-secondary btn-sm" onclick="setHistoryFilter('all')" style="margin-top:0.6rem">Resetează filtrele</button>
+            </div>
+        `;
+        return;
+    }
+
     // Sort newest first
-    const sortedDesc = [...moodEntries].sort((a, b) => new Date(b.date) - new Date(a.date));
+    const sortedDesc = [...filtered].sort((a, b) => new Date(b.date) - new Date(a.date));
 
     // Group by Month & Year (e.g. "AUGUST 2026")
     const groupedByMonth = {};
