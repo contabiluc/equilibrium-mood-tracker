@@ -3432,3 +3432,75 @@ textarea:focus {
     padding: 0.4rem 0.85rem !important;
     font-size: 0.82rem !important;
 }
+
+/* Compact Treatment Step Card */
+.form-step-card.compact-step-card {
+    padding: 0.9rem 1.1rem;
+}
+
+.compact-treatment-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.step-header.compact {
+    margin-bottom: 0;
+    gap: 0.6rem;
+}
+
+.step-number.sm {
+    width: 26px;
+    height: 26px;
+    font-size: 0.85rem;
+}
+
+.compact-treatment-checkbox {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.65rem;
+    background: rgba(99, 102, 241, 0.08);
+    border: 1px solid rgba(99, 102, 241, 0.25);
+    border-radius: var(--radius-md);
+    padding: 0.55rem 0.9rem;
+    cursor: pointer;
+    user-select: none;
+    transition: all 0.2s ease;
+}
+
+.compact-treatment-checkbox:hover {
+    background: rgba(99, 102, 241, 0.15);
+}
+
+.compact-treatment-checkbox input[type="checkbox"] {
+    display: none;
+}
+
+.checkbox-box-custom {
+    width: 20px;
+    height: 20px;
+    border-radius: var(--radius-sm);
+    border: 1.5px solid var(--primary-light);
+    background: var(--primary-light);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    font-weight: 700;
+    transition: all 0.2s ease;
+}
+
+.compact-treatment-checkbox input[type="checkbox"]:not(:checked) + .checkbox-box-custom {
+    background: transparent;
+    border-color: var(--text-muted);
+    color: transparent;
+}
+
+.checkbox-label-compact {
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}

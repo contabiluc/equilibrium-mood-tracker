@@ -671,26 +671,20 @@
                             </div>
                         </div>
 
-                        <!-- Step 5: Treatment Switch -->
-                        <div class="form-step-card">
-                            <div class="step-header">
-                                <span class="step-number">5</span>
-                                <div class="step-title-group">
-                                    <h3>Tratament</h3>
-                                </div>
-                            </div>
-
-                            <div class="medication-section-wrapper">
-                                <div class="form-group inline-group-checkbox">
-                                    <label class="switch">
-                                        <input type="checkbox" id="medication-taken" checked onchange="saveDraft()">
-                                        <span class="slider-round"></span>
-                                    </label>
-                                    <div class="medication-label-container">
-                                        <span class="checkbox-label-text">Am urmat tratamentul prescris astăzi</span>
-                                        <span class="medication-help-text">Bifează "Da" dacă ți-ai administrat schema de tratament prescrisă de medic.</span>
+                        <!-- Step 5: Compact Treatment Card -->
+                        <div class="form-step-card compact-step-card">
+                            <div class="compact-treatment-row">
+                                <div class="step-header compact">
+                                    <span class="step-number sm">5</span>
+                                    <div class="step-title-group">
+                                        <h3>Tratament</h3>
                                     </div>
                                 </div>
+                                <label class="compact-treatment-checkbox">
+                                    <input type="checkbox" id="medication-taken" checked onchange="saveDraft()">
+                                    <span class="checkbox-box-custom">✓</span>
+                                    <span class="checkbox-label-compact">Am urmat tratamentul prescris astăzi</span>
+                                </label>
                             </div>
                         </div>
 
