@@ -124,6 +124,52 @@
         </div>
     </div>
 
+    <!-- First Time Welcome Modal (Fresh Journal vs Demo Choice) -->
+    <div id="welcome-modal" class="modal-backdrop" style="display:none;" role="dialog" aria-modal="true" aria-labelledby="welcome-modal-title">
+        <div class="modal-box welcome-modal-box">
+            <div class="welcome-header">
+                <div class="welcome-logo-badge">🌿</div>
+                <h2 id="welcome-modal-title">Bun venit la Staicumine 👋</h2>
+                <p class="welcome-sub">Aplicația ta privată pentru echilibru emoțional.</p>
+            </div>
+            
+            <div class="welcome-bullets">
+                <div class="bullet-item">
+                    <span class="bullet-icon">✨</span>
+                    <div>
+                        <strong>Cum te simți</strong>
+                        <p>Urmărește-ți dispoziția zilnic pe o axă simplă și clară.</p>
+                    </div>
+                </div>
+                <div class="bullet-item">
+                    <span class="bullet-icon">😴</span>
+                    <div>
+                        <strong>Cum dormi</strong>
+                        <p>Înțelege legătura dintre odihnă, anxietate și energie.</p>
+                    </div>
+                </div>
+                <div class="bullet-item">
+                    <span class="bullet-icon">💡</span>
+                    <div>
+                        <strong>Ce te influențează</strong>
+                        <p>Descoperă tiparele și factorii care îți schimbă starea.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="welcome-actions">
+                <button class="action-btn-primary welcome-cta" onclick="startFreshJournal()">
+                    <span>🚀 Începe fără date demo</span>
+                </button>
+                <button class="action-btn-secondary welcome-cta" onclick="loadDemoJournal()">
+                    <span>📊 Vezi un exemplu de date</span>
+                </button>
+            </div>
+            
+            <p class="welcome-privacy-note">🔒 100% Privat & Local. Datele tale nu părăsesc niciodată dispozitivul tău.</p>
+        </div>
+    </div>
+
     <!-- Onboarding Modal -->
     <div id="onboarding-modal" class="modal-backdrop" style="display:none;" role="dialog" aria-modal="true">
         <div class="modal-box onboarding-modal-box">

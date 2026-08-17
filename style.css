@@ -3268,3 +3268,104 @@ textarea:focus {
     text-align: right;
     margin-bottom: 0.85rem;
 }
+
+/* -------------------------------------------------------
+   First Time Welcome Modal (Fresh vs Demo Choice)
+------------------------------------------------------- */
+.welcome-modal-box {
+    max-width: 480px;
+    padding: 2.25rem 2rem;
+    text-align: center;
+    border-radius: var(--radius-xl);
+    background: rgba(15, 23, 42, 0.95);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--card-border);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+}
+
+.welcome-logo-badge {
+    font-size: 2.5rem;
+    width: 64px;
+    height: 64px;
+    border-radius: var(--radius-full);
+    background: rgba(99, 102, 241, 0.12);
+    border: 1px solid rgba(99, 102, 241, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem auto;
+}
+
+.welcome-modal-box h2 {
+    font-family: var(--font-primary);
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--text-primary);
+    margin-bottom: 0.35rem;
+}
+
+.welcome-sub {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    margin-bottom: 1.5rem;
+}
+
+.welcome-bullets {
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+    text-align: left;
+    background: rgba(255, 255, 255, 0.025);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-lg);
+    padding: 1.25rem;
+    margin-bottom: 1.75rem;
+}
+
+.bullet-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+}
+
+.bullet-icon {
+    font-size: 1.2rem;
+    flex-shrink: 0;
+    margin-top: 0.1rem;
+}
+
+.bullet-item strong {
+    display: block;
+    font-size: 0.92rem;
+    color: var(--text-primary);
+    margin-bottom: 0.15rem;
+}
+
+.bullet-item p {
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+    margin: 0;
+    line-height: 1.4;
+}
+
+.welcome-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+}
+
+.welcome-cta {
+    width: 100%;
+    justify-content: center;
+    padding: 0.85rem 1.25rem;
+    font-size: 0.95rem;
+    font-weight: 700;
+    border-radius: var(--radius-md);
+}
+
+.welcome-privacy-note {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin: 0;
+}

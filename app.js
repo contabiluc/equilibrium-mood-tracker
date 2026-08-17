@@ -82,20 +82,19 @@ function generateMockData() {
 function loadData() {
     const storedEntries = localStorage.getItem('staicumine_mood_entries') || localStorage.getItem('equilibrium_mood_entries');
     const isDemo = (localStorage.getItem('staicumine_is_demo') || localStorage.getItem('equilibrium_is_demo')) === 'true';
+    const isInitialized = localStorage.getItem('staicumine_initialized') === 'true';
     
-    if (storedEntries) {
+    if (isInitialized && storedEntries) {
         moodEntries = JSON.parse(storedEntries);
-        // Show demo banner if still in demo mode
         if (isDemo) {
             setTimeout(() => showDemoBanner(), 600);
         }
+    } else if (isInitialized) {
+        moodEntries = [];
     } else {
-        // First time user: generate mock data to demonstrate app potential
-        moodEntries = generateMockData();
-        localStorage.setItem('staicumine_mood_entries', JSON.stringify(moodEntries));
-        localStorage.setItem('staicumine_is_demo', 'true');
-        // Show onboarding modal
-        setTimeout(() => showOnboarding(), 800);
+        // First time user: start empty and show choice modal
+        moodEntries = [];
+        setTimeout(() => showWelcomeChoiceModal(), 600);
     }
 
     const storedSafety = localStorage.getItem('staicumine_safety_plan') || localStorage.getItem('equilibrium_safety_plan');
@@ -111,6 +110,42 @@ function loadData() {
     
     // Sort entries chronologically
     sortEntries();
+}
+
+// First time choice handlers
+function showWelcomeChoiceModal() {
+    const modal = document.getElementById('welcome-modal');
+    if (modal) modal.style.display = 'flex';
+}
+
+function startFreshJournal() {
+    localStorage.setItem('staicumine_initialized', 'true');
+    localStorage.setItem('staicumine_mood_entries', JSON.stringify([]));
+    localStorage.setItem('staicumine_is_demo', 'false');
+    moodEntries = [];
+    
+    const modal = document.getElementById('welcome-modal');
+    if (modal) modal.style.display = 'none';
+    
+    const banner = document.getElementById('demo-data-banner');
+    if (banner) banner.style.display = 'none';
+
+    showToast('Bun venit! Ai creat propriul tău jurnal privat.');
+    updateDashboard();
+}
+
+function loadDemoJournal() {
+    localStorage.setItem('staicumine_initialized', 'true');
+    moodEntries = generateMockData();
+    localStorage.setItem('staicumine_mood_entries', JSON.stringify(moodEntries));
+    localStorage.setItem('staicumine_is_demo', 'true');
+    
+    const modal = document.getElementById('welcome-modal');
+    if (modal) modal.style.display = 'none';
+    
+    showDemoBanner();
+    showToast('Exemplul demo a fost încărcat. Îl poți șterge oricând din banner!');
+    updateDashboard();
 }
 
 // Show / hide demo banner
