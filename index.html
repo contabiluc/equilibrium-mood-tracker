@@ -938,27 +938,17 @@
                                 <div class="actionable-sugg-card">
                                     <div class="sugg-top-bar">
                                         <div>
-                                            <h4>Activare Comportamentală Minimă</h4>
-                                            <span class="sugg-badge">⏱ 1 minut • Depresie / Apatie</span>
+                                            <h4>Descărcare Fizică & Distragere</h4>
+                                            <span class="sugg-badge">⏱ 3 minute • Iritabilitate / Furie</span>
                                         </div>
-                                        <button type="button" class="action-btn-secondary btn-sm" onclick="addSuggestionToCoping('Activare Comportamentală: Bea un pahar cu apă rece, deschide fereastra 1 min, spală fața cu apă rece.')">+ Adaugă la plan</button>
+                                        <button type="button" class="action-btn-secondary btn-sm" onclick="addSuggestionToCoping('Descărcare Fizică: Scrie gândurile furioase și rupe foaia, 10 genuflexiuni rapide, mișcare pe muzică energică.')">+ Adaugă la plan</button>
                                     </div>
 
                                     <div class="guide-divider"></div>
 
                                     <div class="sugg-details-body">
-                                        <p><strong>Când să o folosești:</strong> Când motivația este 0 și simți că nu te poți da jos din pat.</p>
-                                        <p><strong>Pași:</strong> Bea un pahar plin cu apă rece, deschide fereastra 1 minut sau spală fața cu apă rece pentru stimulare vagală.</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                                        <ul class="sugg-bullet-list">
-                                            <li>Scrie pe o foaie de hârtie toate gândurile tale haotice și furioase cât de repede poți, apoi rupe foaia în bucățele mici și arunc-o.</li>
-                                            <li>Fă 10 genuflexiuni rapide sau 1 minut de alergare pe loc pentru a consuma surplusul de adrenalină.</li>
-                                            <li>Pune o melodie energică și dansează sau mișcă-te energic în ritmul ei timp de 3 minute.</li>
-                                        </ul>
-                                        <button type="button" class="action-btn-primary btn-sm" onclick="addSuggestionToCoping('Descărcare Fizică: Scrie gândurile furioase și rupe foaia, 10 genuflexiuni rapide, mișcare pe muzică energică.')">+ Adaugă la strategiile mele</button>
+                                        <p><strong>Când să o folosești:</strong> Pentru exces de energie mentală sau agitație iritabilă.</p>
+                                        <p><strong>Pași:</strong> Scrie gândurile furioase pe o foaie și rupe-o, fă 10 genuflexiuni rapide sau dansează energic timp de 3 minute.</p>
                                     </div>
                                 </div>
                             </div>
@@ -970,9 +960,12 @@
             <!-- History View -->
             <section id="view-history" class="tab-view">
                 <div class="history-container glass">
-                    <div class="history-header">
+                    <div class="history-top-header">
                         <h2>Istoric Jurnal & Intrări Anterioare</h2>
-                    <div class="history-controls-row">
+                        <p class="section-desc">Consultă, caută și filtrează toate check-in-urile tale anterioare.</p>
+                    </div>
+                    
+                    <div class="history-controls-card">
                         <div class="history-search-wrapper">
                             <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
                             <input type="text" id="history-search" placeholder="Caută în jurnale, simptome sau dată..." oninput="filterHistory()">
@@ -988,12 +981,12 @@
                             <button class="history-filter-pill" data-filter="med-missed" onclick="setHistoryFilter('med-missed')">💊 Tratament omis</button>
                         </div>
                     </div>
-                    </div>
+
                     <div class="history-list" id="history-list">
                         <!-- Entries loaded dynamically -->
                         <div class="empty-state">
                             <p>Nu există nicio înregistrare salvată până acum.</p>
-                            <button class="action-btn-primary" onclick="switchTab('log')">Adaugă prima ta stare</button>
+                            <button class="action-btn-primary" onclick="switchTab('log')">Fă primul check-in</button>
                         </div>
                     </div>
                 </div>
