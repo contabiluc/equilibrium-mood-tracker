@@ -1352,16 +1352,6 @@ function drawCustomChart(entries) {
     renderChartLegend();
 }
 
-    // Draw Title/Indicator
-    ctx.fillStyle = '#f8fafc';
-    ctx.font = isMobileCanvas ? '600 11px Outfit' : 'bold 12px Outfit';
-    ctx.textAlign = 'left';
-    const titleStr = isMobileCanvas 
-        ? `Grafic: ${currentChartPeriod} Zile` 
-        : `Grafic perioada: ${currentChartPeriod} Zile (Ultima intrare: ${entries[entries.length - 1].date})`;
-    ctx.fillText(titleStr, paddingLeft, paddingTop - 14);
-}
-
 // Draw a placeholder state if no data
 function drawPlaceholderChart(message = "Adăugați înregistrări pentru grafic") {
     const canvas = document.getElementById('mood-chart');
