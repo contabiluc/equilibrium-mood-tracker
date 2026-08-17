@@ -857,70 +857,102 @@
                             </form>
                         </div>
 
-                        <!-- Interactive Breathing Exercise -->
-                        <div class="safety-card glass col-2">
-                            <h3>Exercițiu de Respirație Ghidată (Metoda 4-7-8)</h3>
-                            <p class="section-desc">Urmărește bula luminoasă pentru a-ți reduce ritmul cardiac și a diminua anxietatea sau atacul de panică.</p>
-                            <div class="breathing-container">
+                        <!-- Action-First Interactive Breathing Exercise -->
+                        <div class="safety-card glass col-2 actionable-guide-card">
+                            <div class="guide-top-box">
+                                <div class="guide-title-row">
+                                    <h3>Respirație Ghidată (Metoda 4-7-8)</h3>
+                                    <span class="guide-duration-badge">⏱ 2 minute</span>
+                                </div>
+
+                                <div class="guide-use-cases">
+                                    <span class="use-case-title">Când să o folosești:</span>
+                                    <div class="use-case-pills">
+                                        <span class="use-case-pill">• Anxietate & Panică</span>
+                                        <span class="use-case-pill">• Tensiune & Agitație</span>
+                                        <span class="use-case-pill">• Înainte de somn</span>
+                                    </div>
+                                </div>
+
+                                <div class="guide-primary-action">
+                                    <button type="button" id="breathing-start-btn" class="action-btn-primary btn-lg" onclick="toggleBreathingExercise()">
+                                        🫁 Începe exercițiul
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="breathing-container" id="breathing-widget-container">
                                 <div class="breathing-circle-wrapper">
                                     <div id="breathing-circle" class="breathing-circle">
                                         <span id="breathing-instruction">Pregătit?</span>
                                         <span id="breathing-timer" class="breathing-timer"></span>
                                     </div>
                                 </div>
-                                <div class="breathing-controls">
-                                    <button type="button" id="breathing-start-btn" class="action-btn-primary" onclick="toggleBreathingExercise()">Începe Respirația</button>
+                            </div>
+
+                            <div class="guide-divider"></div>
+
+                            <div class="guide-theory-box">
+                                <h4 class="theory-subtitle">Cum funcționează & Pași tehnici</h4>
+                                <p class="theory-desc">Tehnica 4-7-8 stimulează nervul vag și activează sistemul nervos parasimpatic, scăzând ritmul cardiac și tensiunea arterială în aproximativ 120 de secunde.</p>
+                                <div class="steps-grid">
+                                    <div class="step-mini-box">
+                                        <span class="step-num">1</span>
+                                        <span class="step-txt">Inspiră pe nas (4 secunde)</span>
+                                    </div>
+                                    <div class="step-mini-box">
+                                        <span class="step-num">2</span>
+                                        <span class="step-txt">Menține aerul (7 secunde)</span>
+                                    </div>
+                                    <div class="step-mini-box">
+                                        <span class="step-num">3</span>
+                                        <span class="step-txt">Expiră lent pe gură (8 secunde)</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Quick Coping Suggestions -->
+                        <!-- Action-First Coping Suggestions -->
                         <div class="safety-card glass col-2">
-                            <h3>Sugestii Rapide de Calmare</h3>
-                            <p class="section-desc">Apasă pe oricare sugestie de mai jos pentru a o extinde. Dacă ți se potrivește, adaug-o în planul tău personal printr-un singur click.</p>
-                            <div class="suggestions-accordion">
-                                <div class="suggestion-item">
-                                    <button type="button" class="suggestion-header" onclick="toggleSuggestionDetail('sugg-grounding')">
-                                        <span>Tehnica de Împământare 5-4-3-2-1 (Anxietate / Atac de Panică)</span>
-                                        <span class="chevron" id="chevron-sugg-grounding">▼</span>
-                                    </button>
-                                    <div id="sugg-grounding" class="suggestion-content" style="display: none;">
-                                        <p>Pentru a te deconecta de la gândurile panicarde și a te ancora în prezent, identifică și numește cu voce tare:</p>
-                                        <ul class="sugg-bullet-list">
-                                            <li><strong>5 lucruri</strong> pe care le poți vedea în jurul tău</li>
-                                            <li><strong>4 lucruri</strong> pe care le poți atinge fizic</li>
-                                            <li><strong>3 sunete</strong> distincte pe care le poți auzi</li>
-                                            <li><strong>2 mirosuri</strong> pe care le poți distinge în aer</li>
-                                            <li><strong>1 lucru</strong> bun pe care îl poți gusta sau o calitate personală</li>
-                                        </ul>
-                                        <button type="button" class="action-btn-primary btn-sm" onclick="addSuggestionToCoping('Tehnica 5-4-3-2-1: Numește 5 lucruri pe care le vezi, 4 pe care le atingi, 3 pe care le auzi, 2 pe care le miroși, 1 pe care îl guști.')">+ Adaugă la strategiile mele</button>
+                            <h3>Tehnici & Exerciții Rapide de Calmare</h3>
+                            <p class="section-desc">Fiecare tehnică pune acțiunea pe primul loc. Apasă butonul de acțiune directă pentru a începe sau a adăuga tehnica în planul tău.</p>
+                            
+                            <div class="suggestions-actionable-list">
+                                <div class="actionable-sugg-card">
+                                    <div class="sugg-top-bar">
+                                        <div>
+                                            <h4>Tehnica 5-4-3-2-1 de Împământare</h4>
+                                            <span class="sugg-badge">⏱ 3 minute • Anxietate / Panică</span>
+                                        </div>
+                                        <button type="button" class="action-btn-secondary btn-sm" onclick="addSuggestionToCoping('Tehnica 5-4-3-2-1: Numește 5 lucruri pe care le vezi, 4 pe care le atingi, 3 pe care le auzi, 2 pe care le miroși, 1 pe care îl guști.')">+ Adaugă la plan</button>
+                                    </div>
+
+                                    <div class="guide-divider"></div>
+
+                                    <div class="sugg-details-body">
+                                        <p><strong>Când să o folosești:</strong> Când te simți copleșit de gânduri de panică sau disociere.</p>
+                                        <p><strong>Pași:</strong> Numește cu voce tare: 5 lucruri pe care le vezi, 4 pe care le poți atinge, 3 pe care le auzi, 2 pe care le miroși, 1 pe care îl guști.</p>
                                     </div>
                                 </div>
 
-                                <div class="suggestion-item">
-                                    <button type="button" class="suggestion-header" onclick="toggleSuggestionDetail('sugg-behavioral')">
-                                        <span>Activare Comportamentală Minimă (Depresie / Apatie)</span>
-                                        <span class="chevron" id="chevron-sugg-behavioral">▼</span>
-                                    </button>
-                                    <div id="sugg-behavioral" class="suggestion-content" style="display: none;">
-                                        <p>Când dispoziția este extrem de joasă, motivația lipsește complet și tindezi să te izolezi, fă acțiuni minuscule:</p>
-                                        <ul class="sugg-bullet-list">
-                                            <li>Bea un pahar plin cu apă rece.</li>
-                                            <li>Deschide fereastra larg și inspiră aer proaspăt timp de 1 minut.</li>
-                                            <li>Spală-ți fața cu apă foarte rece pentru a stimula nervul vag.</li>
-                                            <li>Fă un exercițiu simplu de întindere (stretching) pentru 2 minute.</li>
-                                        </ul>
-                                        <button type="button" class="action-btn-primary btn-sm" onclick="addSuggestionToCoping('Activare Comportamentală: Bea un pahar cu apă, deschide fereastra, spală fața cu apă rece, stretching de 2 min.')">+ Adaugă la strategiile mele</button>
+                                <div class="actionable-sugg-card">
+                                    <div class="sugg-top-bar">
+                                        <div>
+                                            <h4>Activare Comportamentală Minimă</h4>
+                                            <span class="sugg-badge">⏱ 1 minut • Depresie / Apatie</span>
+                                        </div>
+                                        <button type="button" class="action-btn-secondary btn-sm" onclick="addSuggestionToCoping('Activare Comportamentală: Bea un pahar cu apă rece, deschide fereastra 1 min, spală fața cu apă rece.')">+ Adaugă la plan</button>
+                                    </div>
+
+                                    <div class="guide-divider"></div>
+
+                                    <div class="sugg-details-body">
+                                        <p><strong>Când să o folosești:</strong> Când motivația este 0 și simți că nu te poți da jos din pat.</p>
+                                        <p><strong>Pași:</strong> Bea un pahar plin cu apă rece, deschide fereastra 1 minut sau spală fața cu apă rece pentru stimulare vagală.</p>
                                     </div>
                                 </div>
-
-                                <div class="suggestion-item">
-                                    <button type="button" class="suggestion-header" onclick="toggleSuggestionDetail('sugg-release')">
-                                        <span>Descărcare Fizică & Distragere (Iritabilitate / Furie)</span>
-                                        <span class="chevron" id="chevron-sugg-release">▼</span>
-                                    </button>
-                                    <div id="sugg-release" class="suggestion-content" style="display: none;">
-                                        <p>Pentru stările în care simți un exces de energie mentală și o agitație iritabilă care se poate transforma în furie sau hipomanie:</p>
+                            </div>
+                        </div>
                                         <ul class="sugg-bullet-list">
                                             <li>Scrie pe o foaie de hârtie toate gândurile tale haotice și furioase cât de repede poți, apoi rupe foaia în bucățele mici și arunc-o.</li>
                                             <li>Fă 10 genuflexiuni rapide sau 1 minut de alergare pe loc pentru a consuma surplusul de adrenalină.</li>
