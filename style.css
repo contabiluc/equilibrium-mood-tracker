@@ -4008,3 +4008,192 @@ textarea:focus {
     color: white;
     box-shadow: 0 2px 8px rgba(99, 102, 241, 0.35);
 }
+
+/* Crisis Help Emergency Permanent Button & Modal */
+.crisis-help-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    background: rgba(244, 63, 94, 0.12);
+    border: 1px solid rgba(244, 63, 94, 0.35);
+    color: #f43f5e;
+    font-size: 0.82rem;
+    font-weight: 700;
+    padding: 0.5rem 0.85rem;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.crisis-help-btn:hover {
+    background: #f43f5e;
+    border-color: #f43f5e;
+    color: white;
+    box-shadow: 0 4px 12px rgba(244, 63, 94, 0.35);
+}
+
+.sidebar-crisis-container {
+    padding: 0 0.85rem;
+    margin-bottom: 0.85rem;
+}
+
+.sidebar-crisis-btn {
+    width: 100%;
+    justify-content: center;
+}
+
+.topbar-actions-right {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+}
+
+/* Crisis Modal Overlay */
+.crisis-modal-card {
+    max-width: 500px;
+    width: 92%;
+    padding: 1.6rem;
+    border-radius: var(--radius-xl);
+    border: 1px solid rgba(244, 63, 94, 0.4);
+}
+
+.crisis-modal-header {
+    margin-bottom: 1.25rem;
+}
+
+.crisis-badge {
+    display: inline-block;
+    font-size: 0.72rem;
+    font-weight: 800;
+    color: #f43f5e;
+    background: rgba(244, 63, 94, 0.12);
+    border: 1px solid rgba(244, 63, 94, 0.3);
+    padding: 0.2rem 0.55rem;
+    border-radius: var(--radius-sm);
+    margin-bottom: 0.35rem;
+    letter-spacing: 0.05em;
+}
+
+.crisis-sub {
+    font-size: 0.84rem;
+    color: var(--text-muted);
+    margin-top: 0.25rem;
+}
+
+.crisis-body {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.crisis-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-lg);
+    padding: 1rem;
+}
+
+.crisis-card-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+}
+
+.crisis-icon {
+    font-size: 1.5rem;
+}
+
+.crisis-card-info h4 {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 0.15rem;
+}
+
+.crisis-card-info p {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.crisis-action-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    width: 100%;
+    padding: 0.65rem;
+    border-radius: var(--radius-md);
+    font-size: 0.88rem;
+    font-weight: 700;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.crisis-action-btn.phone-btn {
+    background: rgba(16, 185, 129, 0.15);
+    border: 1px solid rgba(16, 185, 129, 0.35);
+    color: #10b981;
+}
+
+.crisis-action-btn.phone-btn:hover {
+    background: #10b981;
+    color: white;
+}
+
+.crisis-action-btn.start-exercise-btn {
+    background: rgba(99, 102, 241, 0.15);
+    border: 1px solid rgba(99, 102, 241, 0.35);
+    color: var(--primary-light);
+}
+
+.crisis-action-btn.start-exercise-btn:hover {
+    background: var(--primary);
+    color: white;
+}
+
+.helplines-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+}
+
+.helpline-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.6rem 0.85rem;
+    background: rgba(15, 23, 42, 0.6);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-md);
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.helpline-item:hover {
+    border-color: var(--primary-light);
+    transform: translateX(2px);
+}
+
+.helpline-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.helpline-num {
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: var(--text-primary);
+}
+
+.helpline-lbl {
+    font-size: 0.76rem;
+    color: var(--text-muted);
+}
+
+.call-badge {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--primary-light);
+}

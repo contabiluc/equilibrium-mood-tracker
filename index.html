@@ -237,13 +237,19 @@
             </div>
             <h2>Staicumine</h2>
         </div>
-        <button class="hamburger-btn" id="hamburger-btn" onclick="toggleMobileMenu()" aria-label="Meniu de navigare">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                <line x1="3" y1="6" x2="21" y2="6"></line>
-                <line x1="3" y1="12" x2="21" y2="12"></line>
-                <line x1="3" y1="18" x2="21" y2="18"></line>
-            </svg>
-        </button>
+        <div class="topbar-actions-right">
+            <button class="crisis-help-btn btn-sm" onclick="openCrisisHelpModal()">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                <span>Ajutor</span>
+            </button>
+            <button class="hamburger-btn" id="hamburger-btn" onclick="toggleMobileMenu()" aria-label="Meniu de navigare">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                    <line x1="3" y1="12" x2="21" y2="12"></line>
+                    <line x1="3" y1="18" x2="21" y2="18"></line>
+                </svg>
+            </button>
+        </div>
     </div>
 
     <div class="app-container">
@@ -260,6 +266,13 @@
                     <h2>Staicumine</h2>
                 </div>
                 <button class="sidebar-close-btn" onclick="closeMobileMenu()" aria-label="Închide meniul">&times;</button>
+            </div>
+            
+            <div class="sidebar-crisis-container">
+                <button class="crisis-help-btn sidebar-crisis-btn" onclick="openCrisisHelpModal()">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                    <span>Am nevoie de ajutor</span>
+                </button>
             </div>
             
             <nav class="nav-menu">
@@ -1133,6 +1146,84 @@
                     <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
                     Șterge
                 </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Crisis Help Emergency Modal -->
+    <div id="crisis-help-modal" class="modal" style="display: none;">
+        <div class="modal-content glass-card crisis-modal-card">
+            <div class="modal-header crisis-modal-header">
+                <div class="crisis-title-box">
+                    <span class="crisis-badge">🆘 SUPORT IMEDIAT</span>
+                    <h3>Am nevoie de ajutor</h3>
+                    <p class="crisis-sub">Ești în siguranță. Iată resursele tale rapide pentru acest moment.</p>
+                </div>
+                <button class="modal-close-btn" onclick="closeCrisisHelpModal()">&times;</button>
+            </div>
+            
+            <div class="modal-body crisis-body">
+                <!-- 1. Persoană de Încredere -->
+                <div class="crisis-card trust-card">
+                    <div class="crisis-card-header">
+                        <span class="crisis-icon">📞</span>
+                        <div class="crisis-card-info">
+                            <h4>Persoană de încredere</h4>
+                            <p id="crisis-trust-name">Neconfigurată în Planul de Siguranță</p>
+                        </div>
+                    </div>
+                    <a id="crisis-trust-phone-link" href="tel:" class="crisis-action-btn phone-btn">
+                        📞 Sună acum
+                    </a>
+                </div>
+
+                <!-- 2. Linii Naționale de Urgență -->
+                <div class="crisis-card helpline-card">
+                    <div class="crisis-card-header">
+                        <span class="crisis-icon">🚑</span>
+                        <div class="crisis-card-info">
+                            <h4>Resurse de urgență 24/7 (România)</h4>
+                            <p>Linii telefonice gratuite și confidențiale</p>
+                        </div>
+                    </div>
+                    <div class="helplines-list">
+                        <a href="tel:112" class="helpline-item danger">
+                            <div class="helpline-info">
+                                <span class="helpline-num">112</span>
+                                <span class="helpline-lbl">Serviciul Național de Urgență</span>
+                            </div>
+                            <span class="call-badge">Sună 112 →</span>
+                        </a>
+                        <a href="tel:0800801200" class="helpline-item warning">
+                            <div class="helpline-info">
+                                <span class="helpline-num">0800 801 200</span>
+                                <span class="helpline-lbl">Alianța Română de Prevenție a Suicidului (24/7)</span>
+                            </div>
+                            <span class="call-badge">Sună →</span>
+                        </a>
+                        <a href="tel:0374200200" class="helpline-item info">
+                            <div class="helpline-info">
+                                <span class="helpline-num">0374 200 200</span>
+                                <span class="helpline-lbl">DepreHUB — Suport Anxietate & Depresie</span>
+                            </div>
+                            <span class="call-badge">Sună →</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- 3. Exercițiu de Calmare -->
+                <div class="crisis-card exercise-card">
+                    <div class="crisis-card-header">
+                        <span class="crisis-icon">🫁</span>
+                        <div class="crisis-card-info">
+                            <h4>Exercițiu de calmare (Respirație 4-7-8)</h4>
+                            <p>Scade ritmul cardiac și atenuează anxietatea în 2 minute.</p>
+                        </div>
+                    </div>
+                    <button class="crisis-action-btn start-exercise-btn" onclick="startCrisisBreathing()">
+                        🫁 Începe Respirația Ghidată
+                    </button>
+                </div>
             </div>
         </div>
     </div>

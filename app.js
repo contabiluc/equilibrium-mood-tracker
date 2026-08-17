@@ -2038,3 +2038,61 @@ function runBreathingCycle(circle, instruction, timerText) {
         updateUI();
     }, 1000);
 }
+
+// Crisis Help Modal Handler
+function openCrisisHelpModal() {
+    const modal = document.getElementById('crisis-help-modal');
+    if (!modal) return;
+
+    const nameEl = document.getElementById('crisis-trust-name');
+    const phoneLink = document.getElementById('crisis-trust-phone-link');
+
+    if (safetyPlanData && (safetyPlanData.contactName || safetyPlanData.contactPhone)) {
+        const contactName = safetyPlanData.contactName || "Persoană de încredere";
+        const contactPhone = safetyPlanData.contactPhone || "";
+        if (nameEl) nameEl.textContent = contactPhone ? `${contactName} (${contactPhone})` : contactName;
+        if (phoneLink) {
+            if (contactPhone) {
+                phoneLink.href = `tel:${contactPhone.replace(/\s+/g, '')}`;
+                phoneLink.textContent = "📞 Sună acum";
+                phoneLink.onclick = null;
+            } else {
+                phoneLink.href = "#";
+                phoneLink.textContent = "⚙️ Adaugă telefon";
+                phoneLink.onclick = (e) => {
+                    e.preventDefault();
+                    closeCrisisHelpModal();
+                    switchTab('safety');
+                };
+            }
+        }
+    } else {
+        if (nameEl) nameEl.textContent = "Neconfigurată în Planul de Siguranță.";
+        if (phoneLink) {
+            phoneLink.href = "#";
+            phoneLink.textContent = "⚙️ Configurează în Plan";
+            phoneLink.onclick = (e) => {
+                e.preventDefault();
+                closeCrisisHelpModal();
+                switchTab('safety');
+            };
+        }
+    }
+
+    modal.style.display = 'flex';
+}
+
+function closeCrisisHelpModal() {
+    const modal = document.getElementById('crisis-help-modal');
+    if (modal) modal.style.display = 'none';
+}
+
+function startCrisisBreathing() {
+    closeCrisisHelpModal();
+    switchTab('safety');
+    setTimeout(() => {
+        const breathingBox = document.getElementById('breathing-circle');
+        if (breathingBox) breathingBox.scrollIntoView({ behavior: 'smooth' });
+        if (!breathingActive) toggleBreathingExercise();
+    }, 300);
+}
