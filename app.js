@@ -872,18 +872,19 @@ function calculateStats(entries) {
     }
 }
 
-// Generate dynamic statistical insights from data
+// Generate dynamic statistical insights from data (Cautious & Non-Clinical)
 function renderInsights(entries) {
     const list = document.getElementById('insights-list');
+    if (!list) return;
     list.innerHTML = '';
     
     if (entries.length < 3) {
         list.innerHTML = `
             <div class="empty-state-insights">
-                <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="currentColor" stroke-width="1.5" style="color:var(--text-muted);margin-bottom:0.75rem">
+                <svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" stroke-width="1.5" style="color:var(--text-muted);margin-bottom:0.6rem">
                     <path d="M9 19v-6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2zm0 0V9a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v10m-6 0a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2m0 0V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-2a2 2 0 0 1-2-2z"/>
                 </svg>
-                <p style="font-size:0.9rem;color:var(--text-muted);text-align:center;line-height:1.5">Ai nevoie de <strong style="color:var(--text-secondary)">cel puțin 3-7 zile</strong> de date pentru ca Analiza Inteligentă să-ți ofere recomandări relevante și personalizate.</p>
+                <p style="font-size:0.88rem;color:var(--text-muted);text-align:center;line-height:1.5">Completează <strong style="color:var(--text-secondary)">cel puțin 3 check-in-uri</strong> pentru ca secțiunea „Ce observăm” să-ți arate tipare și asocieri relevante din datele tale.</p>
             </div>`;
         return;
     }
@@ -903,7 +904,21 @@ function renderInsights(entries) {
                 type: 'alert',
                 icon: '😴',
                 title: 'Somnul și anxietatea par asociate',
-                desc: `În ultimele ${entries.length} zile, anxietatea medie a fost ${avgAnxietyLowSleep.toFixed(1)} în zilele cu mai puțin de 6.5 ore de somn și ${avgAnxietyNormalSleep.toFixed(1)} în cele cu somn suficient.`
+                desc: `În ultimele ${entries.length} zile, anxietatea medie a fost de ${avgAnxietyLowSleep.toFixed(1)}/10 în zilele cu mai puțin de 6.5 ore de somn, comparativ cu ${avgAnxietyNormalSleep.toFixed(1)}/10 în cele cu somn suficient.`
+            });
+        }
+    }
+
+    // Analyze High Energy/Mood Pattern (Cautious & Friendly language, NO clinical diagnosis)
+    const manicDays = entries.filter(e => e.mood >= 2);
+    if (manicDays.length >= 2) {
+        const avgSleepManic = manicDays.reduce((sum, e) => sum + e.sleep, 0) / manicDays.length;
+        if (avgSleepManic < 6) {
+            insights.push({
+                type: 'alert',
+                icon: '🔎',
+                title: 'Am observat un tipar care merită urmărit',
+                desc: `În zilele cu o stare mai ridicată (+2 sau peste), somnul mediu a fost mai scăzut (${avgSleepManic.toFixed(1)}h). Dacă acest tipar se repetă sau te îngrijorează, îți recomandăm să îl discuți cu medicul sau terapeutul tău.`
             });
         }
     }
@@ -914,56 +929,38 @@ function renderInsights(entries) {
         insights.push({
             type: 'alert',
             icon: '💊',
-            title: `Tratament omis în ${missedMedDays.length} ${missedMedDays.length === 1 ? 'zi' : 'zile'}`,
-            desc: `Continuitatea tratamentului face diferența în menținerea echilibrului. În ultimele ${entries.length} zile ai înregistrat ${missedMedDays.length} zile fără tratament.`
+            title: `Monitorizarea tratamentului`,
+            desc: `Ai înregistrat ${missedMedDays.length} ${missedMedDays.length === 1 ? 'zi' : 'zile'} fără tratament în ultimele ${entries.length} zile. Menținerea rutei de tratament sprijină stabilitatea emoțională.`
         });
     } else {
         insights.push({
             type: 'stable',
-            icon: '🌟',
-            title: 'Tratament luat consecvent',
-            desc: `Ai luat tratamentul în fiecare zi din cele ${entries.length} zile înregistrate în această perioadă.`
+            icon: '🌱',
+            title: 'Tratament urmat consecvent',
+            desc: `Ai bifat tratamentul în fiecare zi din cele ${entries.length} zile înregistrate.`
         });
-    }
-
-    // Analyze High Energy/Mania Warning
-    const manicDays = entries.filter(e => e.mood >= 2);
-    if (manicDays.length >= 2) {
-        const avgSleepManic = manicDays.reduce((sum, e) => sum + e.sleep, 0) / manicDays.length;
-        if (avgSleepManic < 6) {
-            insights.push({
-                type: 'alert',
-                icon: '🔆',
-                title: 'Stare mai ridicată asociată cu somn scăzut',
-                clinicalNote: 'Semnal timpuriu de hipomanie',
-                desc: `Am observat energie crescută cu un somn mediu scăzut (${avgSleepManic.toFixed(1)}h). Ar fi util să discuți cu medicul curant.`
-            });
-        }
     }
 
     // General Stable Streak
     const stableDays = entries.filter(e => e.mood === 0);
-    if (stableDays.length >= 5) {
+    if (stableDays.length >= 4) {
         insights.push({
             type: 'stable',
             icon: '⚖️',
             title: `${stableDays.length} zile de echilibru menținut`,
-            desc: `Rutina ta oferă stabilitate emoțională. Continuă obiceiurile sănătoase de odihnă.`
+            desc: `Ai menținut o stare stabilă în cea mai mare parte a acestei perioade. Continuă obiceiurile sănătoase de somn.`
         });
     }
 
     // Render insights list
     if (insights.length === 0) {
-        list.innerHTML = `<div class="insight-card"><div class="insight-title">Date echilibrate</div><div class="insight-desc">Nu am găsit devieri sau corelații notabile în datele tale recente. Continuă monitorizarea!</div></div>`;
+        list.innerHTML = `<div class="insight-card"><div class="insight-title">Stare generală echilibrată</div><div class="insight-desc">Nu am identificat fluctuații sau asocieri marcante în datele tale recente. Continuă check-in-urile zilnice!</div></div>`;
     } else {
         insights.forEach(ins => {
             const card = document.createElement('div');
             card.className = `insight-card ${ins.type}`;
-            const clinicalTag = ins.clinicalNote
-                ? `<span class="clinical-tooltip" title="Termen clinic: ${ins.clinicalNote}">ℹ️ ce înseamnă asta?</span>`
-                : '';
             card.innerHTML = `
-                <div class="insight-title">${ins.icon ? ins.icon + ' ' : ''}${ins.title} ${clinicalTag}</div>
+                <div class="insight-title">${ins.icon ? ins.icon + ' ' : ''}${ins.title}</div>
                 <div class="insight-desc">${ins.desc}</div>
                 <div class="insight-footer">🔎 Bazat pe ${entries.length} check-in-uri</div>
             `;
