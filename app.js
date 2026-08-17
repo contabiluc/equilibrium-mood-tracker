@@ -478,10 +478,13 @@ function checkExistingEntryForDate(dateStr) {
     saveDraft();
 }
 
-// Auto-Draft Management (LocalStorage)
+// Auto-Draft Management (LocalStorage with Strict Date Matching)
 function saveDraft() {
+    const dateVal = document.getElementById('entry-date')?.value;
+    if (!dateVal) return;
+
     const draftData = {
-        date: document.getElementById('entry-date')?.value,
+        date: dateVal,
         mood: document.getElementById('mood-value')?.value,
         sleep: document.getElementById('sleep-hours')?.value,
         anxiety: document.getElementById('anxiety-level')?.value,
@@ -503,9 +506,23 @@ function saveDraft() {
 
 function restoreDraft() {
     const draftStr = localStorage.getItem('staicumine_checkin_draft');
+    const unfinishedBanner = document.getElementById('unfinished-draft-banner');
+    if (unfinishedBanner) unfinishedBanner.style.display = 'none';
+
     if (!draftStr) return;
+
     try {
         const draft = JSON.parse(draftStr);
+        const currentDateInput = document.getElementById('entry-date')?.value;
+
+        // Strict Date Matching Check:
+        if (draft.date && draft.date !== currentDateInput) {
+            // Draft belongs to a different date! Show smart prompt.
+            showUnfinishedDraftBanner(draft.date);
+            return;
+        }
+
+        // Same date: restore values cleanly
         if (draft.mood !== undefined) setMoodValue(parseInt(draft.mood));
         if (draft.sleep !== undefined) {
             document.getElementById('sleep-hours').value = draft.sleep;
@@ -538,15 +555,45 @@ function restoreDraft() {
         const label = document.getElementById('draft-time-label');
         if (notice && label) {
             notice.style.display = 'block';
-            label.textContent = '(restaurat din sesiune)';
+            label.textContent = '(restaurat automat)';
         }
     } catch(e) {}
+}
+
+function showUnfinishedDraftBanner(draftDate) {
+    let banner = document.getElementById('unfinished-draft-banner');
+    if (!banner) {
+        banner = document.createElement('div');
+        banner.id = 'unfinished-draft-banner';
+        banner.className = 'unfinished-draft-banner';
+        const formHeader = document.querySelector('#view-log .form-header-bar');
+        if (formHeader) formHeader.parentNode.insertBefore(banner, formHeader.nextSibling);
+    }
+    
+    banner.innerHTML = `
+        <div class="unfinished-draft-content">
+            <span>📝 Ai un check-in neterminat din <strong>${formatDateRO(draftDate)}</strong>. Vrei să-l continui?</span>
+            <div class="unfinished-draft-actions">
+                <button type="button" class="action-btn-primary btn-sm" onclick="continueDraftDate('${draftDate}')">Continuă draftul din ${formatDateRO(draftDate)}</button>
+                <button type="button" class="action-btn-secondary btn-sm" onclick="clearDraft()">Șterge draftul</button>
+            </div>
+        </div>
+    `;
+    banner.style.display = 'block';
+}
+
+function continueDraftDate(draftDate) {
+    document.getElementById('entry-date').value = draftDate;
+    checkExistingEntryForDate(draftDate);
+    restoreDraft();
 }
 
 function clearDraft() {
     localStorage.removeItem('staicumine_checkin_draft');
     const notice = document.getElementById('draft-status-notice');
     if (notice) notice.style.display = 'none';
+    const unfinishedBanner = document.getElementById('unfinished-draft-banner');
+    if (unfinishedBanner) unfinishedBanner.style.display = 'none';
 }
 
 // Save Mood Entry Form Handler
