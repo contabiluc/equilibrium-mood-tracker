@@ -768,13 +768,17 @@ function updateDashboard() {
     renderSparklines(filteredEntries);
 }
 
-// Helper to filter entries based on timeframe
+// Helper to filter entries based on timeframe (Exact calendar day cutoff)
 function getEntriesForPeriod(days) {
     const today = new Date();
-    const cutoffDate = new Date();
-    cutoffDate.setDate(today.getDate() - days);
+    const cutoffDate = new Date(today);
+    cutoffDate.setDate(today.getDate() - (days - 1));
+    cutoffDate.setHours(0, 0, 0, 0);
     
-    return moodEntries.filter(entry => new Date(entry.date) >= cutoffDate);
+    return moodEntries.filter(entry => {
+        const entryDate = new Date(entry.date + 'T00:00:00');
+        return entryDate >= cutoffDate;
+    });
 }
 
 // Reset stats cards to empty states
