@@ -1640,22 +1640,7 @@ function deleteEntry(dateStr) {
     }
 }
 
-// Filter history listings via Search Input
-function filterHistory() {
-    const searchVal = document.getElementById('history-search').value.toLowerCase();
-    const items = document.querySelectorAll('.history-item');
-    
-    items.forEach(item => {
-        const notes = item.querySelector('.history-body').textContent.toLowerCase();
-        const date = item.querySelector('.history-date').textContent.toLowerCase();
-        
-        if (notes.includes(searchVal) || date.includes(searchVal)) {
-            item.style.display = 'flex';
-        } else {
-            item.style.display = 'none';
-        }
-    });
-}
+
 
 // Backup & Export JSON data
 function exportData() {
