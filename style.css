@@ -2321,6 +2321,139 @@ textarea:focus {
         width: 100% !important;
         justify-content: center !important;
     }
+
+    /* History Section Mobile Optimization */
+    .history-container {
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+        padding: 1.1rem 0.85rem !important;
+    }
+
+    .history-top-header h2 {
+        font-size: 1.3rem !important;
+        line-height: 1.3 !important;
+        overflow-wrap: anywhere !important;
+    }
+
+    .history-top-header p {
+        font-size: 0.85rem !important;
+        line-height: 1.4 !important;
+    }
+
+    .history-controls-card {
+        width: 100% !important;
+        box-sizing: border-box !important;
+    }
+
+    .history-search-wrapper {
+        width: 100% !important;
+        box-sizing: border-box !important;
+    }
+
+    .history-filter-pills {
+        display: flex !important;
+        width: 100% !important;
+        overflow-x: auto !important;
+        flex-wrap: nowrap !important;
+        scrollbar-width: none !important;
+        -webkit-overflow-scrolling: touch !important;
+        padding-bottom: 0.25rem !important;
+    }
+
+    .history-filter-pills::-webkit-scrollbar {
+        display: none !important;
+    }
+
+    .history-filter-pill {
+        flex: 0 0 auto !important;
+        white-space: nowrap !important;
+        font-size: 0.76rem !important;
+        padding: 0.35rem 0.65rem !important;
+    }
+
+    .history-month-group {
+        width: 100% !important;
+        box-sizing: border-box !important;
+    }
+
+    .history-items-box {
+        width: 100% !important;
+        box-sizing: border-box !important;
+    }
+
+    .history-item-compact {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 0.65rem !important;
+        padding: 0.85rem 0.9rem !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+        border-radius: 14px !important;
+    }
+
+    .history-item-left {
+        display: flex !important;
+        align-items: center !important;
+        gap: 0.75rem !important;
+        width: 100% !important;
+    }
+
+    .history-metrics-row {
+        display: flex !important;
+        align-items: center !important;
+        gap: 0.35rem !important;
+        flex-wrap: wrap !important;
+        flex-grow: 1 !important;
+    }
+
+    .metric-chip {
+        font-size: 0.75rem !important;
+        padding: 0.2rem 0.5rem !important;
+    }
+
+    .history-item-right {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 0.55rem !important;
+        width: 100% !important;
+        border-top: 1px solid rgba(255, 255, 255, 0.06) !important;
+        padding-top: 0.55rem !important;
+    }
+
+    .history-sub-info {
+        display: flex !important;
+        align-items: center !important;
+        gap: 0.5rem !important;
+        width: 100% !important;
+        flex-wrap: wrap !important;
+    }
+
+    .symptoms-summary-tag {
+        font-size: 0.75rem !important;
+        max-width: 100% !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+    }
+
+    .history-actions-inline {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        gap: 0.4rem !important;
+        width: 100% !important;
+    }
+
+    .btn-detail-link,
+    .btn-edit-action,
+    .btn-delete-action {
+        font-size: 0.76rem !important;
+        padding: 0.35rem 0.6rem !important;
+        white-space: nowrap !important;
+    }
 }
     
     .quick-stats-header {
