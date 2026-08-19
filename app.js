@@ -1785,22 +1785,46 @@ function importData(event) {
     reader.readAsText(file);
 }
 
-// Purge Local Storage Data
+// Purge Local Storage Data (Safe Targeted Key Removal)
 function clearAllData() {
     if (confirm("ATENȚIE: Sigur dorești să ștergi DEFINITIV toate datele înregistrate? Această acțiune nu poate fi anulată!")) {
         if (confirm("Vă rugăm să confirmați încă o dată că doriți ștergerea completă a bazei de date locale.")) {
-            localStorage.clear();
+            // Remove Staicumine & legacy Equilibrium keys specifically (never call localStorage.clear()!)
+            const keysToRemove = [
+                'staicumine_mood_entries',
+                'staicumine_safety_plan',
+                'staicumine_initialized',
+                'staicumine_is_demo',
+                'staicumine_onboarding_done',
+                'staicumine_checkin_draft',
+                'staicumine_last_backup_date',
+                'staicumine_backup_banner_closed_at',
+                'equilibrium_mood_entries',
+                'equilibrium_safety_plan',
+                'equilibrium_is_demo',
+                'equilibrium_last_backup_date',
+                'equilibrium_backup_banner_closed_at'
+            ];
+            
+            keysToRemove.forEach(key => localStorage.removeItem(key));
+
             moodEntries = [];
             safetyPlan = { docName: '', therapistName: '', emergencyName: '', triggers: '', coping: '' };
             
-            // Reset fields
-            document.getElementById('safety-doc-name').value = '';
-            document.getElementById('safety-therapist-name').value = '';
-            document.getElementById('safety-emergency-name').value = '';
-            document.getElementById('safety-triggers').value = '';
-            document.getElementById('safety-coping').value = '';
+            // Reset input fields
+            const docNameEl = document.getElementById('safety-doc-name');
+            const therapistNameEl = document.getElementById('safety-therapist-name');
+            const emergencyNameEl = document.getElementById('safety-emergency-name');
+            const triggersEl = document.getElementById('safety-triggers');
+            const copingEl = document.getElementById('safety-coping');
+
+            if (docNameEl) docNameEl.value = '';
+            if (therapistNameEl) therapistNameEl.value = '';
+            if (emergencyNameEl) emergencyNameEl.value = '';
+            if (triggersEl) triggersEl.value = '';
+            if (copingEl) copingEl.value = '';
             
-            showToast("Toate datele au fost șterse definitiv.");
+            showToast("Toate datele Staicumine au fost șterse definitiv.");
             switchTab('dashboard');
         }
     }
