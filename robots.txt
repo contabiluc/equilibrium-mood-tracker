@@ -2,4 +2,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://staicumine.netlify.app/sitemap.xml
+Sitemap: https://staicumine.vercel.app/sitemap.xml
