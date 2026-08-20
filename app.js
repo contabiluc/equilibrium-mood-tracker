@@ -90,6 +90,9 @@ function loadData() {
             moodEntries = (Array.isArray(raw) ? raw : [])
                 .map(validateAndNormalizeMoodEntry)
                 .filter(Boolean);
+            if (JSON.stringify(moodEntries) !== JSON.stringify(raw)) {
+                saveEntriesToStorage();
+            }
         } catch (e) {
             moodEntries = [];
         }
