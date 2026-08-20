@@ -85,7 +85,14 @@ function loadData() {
     const isInitialized = localStorage.getItem('staicumine_initialized') === 'true';
     
     if (isInitialized && storedEntries) {
-        moodEntries = JSON.parse(storedEntries);
+        try {
+            const raw = JSON.parse(storedEntries);
+            moodEntries = (Array.isArray(raw) ? raw : [])
+                .map(validateAndNormalizeMoodEntry)
+                .filter(Boolean);
+        } catch (e) {
+            moodEntries = [];
+        }
         if (isDemo) {
             setTimeout(() => showDemoBanner(), 600);
         }
@@ -1628,7 +1635,8 @@ const SYMPTOM_LABELS_MAP = {
 };
 
 function normalizeSymptomId(symptomId) {
-    if (!symptomId) return '';
+    if (!symptomId || typeof symptomId !== 'string') return '';
+    const trimmed = symptomId.trim().toLowerCase();
     const mapping = {
         'tristețe': 'tristete',
         'gânduri_accelerate': 'ganduri_accelerate',
@@ -1638,7 +1646,8 @@ function normalizeSymptomId(symptomId) {
         'insomnie_ușoară': 'insomnie_usoara',
         'oboseală': 'oboseala',
     };
-    return mapping[symptomId] || symptomId;
+    const resolved = mapping[trimmed] || trimmed;
+    return SYMPTOM_LABELS_MAP[resolved] ? resolved : '';
 }
 
 function getSymptomLabel(symptomId) {
