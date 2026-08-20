@@ -43,14 +43,14 @@ function generateMockData() {
         { mood: -2, sleep: 6.0, anxiety: 5, energy: 4, symptoms: ['tristete', 'retragere_sociala'], med: true, notes: 'Puțin mai bine ca ieri, dar tot am o senzație de greutate în piept. Am dormit ceva mai mult.' },
         { mood: 0, sleep: 7.5, anxiety: 2, energy: 5, med: true, notes: "O zi liniștită. Plimbare scurtă în parc.", symptoms: [] },
         { mood: 0, sleep: 8.0, anxiety: 1, energy: 5, med: true, notes: "Somn bun. Stare generală stabilă.", symptoms: [] },
-        { mood: 1, sleep: 7.0, anxiety: 3, energy: 6, med: true, notes: "Idei multe la muncă. Energie ridicată.", symptoms: ["insomnie_ușoară"] },
-        { mood: 2, sleep: 5.5, anxiety: 4, energy: 8, med: true, notes: "Vorbesc repede, multe proiecte începute.", symptoms: ["insomnie_ușoară", "iritabilitate"] },
-        { mood: 2, sleep: 5.0, anxiety: 5, energy: 8, med: false, notes: "Am uitat pastila. Agitație.", symptoms: ["insomnie_ușoară", "impulsivitate"] },
+        { mood: 1, sleep: 7.0, anxiety: 3, energy: 6, med: true, notes: "Idei multe la muncă. Energie ridicată.", symptoms: ["insomnie_usoara"] },
+        { mood: 2, sleep: 5.5, anxiety: 4, energy: 8, med: true, notes: "Vorbesc repede, multe proiecte începute.", symptoms: ["insomnie_usoara", "iritabilitate"] },
+        { mood: 2, sleep: 5.0, anxiety: 5, energy: 8, med: false, notes: "Am uitat pastila. Agitație.", symptoms: ["insomnie_usoara", "impulsivitate"] },
         { mood: 1, sleep: 6.5, anxiety: 3, energy: 6, med: true, notes: "M-am liniștit puțin seara.", symptoms: [] },
         { mood: 0, sleep: 7.0, anxiety: 2, energy: 5, med: true, notes: "Zi obișnuită de lucru.", symptoms: [] },
-        { mood: -1, sleep: 8.5, anxiety: 3, energy: 4, med: true, notes: "Oboseală nespecifică. Lipsă de motivație.", symptoms: ["oboseală"] },
-        { mood: -2, sleep: 9.5, anxiety: 5, energy: 2, med: true, notes: "Tristețe nemotivată. Greu de ieșit din casă.", symptoms: ["oboseală", "tristețe"] },
-        { mood: -2, sleep: 9.0, anxiety: 4, energy: 3, med: true, notes: "Încă fără energie. Am vorbit cu un prieten.", symptoms: ["oboseală"] },
+        { mood: -1, sleep: 8.5, anxiety: 3, energy: 4, med: true, notes: "Oboseală nespecifică. Lipsă de motivație.", symptoms: ["oboseala"] },
+        { mood: -2, sleep: 9.5, anxiety: 5, energy: 2, med: true, notes: "Tristețe nemotivată. Greu de ieșit din casă.", symptoms: ["oboseala", "tristete"] },
+        { mood: -2, sleep: 9.0, anxiety: 4, energy: 3, med: true, notes: "Încă fără energie. Am vorbit cu un prieten.", symptoms: ["oboseala"] },
         { mood: -1, sleep: 8.0, anxiety: 2, energy: 4, med: true, notes: "Ușoară îmbunătățire.", symptoms: [] },
         { mood: 0, sleep: 7.5, anxiety: 2, energy: 5, med: true, notes: "Revenire la starea neutră.", symptoms: [] },
         { mood: 0, sleep: 7.5, anxiety: 1, energy: 5, med: true, notes: "Zi excelentă în familie.", symptoms: [] },
@@ -335,7 +335,8 @@ function editEntry(dateStr) {
     document.querySelectorAll('.symptom-card').forEach(card => {
         const input = card.querySelector('input[name="symptom"]');
         if (input) {
-            const isChecked = entry.symptoms && entry.symptoms.includes(input.value);
+            const normalizedEntrySymptoms = (entry.symptoms || []).map(normalizeSymptomId);
+            const isChecked = normalizedEntrySymptoms.includes(normalizeSymptomId(input.value));
             input.checked = isChecked;
             if (isChecked) {
                 card.classList.add('selected');
@@ -1512,7 +1513,7 @@ function renderHistory() {
             // Build symptoms text preview
             let symptomsText = '';
             if (e.symptoms && e.symptoms.length > 0) {
-                symptomsText = e.symptoms.map(s => capitalizeFirst(s)).join(', ');
+                symptomsText = e.symptoms.map(s => getSymptomLabel(s)).join(', ');
             }
 
             const item = document.createElement('div');
@@ -1611,6 +1612,38 @@ function closeEntryDetailModal() {
 function capitalizeFirst(string) {
     if (!string) return '';
     return string.charAt(0).toUpperCase() + string.slice(1).replace('_', ' ');
+}
+
+const SYMPTOM_LABELS_MAP = {
+    'iritabilitate': 'Iritabilitate',
+    'ganduri_accelerate': 'Gânduri accelerate',
+    'agitatie_motorie': 'Agitație motorie',
+    'tristete': 'Tristețe / Plâns',
+    'lipsa_concentrare': 'Lipsă de concentrare',
+    'retragere_sociala': 'Retragere socială',
+    'atac_panica': 'Atac de panică',
+    'impulsivitate': 'Impulsivitate',
+    'insomnie_usoara': 'Insomnie / Somn tulburat',
+    'oboseala': 'Oboseală accentuată',
+};
+
+function normalizeSymptomId(symptomId) {
+    if (!symptomId) return '';
+    const mapping = {
+        'tristețe': 'tristete',
+        'gânduri_accelerate': 'ganduri_accelerate',
+        'agitație_motorie': 'agitatie_motorie',
+        'retragere_socială': 'retragere_sociala',
+        'atac_panică': 'atac_panica',
+        'insomnie_ușoară': 'insomnie_usoara',
+        'oboseală': 'oboseala',
+    };
+    return mapping[symptomId] || symptomId;
+}
+
+function getSymptomLabel(symptomId) {
+    const normId = normalizeSymptomId(symptomId);
+    return SYMPTOM_LABELS_MAP[normId] || capitalizeFirst(normId);
 }
 
 // Get text class helper
