@@ -1757,6 +1757,57 @@ function checkBackupWarning() {
 }
 
 // Restore & Import backup
+function validateAndNormalizeMoodEntry(rawEntry) {
+    if (!rawEntry || typeof rawEntry !== 'object') return null;
+
+    if (typeof rawEntry.date !== 'string') return null;
+    const dateTrimmed = rawEntry.date.trim();
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(dateTrimmed)) return null;
+
+    const parsedDate = new Date(dateTrimmed + 'T00:00:00');
+    if (isNaN(parsedDate.getTime())) return null;
+
+    let moodNum = parseInt(rawEntry.mood, 10);
+    if (isNaN(moodNum)) moodNum = 0;
+    if (moodNum < -5) moodNum = -5;
+    if (moodNum > 5) moodNum = 5;
+
+    let sleepNum = parseFloat(rawEntry.sleep);
+    if (isNaN(sleepNum) || sleepNum < 0) sleepNum = 7.0;
+    if (sleepNum > 24) sleepNum = 24.0;
+    sleepNum = parseFloat(sleepNum.toFixed(1));
+
+    let anxietyNum = parseInt(rawEntry.anxiety, 10);
+    if (isNaN(anxietyNum) || anxietyNum < 0) anxietyNum = 0;
+    if (anxietyNum > 10) anxietyNum = 10;
+
+    let energyNum = parseInt(rawEntry.energy, 10);
+    if (isNaN(energyNum) || energyNum < 0) energyNum = 5;
+    if (energyNum > 10) energyNum = 10;
+
+    const medicationTaken = Boolean(rawEntry.medicationTaken);
+    const notes = typeof rawEntry.notes === 'string' ? rawEntry.notes.trim() : '';
+
+    let symptoms = [];
+    if (Array.isArray(rawEntry.symptoms)) {
+        symptoms = rawEntry.symptoms
+            .map(s => normalizeSymptomId(s))
+            .filter(s => typeof s === 'string' && s.length > 0);
+        symptoms = [...new Set(symptoms)];
+    }
+
+    return {
+        date: dateTrimmed,
+        mood: moodNum,
+        sleep: sleepNum,
+        anxiety: anxietyNum,
+        energy: energyNum,
+        medicationTaken,
+        notes,
+        symptoms
+    };
+}
+
 function importData(event) {
     const input = event.target;
     if (input.files.length === 0) return;
@@ -1770,13 +1821,25 @@ function importData(event) {
             
             // Validation
             if (imported && (Array.isArray(imported.entries) || Array.isArray(imported))) {
-                const entries = imported.entries || imported;
+                const rawEntries = imported.entries || imported;
                 const safety = imported.safetyPlan || {};
                 
-                if (confirm(`Fișierul conține ${entries.length} înregistrări. Această acțiune va îmbina datele importate cu cele actuale. Continuăm?`)) {
+                // Sanitize and validate every incoming entry
+                const validEntries = [];
+                rawEntries.forEach(imp => {
+                    const sanitized = validateAndNormalizeMoodEntry(imp);
+                    if (sanitized) validEntries.push(sanitized);
+                });
+
+                if (validEntries.length === 0) {
+                    alert("Fișierul JSON nu conține nicio înregistrare validă de jurnal.");
+                    return;
+                }
+
+                if (confirm(`Fișierul conține ${validEntries.length} înregistrări valide. Această acțiune va îmbina datele importate cu cele actuale. Continuăm?`)) {
                     
                     // Merge logic (avoid duplicates on same date)
-                    entries.forEach(impEntry => {
+                    validEntries.forEach(impEntry => {
                         const idx = moodEntries.findIndex(e => e.date === impEntry.date);
                         if (idx !== -1) {
                             moodEntries[idx] = impEntry; // overwrite duplicate
