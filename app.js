@@ -1853,6 +1853,11 @@ function importData(event) {
                         localStorage.setItem('staicumine_safety_plan', JSON.stringify(safetyPlan));
                     }
 
+                    // Exit demo mode & mark app initialized with real user data
+                    isDemoMode = false;
+                    localStorage.setItem('staicumine_is_demo', 'false');
+                    localStorage.setItem('staicumine_initialized', 'true');
+
                     sortEntries();
                     saveEntriesToStorage();
                     showToast("Datele au fost importate cu succes!");
