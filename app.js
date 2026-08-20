@@ -25,10 +25,34 @@ function showToast(message) {
     }, 3500);
 }
 
+// Local Date Helpers (avoid UTC timezone shifts)
+function toLocalDateString(date = new Date()) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+}
+
+function parseLocalDate(dateStr) {
+    if (!dateStr) return new Date();
+    return new Date(dateStr.includes('T') ? dateStr : `${dateStr}T00:00:00`);
+}
+
+function isValidLocalDateString(value) {
+    if (typeof value !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
+    const [year, month, day] = value.split('-').map(Number);
+    const parsed = new Date(year, month - 1, day);
+    return (
+        parsed.getFullYear() === year &&
+        parsed.getMonth() === month - 1 &&
+        parsed.getDate() === day
+    );
+}
+
 // Format date helper (RO layout)
 function formatDateRO(dateStr) {
     const options = { weekday: 'short', year: 'numeric', month: 'long', day: 'numeric' };
-    const date = new Date(dateStr);
+    const date = parseLocalDate(dateStr);
     return date.toLocaleDateString('ro-RO', options);
 }
 
@@ -60,7 +84,7 @@ function generateMockData() {
     for (let i = 13; i >= 0; i--) {
         const d = new Date(today);
         d.setDate(d.getDate() - i);
-        const dateStr = d.toISOString().split('T')[0];
+        const dateStr = toLocalDateString(d);
         const pat = mockPatterns[13 - i];
 
         entries.push({
@@ -76,6 +100,19 @@ function generateMockData() {
     }
     
     return entries;
+}
+
+function populateSafetyPlanInputs() {
+    const doc = document.getElementById('safety-doc-name');
+    const ther = document.getElementById('safety-therapist-name');
+    const em = document.getElementById('safety-emergency-name');
+    const trig = document.getElementById('safety-triggers');
+    const cop = document.getElementById('safety-coping');
+    if (doc) doc.value = safetyPlan.docName || '';
+    if (ther) ther.value = safetyPlan.therapistName || '';
+    if (em) em.value = safetyPlan.emergencyName || safetyPlan.contactName || '';
+    if (trig) trig.value = safetyPlan.triggers || '';
+    if (cop) cop.value = safetyPlan.coping || '';
 }
 
 // Load Data from LocalStorage
@@ -109,14 +146,13 @@ function loadData() {
 
     const storedSafety = localStorage.getItem('staicumine_safety_plan') || localStorage.getItem('equilibrium_safety_plan');
     if (storedSafety) {
-        safetyPlan = JSON.parse(storedSafety);
-        // Populate inputs
-        document.getElementById('safety-doc-name').value = safetyPlan.docName || '';
-        document.getElementById('safety-therapist-name').value = safetyPlan.therapistName || '';
-        document.getElementById('safety-emergency-name').value = safetyPlan.emergencyName || '';
-        document.getElementById('safety-triggers').value = safetyPlan.triggers || '';
-        document.getElementById('safety-coping').value = safetyPlan.coping || '';
+        try {
+            safetyPlan = JSON.parse(storedSafety);
+        } catch (e) {
+            console.error('Error loading safety plan:', e);
+        }
     }
+    populateSafetyPlanInputs();
     
     // Sort entries chronologically
     sortEntries();
@@ -310,8 +346,8 @@ function switchTab(tabId, skipReset = false) {
     }
 }
 
-// Edit Existing Entry Handler
-let isEditingMode = false;
+// Edit Existing Entry Handler & Draft Auto-Save Protection Flag
+let isProgrammaticUpdate = false;
 
 function editEntry(dateStr) {
     const entry = moodEntries.find(e => e.date === dateStr);
@@ -320,101 +356,119 @@ function editEntry(dateStr) {
         return;
     }
 
-    isEditingMode = true;
-    
     // Switch to log tab without resetting form
     switchTab('log', true);
 
-    // Populate form inputs
-    document.getElementById('entry-date').value = entry.date;
-    setMoodValue(entry.mood);
-
-    document.getElementById('sleep-hours').value = entry.sleep;
-    updateSliderVal('sleep-hours-val', entry.sleep);
-
-    document.getElementById('anxiety-level').value = entry.anxiety;
-    updateSliderVal('anxiety-val', entry.anxiety);
-
-    document.getElementById('energy-level').value = entry.energy;
-    updateSliderVal('energy-val', entry.energy);
-
-    document.getElementById('medication-taken').checked = !!entry.medicationTaken;
-    document.getElementById('journal-notes').value = entry.notes || '';
-
-    // Populate Symptoms Checklist
-    document.querySelectorAll('.symptom-card').forEach(card => {
-        const input = card.querySelector('input[name="symptom"]');
-        if (input) {
-            const normalizedEntrySymptoms = (entry.symptoms || []).map(normalizeSymptomId);
-            const isChecked = normalizedEntrySymptoms.includes(normalizeSymptomId(input.value));
-            input.checked = isChecked;
-            if (isChecked) {
-                card.classList.add('selected');
-            } else {
-                card.classList.remove('selected');
-            }
+    isProgrammaticUpdate = true;
+    try {
+        const dateInput = document.getElementById('entry-date');
+        if (dateInput) {
+            dateInput.value = entry.date;
+            dateInput.max = toLocalDateString();
         }
-    });
 
-    // Update Form Header Title & Submit CTA
-    const formTitle = document.querySelector('#view-log .form-header-bar h2');
-    if (formTitle) formTitle.textContent = "Editează check-in-ul";
+        setMoodValue(entry.mood);
 
-    const submitBtn = document.querySelector('#view-log button[type="submit"]');
-    if (submitBtn) submitBtn.textContent = "Actualizează check-in-ul";
+        document.getElementById('sleep-hours').value = entry.sleep;
+        updateSliderVal('sleep-hours-val', entry.sleep);
 
-    // Show edit mode badge
-    let editBadge = document.getElementById('edit-mode-notice-badge');
-    if (!editBadge) {
-        editBadge = document.createElement('div');
-        editBadge.id = 'edit-mode-notice-badge';
-        editBadge.className = 'edit-mode-notice-badge';
-        const formHeader = document.querySelector('#view-log .form-header-bar');
-        if (formHeader) formHeader.parentNode.insertBefore(editBadge, formHeader.nextSibling);
+        document.getElementById('anxiety-level').value = entry.anxiety;
+        updateSliderVal('anxiety-val', entry.anxiety);
+
+        document.getElementById('energy-level').value = entry.energy;
+        updateSliderVal('energy-val', entry.energy);
+
+        document.getElementById('medication-taken').checked = !!entry.medicationTaken;
+        document.getElementById('journal-notes').value = entry.notes || '';
+
+        // Populate Symptoms Checklist
+        document.querySelectorAll('.symptom-card').forEach(card => {
+            const input = card.querySelector('input[name="symptom"]');
+            if (input) {
+                const normalizedEntrySymptoms = (entry.symptoms || []).map(normalizeSymptomId);
+                const isChecked = normalizedEntrySymptoms.includes(normalizeSymptomId(input.value));
+                input.checked = isChecked;
+                if (isChecked) {
+                    card.classList.add('selected');
+                } else {
+                    card.classList.remove('selected');
+                }
+            }
+        });
+
+        // Update Form Header Title & Submit CTA
+        const formTitle = document.querySelector('#view-log .form-header-bar h2');
+        if (formTitle) formTitle.textContent = "Editează check-in-ul";
+
+        const submitBtn = document.querySelector('#view-log button[type="submit"]');
+        if (submitBtn) submitBtn.textContent = "Actualizează check-in-ul";
+
+        // Show edit mode badge
+        let editBadge = document.getElementById('edit-mode-notice-badge');
+        if (!editBadge) {
+            editBadge = document.createElement('div');
+            editBadge.id = 'edit-mode-notice-badge';
+            editBadge.className = 'edit-mode-notice-badge';
+            const formHeader = document.querySelector('#view-log .form-header-bar');
+            if (formHeader) formHeader.parentNode.insertBefore(editBadge, formHeader.nextSibling);
+        }
+        editBadge.innerHTML = `✏️ Modifici check-in-ul salvat din <strong>${formatDateRO(entry.date)}</strong>`;
+        editBadge.style.display = 'block';
+
+        checkExistingEntryForDate(entry.date);
+    } finally {
+        isProgrammaticUpdate = false;
     }
-    editBadge.innerHTML = `✏️ Modifici check-in-ul salvat din <strong>${formatDateRO(entry.date)}</strong>`;
-    editBadge.style.display = 'block';
 
-    checkExistingEntryForDate(entry.date);
     showToast(`Editare activă pentru ${formatDateRO(entry.date)}`);
 }
 
 // Reset log form input values
 function resetLogForm() {
-    isEditingMode = false;
+    isProgrammaticUpdate = true;
+    try {
+        // Reset Form Header & CTA text
+        const formTitle = document.querySelector('#view-log .form-header-bar h2');
+        if (formTitle) formTitle.textContent = "Înregistrează starea de azi";
 
-    // Reset Form Header & CTA text
-    const formTitle = document.querySelector('#view-log .form-header-bar h2');
-    if (formTitle) formTitle.textContent = "Înregistrează starea de azi";
+        const submitBtn = document.querySelector('#view-log button[type="submit"]');
+        if (submitBtn) submitBtn.textContent = "Salvează check-in-ul";
 
-    const submitBtn = document.querySelector('#view-log button[type="submit"]');
-    if (submitBtn) submitBtn.textContent = "Salvează check-in-ul";
+        const editBadge = document.getElementById('edit-mode-notice-badge');
+        if (editBadge) editBadge.style.display = 'none';
 
-    const editBadge = document.getElementById('edit-mode-notice-badge');
-    if (editBadge) editBadge.style.display = 'none';
+        const todayStr = toLocalDateString();
+        const dateInput = document.getElementById('entry-date');
+        if (dateInput) {
+            dateInput.value = todayStr;
+            dateInput.max = todayStr;
+        }
 
-    document.getElementById('entry-date').value = new Date().toISOString().split('T')[0];
-    setMoodValue(0);
-    
-    document.getElementById('sleep-hours').value = 8;
-    updateSliderVal('sleep-hours-val', 8);
-    
-    document.getElementById('anxiety-level').value = 2;
-    updateSliderVal('anxiety-val', 2);
-    
-    document.getElementById('energy-level').value = 5;
-    updateSliderVal('energy-val', 5);
-    
-    // Reset symptom cards
-    document.querySelectorAll('.symptom-card').forEach(card => {
-        card.classList.remove('selected');
-        const input = card.querySelector('input[name="symptom"]');
-        if (input) input.checked = false;
-    });
-    
-    document.getElementById('medication-taken').checked = true;
-    document.getElementById('journal-notes').value = '';
-    checkExistingEntryForDate(document.getElementById('entry-date').value);
+        setMoodValue(0);
+        
+        document.getElementById('sleep-hours').value = 8;
+        updateSliderVal('sleep-hours-val', 8);
+        
+        document.getElementById('anxiety-level').value = 2;
+        updateSliderVal('anxiety-val', 2);
+        
+        document.getElementById('energy-level').value = 5;
+        updateSliderVal('energy-val', 5);
+        
+        // Reset symptom cards
+        document.querySelectorAll('.symptom-card').forEach(card => {
+            card.classList.remove('selected');
+            const input = card.querySelector('input[name="symptom"]');
+            if (input) input.checked = false;
+        });
+        
+        document.getElementById('medication-taken').checked = true;
+        document.getElementById('journal-notes').value = '';
+        checkExistingEntryForDate(todayStr);
+    } finally {
+        isProgrammaticUpdate = false;
+    }
+
     restoreDraft();
 }
 
@@ -491,6 +545,7 @@ function checkExistingEntryForDate(dateStr) {
 
 // Auto-Draft Management (LocalStorage with Strict Date Matching)
 function saveDraft() {
+    if (isProgrammaticUpdate) return;
     const dateVal = document.getElementById('entry-date')?.value;
     if (!dateVal) return;
 
@@ -534,34 +589,42 @@ function restoreDraft() {
         }
 
         // Same date: restore values cleanly
-        if (draft.mood !== undefined) setMoodValue(parseInt(draft.mood));
-        if (draft.sleep !== undefined) {
-            document.getElementById('sleep-hours').value = draft.sleep;
-            updateSliderVal('sleep-hours-val', draft.sleep);
+        isProgrammaticUpdate = true;
+        try {
+            if (draft.mood !== undefined) setMoodValue(parseInt(draft.mood, 10));
+            if (draft.sleep !== undefined) {
+                document.getElementById('sleep-hours').value = draft.sleep;
+                updateSliderVal('sleep-hours-val', draft.sleep);
+            }
+            if (draft.anxiety !== undefined) {
+                document.getElementById('anxiety-level').value = draft.anxiety;
+                updateSliderVal('anxiety-val', draft.anxiety);
+            }
+            if (draft.energy !== undefined) {
+                document.getElementById('energy-level').value = draft.energy;
+                updateSliderVal('energy-val', draft.energy);
+            }
+            if (draft.medicationTaken !== undefined) {
+                document.getElementById('medication-taken').checked = Boolean(draft.medicationTaken);
+            }
+            if (draft.journalNotes !== undefined) {
+                document.getElementById('journal-notes').value = draft.journalNotes;
+            }
+            if (draft.symptoms && Array.isArray(draft.symptoms)) {
+                document.querySelectorAll('.symptom-card').forEach(card => {
+                    const input = card.querySelector('input[name="symptom"]');
+                    if (input) {
+                        const isChecked = draft.symptoms.includes(input.value);
+                        input.checked = isChecked;
+                        if (isChecked) card.classList.add('selected');
+                        else card.classList.remove('selected');
+                    }
+                });
+            }
+        } finally {
+            isProgrammaticUpdate = false;
         }
-        if (draft.anxiety !== undefined) {
-            document.getElementById('anxiety-level').value = draft.anxiety;
-            updateSliderVal('anxiety-val', draft.anxiety);
-        }
-        if (draft.energy !== undefined) {
-            document.getElementById('energy-level').value = draft.energy;
-            updateSliderVal('energy-val', draft.energy);
-        }
-        if (draft.medicationTaken !== undefined) {
-            document.getElementById('medication-taken').checked = draft.medicationTaken;
-        }
-        if (draft.journalNotes !== undefined) {
-            document.getElementById('journal-notes').value = draft.journalNotes;
-        }
-        if (draft.symptoms && Array.isArray(draft.symptoms)) {
-            document.querySelectorAll('.symptom-card').forEach(card => {
-                const input = card.querySelector('input[name="symptom"]');
-                if (input && draft.symptoms.includes(input.value)) {
-                    input.checked = true;
-                    card.classList.add('selected');
-                }
-            });
-        }
+
         const notice = document.getElementById('draft-status-notice');
         const label = document.getElementById('draft-time-label');
         if (notice && label) {
@@ -1702,7 +1765,7 @@ function exportData() {
     const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(dataObj, null, 2));
     const dlAnchorElem = document.createElement('a');
     dlAnchorElem.setAttribute("href", dataStr);
-    dlAnchorElem.setAttribute("download", `Staicumine_Backup_${new Date().toISOString().split('T')[0]}.json`);
+    dlAnchorElem.setAttribute("download", `Staicumine_Backup_${toLocalDateString()}.json`);
     dlAnchorElem.click();
     
     // Save last backup date & update banner status
@@ -1729,18 +1792,18 @@ function checkBackupWarning() {
     const now = new Date();
 
     if (lastBackupStr) {
-        const lastBackupDate = new Date(lastBackupStr);
+        const lastBackupDate = parseLocalDate(lastBackupStr);
         const day = lastBackupDate.getDate().toString().padStart(2, '0');
         const month = (lastBackupDate.getMonth() + 1).toString().padStart(2, '0');
         const year = lastBackupDate.getFullYear();
         
         if (textWrapper) {
-            textWrapper.innerHTML = `<span class="backup-banner-text">🔒 Ultimul backup: <strong>${day}.${month}.${year}</strong> <a href="#" onclick="exportData(); return false;" class="backup-link" style="margin-left:6px">(Exportă din nou)</a></span>`;
+            textWrapper.innerHTML = `<span class="backup-banner-text">🔒 Ultimul export: <strong>${day}.${month}.${year}</strong> <a href="#" onclick="exportData(); return false;" class="backup-link" style="margin-left:6px">(Exportă din nou)</a></span>`;
         }
 
         // If user closed banner recently, hide
         if (bannerClosedStr) {
-            const bannerClosed = new Date(bannerClosedStr);
+            const bannerClosed = parseLocalDate(bannerClosedStr);
             const diffDays = Math.ceil(Math.abs(now - bannerClosed) / (1000 * 60 * 60 * 24));
             if (diffDays <= 7) {
                 banner.style.display = 'none';
@@ -1757,7 +1820,7 @@ function checkBackupWarning() {
     }
 
     if (bannerClosedStr) {
-        const bannerClosed = new Date(bannerClosedStr);
+        const bannerClosed = parseLocalDate(bannerClosedStr);
         const diffDays = Math.ceil(Math.abs(now - bannerClosed) / (1000 * 60 * 60 * 24));
         if (diffDays <= 7) {
             banner.style.display = 'none';
@@ -1992,47 +2055,6 @@ function closeBackupBanner() {
     const banner = document.getElementById('backup-warning-banner');
     if (banner) banner.style.display = 'none';
     showToast("Notificarea de backup a fost ascunsă pentru 7 zile.");
-}
-
-// Check if we should display backup warning banner
-function checkBackupWarning() {
-    const banner = document.getElementById('backup-warning-banner');
-    if (!banner) return;
-
-    // If there is no data, no need to alert
-    if (moodEntries.length === 0) {
-        banner.style.display = 'none';
-        return;
-    }
-
-    const lastBackupStr = localStorage.getItem('staicumine_last_backup_date') || localStorage.getItem('equilibrium_last_backup_date');
-    const bannerClosedStr = localStorage.getItem('staicumine_backup_banner_closed_at') || localStorage.getItem('equilibrium_backup_banner_closed_at');
-    const now = new Date();
-
-    // Check if backup happened recently (last 7 days)
-    if (lastBackupStr) {
-        const lastBackup = new Date(lastBackupStr);
-        const diffTime = Math.abs(now - lastBackup);
-        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-        if (diffDays <= 7) {
-            banner.style.display = 'none';
-            return;
-        }
-    }
-
-    // Check if banner was dismissed recently (last 7 days)
-    if (bannerClosedStr) {
-        const bannerClosed = new Date(bannerClosedStr);
-        const diffTime = Math.abs(now - bannerClosed);
-        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-        if (diffDays <= 7) {
-            banner.style.display = 'none';
-            return;
-        }
-    }
-
-    // Show banner if conditions met
-    banner.style.display = 'flex';
 }
 
 // Toggle Coping Suggestions Accordion Details
