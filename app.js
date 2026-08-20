@@ -929,7 +929,7 @@ function renderInsights(entries) {
                 title: 'Somnul și anxietatea par asociate',
                 desc: count <= 6 
                     ? `O primă observație: anxietatea medie a fost de ${avgAnxietyLowSleep.toFixed(1)}/10 în zilele cu mai puțin de 6.5h somn, față de ${avgAnxietyNormalSleep.toFixed(1)}/10 în zilele cu somn odihnitor.`
-                    : `În ultimele ${count} zile, anxietatea medie a fost de ${avgAnxietyLowSleep.toFixed(1)}/10 în zilele cu mai puțin de 6.5 ore de somn, comparativ cu ${avgAnxietyNormalSleep.toFixed(1)}/10 în cele cu somn suficient.`
+                    : `În ultimele ${currentChartPeriod} zile (${count} check-in-uri), anxietatea medie a fost de ${avgAnxietyLowSleep.toFixed(1)}/10 în zilele cu mai puțin de 6.5 ore de somn, comparativ cu ${avgAnxietyNormalSleep.toFixed(1)}/10 în cele cu somn suficient.`
             });
         }
     }
@@ -943,7 +943,7 @@ function renderInsights(entries) {
                 type: 'alert',
                 icon: '🔎',
                 title: 'Am observat un tipar care merită urmărit',
-                desc: `În zilele cu o stare mai ridicată (+2 sau peste), somnul mediu a fost mai scăzut (${avgSleepManic.toFixed(1)}h). Dacă acest tipar se repetă sau te îngrijorează, îți recomandăm să îl discuți cu medicul sau terapeutul tău.`
+                desc: `În ultimele ${currentChartPeriod} zile, în zilele cu o stare mai ridicată (+2 sau peste), somnul mediu a fost mai scăzut (${avgSleepManic.toFixed(1)}h). Dacă acest tipar se repetă sau te îngrijorează, îți recomandăm să îl discuți cu medicul sau terapeutul tău.`
             });
         }
     }
@@ -955,14 +955,14 @@ function renderInsights(entries) {
             type: 'alert',
             icon: '💊',
             title: `Monitorizarea tratamentului`,
-            desc: `Ai înregistrat ${missedMedDays.length} ${missedMedDays.length === 1 ? 'zi' : 'zile'} fără tratament în ultimele ${count} zile. Menținerea rutei de tratament sprijină stabilitatea emoțională.`
+            desc: `Ai înregistrat ${missedMedDays.length} ${missedMedDays.length === 1 ? 'zi' : 'zile'} fără tratament în ultimele ${currentChartPeriod} zile (${count} check-in-uri). Menținerea rutei de tratament sprijină stabilitatea emoțională.`
         });
     } else {
         insights.push({
             type: 'stable',
             icon: '🌱',
             title: 'Tratament urmat consecvent',
-            desc: `Ai bifat tratamentul în fiecare zi din cele ${count} zile înregistrate.`
+            desc: `Ai bifat tratamentul în fiecare zi din ultimele ${currentChartPeriod} zile (${count} check-in-uri).`
         });
     }
 
